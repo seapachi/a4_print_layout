@@ -1,0 +1,717 @@
+﻿<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Warm Sand PoC - A4 8分割 PDF</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --font-title: "Sora", sans-serif;
+        --font-body: "Noto Sans JP", sans-serif;
+        --bg: #f6f3ec;
+        --bg-glow-1: rgba(243, 201, 169, 0.45);
+        --bg-glow-2: rgba(205, 233, 229, 0.56);
+        --paper: #fffdf8;
+        --ink: #1d2a36;
+        --muted: #677683;
+        --line: #d9d2c6;
+        --accent: #0f766e;
+        --accent-soft: #cde9e5;
+        --warn-bg: #fff1e8;
+        --warn-border: #f0c9b0;
+        --warn-text: #8d4f2b;
+        --success-bg: #edf8f4;
+        --success-border: #c4e6de;
+        --danger-bg: #ffefee;
+        --danger-border: #f4c0bc;
+        --danger-text: #9a3128;
+        --slot-a: #dcede9;
+        --slot-b: #f4d4bc;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: var(--font-body);
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 80% 12%, var(--bg-glow-1), transparent 38%),
+          radial-gradient(circle at 12% 88%, var(--bg-glow-2), transparent 45%),
+          var(--bg);
+      }
+
+      .page {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 24px 16px 40px;
+      }
+
+      h1 {
+        margin: 0;
+        font-family: var(--font-title);
+        font-size: clamp(1.35rem, 3vw, 1.95rem);
+      }
+
+      .sub {
+        margin: 6px 0 0;
+        font-size: 0.88rem;
+        color: var(--muted);
+      }
+
+      .grid {
+        margin-top: 14px;
+        display: grid;
+        gap: 14px;
+      }
+
+      .panel {
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 14px;
+      }
+
+      .panel h2 {
+        margin: 0;
+        font-family: var(--font-title);
+        font-size: 1rem;
+      }
+
+      .hint {
+        margin: 4px 0 0;
+        font-size: 0.78rem;
+        color: var(--muted);
+      }
+
+      .row {
+        display: grid;
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      input[type="file"] {
+        width: 100%;
+        border: 1px dashed var(--line);
+        border-radius: 10px;
+        background: #fff;
+        padding: 10px;
+      }
+
+      button {
+        width: 100%;
+        border: 0;
+        border-radius: 999px;
+        padding: 11px 14px;
+        font-family: var(--font-title);
+        font-size: 0.88rem;
+        cursor: pointer;
+      }
+
+      button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .btn-primary {
+        background: var(--ink);
+        color: #fff;
+      }
+
+      .btn-share {
+        background: var(--accent-soft);
+        color: #11423f;
+      }
+
+      .btn-secondary {
+        margin-top: 8px;
+        background: #fff;
+        border: 1px solid var(--line);
+        color: var(--ink);
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+        width: 100%;
+        border-radius: 999px;
+        padding: 11px 14px;
+        font-family: var(--font-title);
+        font-size: 0.88rem;
+      }
+
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      .metric {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 8px;
+      }
+
+      .metric .k {
+        font-size: 0.73rem;
+        color: var(--muted);
+      }
+
+      .metric .v {
+        margin-top: 4px;
+        font-family: var(--font-title);
+        font-size: 0.95rem;
+      }
+
+      .status {
+        margin-top: 12px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 8px;
+        font-size: 0.85rem;
+        background: #fff;
+      }
+
+      .status.info {
+        border-color: var(--line);
+      }
+
+      .status.success {
+        color: #154e42;
+        background: var(--success-bg);
+        border-color: var(--success-border);
+      }
+
+      .status.warn {
+        color: var(--warn-text);
+        background: var(--warn-bg);
+        border-color: var(--warn-border);
+      }
+
+      .status.error {
+        color: var(--danger-text);
+        background: var(--danger-bg);
+        border-color: var(--danger-border);
+      }
+
+      .preview {
+        margin-top: 12px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 8px;
+        background: #fff;
+      }
+
+      .slot-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 6px;
+      }
+
+      .slot {
+        aspect-ratio: 4 / 3;
+        border-radius: 8px;
+        border: 1px solid var(--line);
+        background: linear-gradient(135deg, var(--slot-a), var(--slot-b));
+        padding: 6px;
+        font-size: 0.7rem;
+        overflow: hidden;
+        word-break: break-word;
+      }
+
+      .slot.empty {
+        background: #f9f7f2;
+        border-style: dashed;
+        color: var(--muted);
+      }
+
+      .errors {
+        margin-top: 10px;
+        font-size: 0.78rem;
+      }
+
+      .errors ul {
+        margin: 4px 0 0;
+        padding-left: 18px;
+      }
+
+      .log {
+        margin-top: 12px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 8px;
+        background: #fff;
+        font-size: 0.78rem;
+        max-height: 150px;
+        overflow: auto;
+      }
+
+      code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.76rem;
+      }
+
+      @media (max-width: 680px) {
+        .metrics {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  </head>
+  <body>
+    <main class="page">
+      <h1>Warm Sand PoC: A4 8分割 PDF 生成</h1>
+      <p class="sub">iPhone Chrome を想定した最小成立検証。JPEG/PNGのみ対応、8分割固定。</p>
+
+      <section class="grid">
+        <article class="panel">
+          <h2>入力</h2>
+          <p class="hint">画像は端末内で処理し、サーバー送信しません。</p>
+          <div class="row">
+            <input id="fileInput" type="file" multiple accept="image/jpeg,image/png" />
+            <button id="generateButton" class="btn-primary" type="button">PDFを生成</button>
+            <button id="shareButton" class="btn-share" type="button" disabled>共有する</button>
+            <a id="saveLink" class="btn-secondary" href="#" download style="display:none">保存する</a>
+          </div>
+          <div id="status" class="status info">待機中</div>
+          <div class="metrics">
+            <div class="metric"><div class="k">選択ファイル</div><div class="v" id="metricSelected">0</div></div>
+            <div class="metric"><div class="k">有効画像</div><div class="v" id="metricValid">0</div></div>
+            <div class="metric"><div class="k">想定ページ</div><div class="v" id="metricPages">0</div></div>
+          </div>
+          <div id="errorBox" class="errors" style="display:none"></div>
+        </article>
+
+        <article class="panel">
+          <h2>1ページ目プレビュー（8分割）</h2>
+          <p class="hint">空枠は未使用スロット。9枚以上は次ページへ自動配置。</p>
+          <div class="preview">
+            <div id="slotGrid" class="slot-grid"></div>
+          </div>
+          <div class="log" id="logBox"></div>
+        </article>
+      </section>
+    </main>
+
+    <script>
+      const A4_WIDTH_MM = 210;
+      const A4_HEIGHT_MM = 297;
+      const MARGIN_MM = 5;
+      const GAP_MM = 2;
+      const SLOTS_PER_PAGE = 8;
+      const ACCEPTED_MIME = new Set(["image/jpeg", "image/png"]);
+      const PRIMARY_THEME = "warm";
+
+      /** @type {"warm"|"mineral"|"editorial"} */
+      const ThemeKey = PRIMARY_THEME;
+
+      const ThemeMeta = {
+        name: "Warm Sand",
+        fontPair: "Sora + Noto Sans JP",
+        toneDescription: "Soft utility",
+        tags: ["Primary", "PoC", "Serverless"],
+      };
+
+      /** @type {File[]} */
+      let selectedFiles = [];
+      /** @type {ImageAsset[]} */
+      let selectedAssets = [];
+      /** @type {string[]} */
+      let lastLoadErrors = [];
+      let currentBlob = null;
+      let currentFileName = "";
+      let currentDownloadUrl = "";
+      let loadingRevision = 0;
+
+      const fileInput = document.getElementById("fileInput");
+      const generateButton = document.getElementById("generateButton");
+      const shareButton = document.getElementById("shareButton");
+      const saveLink = document.getElementById("saveLink");
+      const statusBox = document.getElementById("status");
+      const errorBox = document.getElementById("errorBox");
+      const slotGrid = document.getElementById("slotGrid");
+      const logBox = document.getElementById("logBox");
+      const metricSelected = document.getElementById("metricSelected");
+      const metricValid = document.getElementById("metricValid");
+      const metricPages = document.getElementById("metricPages");
+
+      renderPreview([]);
+      log(`theme=${ThemeMeta.name} (${ThemeKey})`);
+
+      fileInput.addEventListener("change", async () => {
+        loadingRevision += 1;
+        const revision = loadingRevision;
+        selectedFiles = Array.from(fileInput.files || []);
+        metricSelected.textContent = String(selectedFiles.length);
+        clearResult();
+
+        if (selectedFiles.length === 0) {
+          selectedAssets = [];
+          renderPreview([]);
+          updateMetrics();
+          setStatus("待機中", "info");
+          return;
+        }
+
+        setStatus("画像読込中...", "info");
+        const validFiles = [];
+        const unsupported = [];
+
+        for (const file of selectedFiles) {
+          if (ACCEPTED_MIME.has(file.type)) {
+            validFiles.push(file);
+          } else {
+            unsupported.push(`${file.name}: 非対応形式 (${file.type || "unknown"})`);
+          }
+        }
+
+        selectedAssets = await loadSelectedImages(validFiles);
+        if (revision !== loadingRevision) return;
+
+        lastLoadErrors = [...unsupported, ...lastLoadErrors];
+        renderErrors(lastLoadErrors);
+        renderPreview(selectedAssets);
+        updateMetrics();
+
+        if (selectedAssets.length === 0) {
+          setStatus("有効な画像がありません。JPEG/PNGを選択してください。", "error");
+        } else if (lastLoadErrors.length > 0) {
+          setStatus(`読み込み完了（警告 ${lastLoadErrors.length} 件）`, "warn");
+        } else {
+          setStatus("読み込み完了", "success");
+        }
+      });
+
+      generateButton.addEventListener("click", async () => {
+        if (generateButton.disabled) return;
+
+        if (selectedAssets.length === 0) {
+          setStatus("画像を選択してから実行してください。", "error");
+          return;
+        }
+
+        const slots = computeSlotsA4_8(MARGIN_MM, GAP_MM);
+
+        try {
+          setBusy(true);
+          setStatus("PDF生成中...", "info");
+          const blob = await buildPdfA4(selectedAssets, slots);
+          const fileName = createOutputName();
+          applyGeneratedBlob(blob, fileName);
+          const pages = Math.ceil(selectedAssets.length / SLOTS_PER_PAGE);
+          setStatus(`完了: ${fileName} (${pages}ページ)`, "success");
+          log(`pdf generated: pages=${pages}, assets=${selectedAssets.length}`);
+        } catch (error) {
+          const message = normalizeError(error);
+          setStatus(`生成に失敗しました: ${message}`, "error");
+          log(`pdf generation failed: ${message}`);
+        } finally {
+          setBusy(false);
+        }
+      });
+
+      shareButton.addEventListener("click", async () => {
+        if (!currentBlob) {
+          setStatus("先にPDFを生成してください。", "error");
+          return;
+        }
+
+        try {
+          const result = await shareOrDownload(currentBlob, currentFileName);
+          if (result === "shared") {
+            setStatus("共有シートを開きました。", "success");
+            log("share: success");
+          } else {
+            setStatus("共有未対応環境です。保存リンクを使用してください。", "warn");
+            log("share: fallback to download");
+          }
+        } catch (error) {
+          const message = normalizeError(error);
+          setStatus(`共有に失敗しました: ${message}`, "error");
+          log(`share failed: ${message}`);
+        }
+      });
+
+      /**
+       * @typedef {Object} ImageAsset
+       * @property {string} id
+       * @property {string} name
+       * @property {Uint8Array} bytes
+       * @property {number} widthPx
+       * @property {number} heightPx
+       * @property {"image/jpeg"|"image/png"} mimeType
+       */
+
+      /**
+       * @typedef {Object} SlotRectMm
+       * @property {number} xMm
+       * @property {number} yMm
+       * @property {number} widthMm
+       * @property {number} heightMm
+       */
+
+      /** @returns {Promise<ImageAsset[]>} */
+      async function loadSelectedImages(files) {
+        lastLoadErrors = [];
+        const settled = await Promise.allSettled(
+          files.map(async (file, index) => {
+            const bytes = new Uint8Array(await file.arrayBuffer());
+            const size = await readImageSize(file);
+            return {
+              id: `${Date.now()}-${index}`,
+              name: file.name,
+              bytes,
+              widthPx: size.width,
+              heightPx: size.height,
+              mimeType: /** @type {"image/jpeg"|"image/png"} */ (file.type),
+            };
+          }),
+        );
+
+        const assets = [];
+        settled.forEach((result, index) => {
+          if (result.status === "fulfilled") {
+            assets.push(result.value);
+          } else {
+            lastLoadErrors.push(`${files[index].name}: ${normalizeError(result.reason)}`);
+          }
+        });
+
+        return assets;
+      }
+
+      /** @returns {SlotRectMm[]} */
+      function computeSlotsA4_8(marginMm, gapMm) {
+        const cols = 2;
+        const rows = 4;
+        const usableWidthMm = A4_WIDTH_MM - marginMm * 2 - gapMm * (cols - 1);
+        const usableHeightMm = A4_HEIGHT_MM - marginMm * 2 - gapMm * (rows - 1);
+        const slotWidthMm = usableWidthMm / cols;
+        const slotHeightMm = usableHeightMm / rows;
+        const slots = [];
+
+        for (let row = 0; row < rows; row += 1) {
+          for (let col = 0; col < cols; col += 1) {
+            slots.push({
+              xMm: marginMm + col * (slotWidthMm + gapMm),
+              yMm: marginMm + row * (slotHeightMm + gapMm),
+              widthMm: slotWidthMm,
+              heightMm: slotHeightMm,
+            });
+          }
+        }
+
+        return slots;
+      }
+
+      /** @returns {Promise<Blob>} */
+      async function buildPdfA4(images, slots) {
+        const PDFDocument = window.PDFLib?.PDFDocument;
+        if (!PDFDocument) {
+          throw new Error("pdf-lib の読み込みに失敗しました。");
+        }
+        if (images.length === 0) {
+          throw new Error("画像が選択されていません。");
+        }
+
+        const pdf = await PDFDocument.create();
+        const pageWidthPt = mmToPt(A4_WIDTH_MM);
+        const pageHeightPt = mmToPt(A4_HEIGHT_MM);
+        const perPage = slots.length;
+        const totalPages = Math.ceil(images.length / perPage);
+
+        for (let pageIndex = 0; pageIndex < totalPages; pageIndex += 1) {
+          const page = pdf.addPage([pageWidthPt, pageHeightPt]);
+          const pageImages = images.slice(pageIndex * perPage, (pageIndex + 1) * perPage);
+
+          for (let i = 0; i < pageImages.length; i += 1) {
+            const asset = pageImages[i];
+            const slot = slots[i];
+            const embedded =
+              asset.mimeType === "image/png"
+                ? await pdf.embedPng(asset.bytes)
+                : await pdf.embedJpg(asset.bytes);
+
+            const slotWidthPt = mmToPt(slot.widthMm);
+            const slotHeightPt = mmToPt(slot.heightMm);
+            const slotXPt = mmToPt(slot.xMm);
+            const slotYPt = pageHeightPt - mmToPt(slot.yMm + slot.heightMm);
+
+            const scale = Math.min(slotWidthPt / asset.widthPx, slotHeightPt / asset.heightPx);
+            const drawWidthPt = asset.widthPx * scale;
+            const drawHeightPt = asset.heightPx * scale;
+            const drawXPt = slotXPt + (slotWidthPt - drawWidthPt) / 2;
+            const drawYPt = slotYPt + (slotHeightPt - drawHeightPt) / 2;
+
+            page.drawImage(embedded, {
+              x: drawXPt,
+              y: drawYPt,
+              width: drawWidthPt,
+              height: drawHeightPt,
+            });
+          }
+        }
+
+        const pdfBytes = await pdf.save();
+        return new Blob([pdfBytes], { type: "application/pdf" });
+      }
+
+      /** @returns {Promise<"shared"|"download">} */
+      async function shareOrDownload(blob, filename) {
+        const shareFn = navigator.share;
+        const file = new File([blob], filename, { type: "application/pdf" });
+
+        if (typeof shareFn === "function") {
+          try {
+            if (typeof navigator.canShare === "function") {
+              if (navigator.canShare({ files: [file] })) {
+                await shareFn.call(navigator, { title: filename, files: [file] });
+                return "shared";
+              }
+            } else {
+              await shareFn.call(navigator, { title: filename, files: [file] });
+              return "shared";
+            }
+          } catch (error) {
+            const message = normalizeError(error);
+            if (!message.includes("AbortError")) {
+              log(`share error: ${message}`);
+            }
+          }
+        }
+
+        return "download";
+      }
+
+      function readImageSize(file) {
+        return new Promise((resolve, reject) => {
+          const url = URL.createObjectURL(file);
+          const image = new Image();
+
+          image.onload = () => {
+            URL.revokeObjectURL(url);
+            resolve({ width: image.naturalWidth, height: image.naturalHeight });
+          };
+
+          image.onerror = () => {
+            URL.revokeObjectURL(url);
+            reject(new Error("画像読込に失敗"));
+          };
+
+          image.src = url;
+        });
+      }
+
+      function renderPreview(assets) {
+        slotGrid.innerHTML = "";
+        const firstPage = assets.slice(0, SLOTS_PER_PAGE);
+
+        for (let i = 0; i < SLOTS_PER_PAGE; i += 1) {
+          const item = firstPage[i];
+          const cell = document.createElement("div");
+          cell.className = item ? "slot" : "slot empty";
+          cell.textContent = item
+            ? `${i + 1}. ${item.name} (${item.widthPx}x${item.heightPx})`
+            : `${i + 1}. 空枠`;
+          slotGrid.appendChild(cell);
+        }
+      }
+
+      function renderErrors(errors) {
+        if (!errors || errors.length === 0) {
+          errorBox.style.display = "none";
+          errorBox.innerHTML = "";
+          return;
+        }
+
+        errorBox.style.display = "block";
+        errorBox.innerHTML = `<strong>警告</strong><ul>${errors.map((line) => `<li>${escapeHtml(line)}</li>`).join("")}</ul>`;
+      }
+
+      function updateMetrics() {
+        metricValid.textContent = String(selectedAssets.length);
+        const pages = selectedAssets.length === 0 ? 0 : Math.ceil(selectedAssets.length / SLOTS_PER_PAGE);
+        metricPages.textContent = String(pages);
+      }
+
+      function setBusy(isBusy) {
+        generateButton.disabled = isBusy;
+        fileInput.disabled = isBusy;
+        shareButton.disabled = isBusy || !currentBlob;
+      }
+
+      function clearResult() {
+        if (currentDownloadUrl) {
+          URL.revokeObjectURL(currentDownloadUrl);
+          currentDownloadUrl = "";
+        }
+        currentBlob = null;
+        currentFileName = "";
+        shareButton.disabled = true;
+        saveLink.style.display = "none";
+        saveLink.removeAttribute("href");
+      }
+
+      function applyGeneratedBlob(blob, filename) {
+        clearResult();
+        currentBlob = blob;
+        currentFileName = filename;
+        currentDownloadUrl = URL.createObjectURL(blob);
+        saveLink.href = currentDownloadUrl;
+        saveLink.download = filename;
+        saveLink.style.display = "inline-block";
+        shareButton.disabled = false;
+      }
+
+      function setStatus(text, type) {
+        statusBox.textContent = text;
+        statusBox.className = `status ${type}`;
+      }
+
+      function createOutputName() {
+        const now = new Date();
+        const yyyy = String(now.getFullYear());
+        const mm = String(now.getMonth() + 1).padStart(2, "0");
+        const dd = String(now.getDate()).padStart(2, "0");
+        const hh = String(now.getHours()).padStart(2, "0");
+        const mi = String(now.getMinutes()).padStart(2, "0");
+        return `print-layout-${yyyy}${mm}${dd}-${hh}${mi}.pdf`;
+      }
+
+      function mmToPt(mm) {
+        return (mm * 72) / 25.4;
+      }
+
+      function normalizeError(error) {
+        if (!error) return "unknown";
+        if (typeof error === "string") return error;
+        if (error instanceof Error) return error.message;
+        return String(error);
+      }
+
+      function escapeHtml(value) {
+        return value
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#39;");
+      }
+
+      function log(message) {
+        const line = `[${new Date().toLocaleTimeString()}] ${message}`;
+        const item = document.createElement("div");
+        item.textContent = line;
+        logBox.appendChild(item);
+        logBox.scrollTop = logBox.scrollHeight;
+      }
+    </script>
+  </body>
+</html>
