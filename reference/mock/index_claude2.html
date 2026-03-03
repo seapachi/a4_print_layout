@@ -1,0 +1,1244 @@
+<!doctype html>
+<html lang="ja" data-theme="nocturne">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>A4 Print Layout — Design Concepts</title>
+    <style>
+      /* ==========================================================
+         DESIGN TOKENS — 3 THEMES
+         ========================================================== */
+
+      /* ── NOCTURNE (Dark × Mint) ──────────────────────────────── */
+      [data-theme="nocturne"] {
+        --body-bg: #0b0d16;
+        --glow-a: rgba(74, 222, 128, 0.05);
+        --glow-b: rgba(99, 102, 241, 0.06);
+        --s0: #131522;
+        --s1: #1c1f30;
+        --s2: #252840;
+        --b0: rgba(255, 255, 255, 0.06);
+        --b1: rgba(255, 255, 255, 0.12);
+        --t0: #eeeaff;
+        --t1: #8a8fa8;
+        --t2: #52566e;
+        --ac: #4ade80;
+        --ac-fg: #021a0d;
+        --ac-glow: rgba(74, 222, 128, 0.22);
+        --ac-dim: rgba(74, 222, 128, 0.1);
+        --warn: #fb923c;
+        --warn-dim: rgba(251, 146, 60, 0.12);
+        --phone-shell: #0d0f1c;
+        --phone-b: rgba(255, 255, 255, 0.09);
+        --phone-screen: #090b13;
+        --phone-shadow: 0 40px 80px rgba(0, 0, 0, 0.72), 0 0 0 1px rgba(255, 255, 255, 0.04);
+      }
+
+      /* ── HANSHI (Warm Paper × Vermillion) ────────────────────── */
+      [data-theme="hanshi"] {
+        --body-bg: #f2ece0;
+        --glow-a: transparent;
+        --glow-b: transparent;
+        --s0: #fdfaf2;
+        --s1: #ffffff;
+        --s2: #ede7da;
+        --b0: #d8d0be;
+        --b1: #c8bea8;
+        --t0: #1c1710;
+        --t1: #7c6e5c;
+        --t2: #b0a08a;
+        --ac: #bf3517;
+        --ac-fg: #ffffff;
+        --ac-glow: rgba(191, 53, 23, 0.18);
+        --ac-dim: rgba(191, 53, 23, 0.08);
+        --warn: #a16207;
+        --warn-dim: rgba(161, 98, 7, 0.1);
+        --phone-shell: #e5ddd0;
+        --phone-b: #c0b8a5;
+        --phone-screen: #fdfbf6;
+        --phone-shadow: 0 40px 80px rgba(25, 15, 5, 0.22), 0 0 0 1px #c0b8a5;
+      }
+
+      /* ── PRISM (Cosmic Glass × Pink) ─────────────────────────── */
+      [data-theme="prism"] {
+        --body-bg: #050310;
+        --glow-a: rgba(244, 114, 182, 0.08);
+        --glow-b: rgba(56, 189, 248, 0.06);
+        --s0: rgba(255, 255, 255, 0.04);
+        --s1: rgba(255, 255, 255, 0.07);
+        --s2: rgba(255, 255, 255, 0.11);
+        --b0: rgba(255, 255, 255, 0.08);
+        --b1: rgba(255, 255, 255, 0.16);
+        --t0: #f5f2ff;
+        --t1: #9891b5;
+        --t2: #4e4868;
+        --ac: #f472b6;
+        --ac-fg: #ffffff;
+        --ac-glow: rgba(244, 114, 182, 0.32);
+        --ac-dim: rgba(244, 114, 182, 0.12);
+        --warn: #fbbf24;
+        --warn-dim: rgba(251, 191, 36, 0.12);
+        --phone-shell: rgba(255, 255, 255, 0.05);
+        --phone-b: rgba(255, 255, 255, 0.14);
+        --phone-screen: rgba(6, 4, 18, 0.94);
+        --phone-shadow: 0 40px 80px rgba(60, 20, 130, 0.4), 0 0 60px rgba(244, 114, 182, 0.12);
+      }
+
+      /* ==========================================================
+         RESET & GLOBAL
+         ========================================================== */
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      html {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      }
+
+      body {
+        min-height: 100vh;
+        color: var(--t0);
+        background:
+          radial-gradient(ellipse at 14% 82%, var(--glow-a), transparent 50%),
+          radial-gradient(ellipse at 86% 16%, var(--glow-b), transparent 46%),
+          var(--body-bg);
+        transition: background 0.38s ease, color 0.38s ease;
+      }
+
+      /* ==========================================================
+         PAGE LAYOUT
+         ========================================================== */
+      .page {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 36px 20px 60px;
+      }
+
+      /* ── Header ── */
+      .pg-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 16px;
+        margin-bottom: 28px;
+        flex-wrap: wrap;
+      }
+
+      .app-title {
+        font-size: clamp(1.25rem, 2.8vw, 1.75rem);
+        font-weight: 800;
+        letter-spacing: -0.025em;
+        line-height: 1.1;
+      }
+
+      .app-sub {
+        margin-top: 5px;
+        font-size: 0.8rem;
+        color: var(--t1);
+      }
+
+      /* ── Theme Switcher ── */
+      .theme-sw {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+
+      .t-btn {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 8px 14px;
+        border-radius: 999px;
+        border: 1px solid var(--b1);
+        background: var(--s1);
+        color: var(--t1);
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0.07em;
+        cursor: pointer;
+        transition: all 140ms ease;
+      }
+
+      .t-btn:hover { color: var(--t0); }
+
+      .t-btn.on {
+        background: var(--s2);
+        color: var(--t0);
+        border-color: var(--b1);
+      }
+
+      .swatch {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+
+      /* ── Screen Tabs ── */
+      .sc-tabs {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+        margin-bottom: 22px;
+      }
+
+      .sc-tab {
+        padding: 11px 8px;
+        border-radius: 12px;
+        border: 1px solid var(--b0);
+        background: var(--s0);
+        color: var(--t1);
+        font-size: 0.74rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        cursor: pointer;
+        text-align: center;
+        line-height: 1.3;
+        transition: all 140ms ease;
+      }
+
+      .sc-tab:hover { border-color: var(--b1); color: var(--t0); }
+
+      .sc-tab.on {
+        background: var(--ac);
+        color: var(--ac-fg);
+        border-color: transparent;
+        box-shadow: 0 4px 12px var(--ac-glow);
+      }
+
+      .tab-step {
+        display: block;
+        font-size: 0.6rem;
+        font-weight: 400;
+        letter-spacing: 0.06em;
+        opacity: 0.7;
+        margin-top: 3px;
+        text-transform: uppercase;
+      }
+
+      /* ── Two-column stage ── */
+      .stage {
+        display: grid;
+        grid-template-columns: 282px 1fr;
+        gap: 26px;
+        align-items: start;
+      }
+
+      /* ==========================================================
+         PHONE FRAME
+         ========================================================== */
+      .phone {
+        background: var(--phone-shell);
+        border: 1px solid var(--phone-b);
+        border-radius: 52px;
+        padding: 13px;
+        box-shadow: var(--phone-shadow);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        transition: background 0.38s, box-shadow 0.38s;
+      }
+
+      /* Dynamic Island */
+      .island {
+        width: 82px;
+        height: 25px;
+        border-radius: 999px;
+        background: rgba(0, 0, 0, 0.55);
+        margin: 0 auto 9px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+      }
+
+      [data-theme="hanshi"] .island { background: rgba(0, 0, 0, 0.12); }
+
+      .island-cam {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.25);
+      }
+
+      .island-mic {
+        width: 14px;
+        height: 4px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.18);
+      }
+
+      [data-theme="hanshi"] .island-cam { background: rgba(0, 0, 0, 0.2); }
+      [data-theme="hanshi"] .island-mic { background: rgba(0, 0, 0, 0.12); }
+
+      .phone-screen {
+        background: var(--phone-screen);
+        border-radius: 40px;
+        overflow: hidden;
+        min-height: 610px;
+        position: relative;
+        transition: background 0.38s;
+      }
+
+      /* ==========================================================
+         SCREENS (inside phone)
+         ========================================================== */
+      .sc {
+        display: none;
+        flex-direction: column;
+        min-height: 610px;
+      }
+
+      .sc.on {
+        display: flex;
+        animation: scIn 180ms ease;
+      }
+
+      @keyframes scIn {
+        from { opacity: 0; transform: translateY(5px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+
+      /* Status bar */
+      .st-bar {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 18px 2px;
+        font-size: 0.62rem;
+        font-weight: 700;
+        color: var(--t1);
+        letter-spacing: 0.03em;
+      }
+
+      /* Step dots */
+      .step-row {
+        display: flex;
+        justify-content: center;
+        gap: 5px;
+        padding: 4px 0 2px;
+      }
+
+      .sdot {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: var(--b1);
+        transition: all 200ms ease;
+      }
+
+      .sdot.on {
+        width: 20px;
+        border-radius: 3px;
+        background: var(--ac);
+      }
+
+      /* Screen body */
+      .sc-body {
+        flex: 1;
+        padding: 12px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 11px;
+        overflow-y: auto;
+      }
+
+      .sc-nav {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+      }
+
+      .back-btn {
+        background: none;
+        border: none;
+        color: var(--ac);
+        font-size: 0.76rem;
+        font-weight: 700;
+        cursor: pointer;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        gap: 3px;
+      }
+
+      .sc-h {
+        font-size: 1.08rem;
+        font-weight: 800;
+        letter-spacing: -0.015em;
+        flex: 1;
+      }
+
+      .sc-note {
+        font-size: 0.7rem;
+        color: var(--t2);
+        margin-top: -4px;
+      }
+
+      /* Generic card */
+      .card {
+        background: var(--s1);
+        border: 1px solid var(--b0);
+        border-radius: 14px;
+        padding: 12px;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+      }
+
+      /* CTA sticky footer */
+      .sc-cta {
+        padding: 10px 16px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+        border-top: 1px solid var(--b0);
+        background: var(--phone-screen);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+      }
+
+      /* Buttons */
+      .btn {
+        width: 100%;
+        border: none;
+        border-radius: 14px;
+        padding: 13px;
+        font-size: 0.87rem;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        cursor: pointer;
+        transition: opacity 100ms, transform 80ms;
+      }
+
+      .btn:active { transform: scale(0.98); opacity: 0.88; }
+
+      .btn-ac  { background: var(--ac); color: var(--ac-fg); box-shadow: 0 4px 16px var(--ac-glow); }
+      .btn-sub { background: var(--s2); color: var(--t0); border: 1px solid var(--b1); }
+      .btn-gh  { background: transparent; color: var(--t1); border: 1px solid var(--b0); }
+
+      /* ==========================================================
+         SCREEN A — Image Select
+         ========================================================== */
+      .drop-zone {
+        border: 1.5px dashed var(--b1);
+        border-radius: 11px;
+        padding: 18px 12px;
+        text-align: center;
+        color: var(--t2);
+        font-size: 0.78rem;
+        background: var(--s0);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .drop-ico { font-size: 1.5rem; }
+
+      .thumb-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 5px;
+        margin-top: 9px;
+      }
+
+      .thumb {
+        aspect-ratio: 1;
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      .th1 { background: linear-gradient(135deg, #a8e6cf, #6acfb8); }
+      .th2 { background: linear-gradient(135deg, #ffd3a5, #fd9b53); }
+      .th3 { background: linear-gradient(135deg, #a8c8f0, #7aabdc); }
+      .th4 { background: linear-gradient(135deg, #f8c8d4, #f090a8); }
+      .th5 { background: linear-gradient(135deg, #d4e8a8, #b0d856); }
+      .th6 { background: linear-gradient(135deg, #e8c8f8, #c888e8); }
+
+      .count-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 0.78rem;
+        padding-top: 9px;
+        color: var(--t1);
+      }
+
+      .badge {
+        background: var(--ac);
+        color: var(--ac-fg);
+        font-size: 0.7rem;
+        font-weight: 800;
+        padding: 3px 11px;
+        border-radius: 999px;
+        box-shadow: 0 2px 8px var(--ac-glow);
+      }
+
+      /* ==========================================================
+         SCREEN B — Layout Select
+         ========================================================== */
+      .sec-label {
+        font-size: 0.65rem;
+        font-weight: 800;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        color: var(--t2);
+        margin-bottom: 6px;
+      }
+
+      .lay-list { display: grid; gap: 5px; }
+
+      .lay-opt {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 11px;
+        border-radius: 10px;
+        border: 1px solid var(--b0);
+        background: var(--s1);
+        cursor: pointer;
+        font-size: 0.82rem;
+        transition: all 130ms ease;
+      }
+
+      .lay-opt:hover { border-color: var(--b1); }
+
+      .lay-opt.sel {
+        border-color: var(--ac);
+        background: var(--ac-dim);
+      }
+
+      .radio {
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        border: 2px solid var(--b1);
+        flex-shrink: 0;
+        transition: all 130ms;
+      }
+
+      .lay-opt.sel .radio {
+        border-color: var(--ac);
+        background: var(--ac);
+        box-shadow: inset 0 0 0 3px var(--phone-screen);
+      }
+
+      .mg {
+        width: 22px;
+        height: 28px;
+        border: 1.5px solid var(--b1);
+        border-radius: 3px;
+        flex-shrink: 0;
+        padding: 1.5px;
+        display: grid;
+        gap: 1.5px;
+        background: var(--s0);
+        transition: border-color 130ms;
+      }
+
+      .lay-opt.sel .mg { border-color: var(--ac); }
+
+      .mg-c {
+        background: var(--ac);
+        opacity: 0.4;
+        border-radius: 1px;
+        transition: opacity 130ms;
+      }
+
+      .lay-opt.sel .mg-c { opacity: 1; }
+
+      .fit-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 5px;
+      }
+
+      .fit-opt {
+        padding: 8px;
+        border-radius: 8px;
+        border: 1px solid var(--b0);
+        background: var(--s1);
+        color: var(--t1);
+        font-size: 0.72rem;
+        font-weight: 600;
+        text-align: center;
+        cursor: pointer;
+        transition: all 130ms;
+      }
+
+      .fit-opt.sel {
+        border-color: var(--ac);
+        background: var(--ac-dim);
+        color: var(--t0);
+      }
+
+      .info-box {
+        font-size: 0.7rem;
+        color: var(--t2);
+        line-height: 1.55;
+        padding: 8px 10px;
+        background: var(--s0);
+        border: 1px solid var(--b0);
+        border-radius: 8px;
+      }
+
+      /* ==========================================================
+         SCREEN C — Preview
+         ========================================================== */
+      .a4-wrap {
+        background: var(--s1);
+        border: 1px solid var(--b0);
+        border-radius: 12px;
+        padding: 8px;
+      }
+
+      /* Always white paper regardless of theme */
+      .a4-paper {
+        background: #ffffff;
+        border-radius: 5px;
+        aspect-ratio: 210 / 297;
+        width: 100%;
+        padding: 5px;
+        display: grid;
+        gap: 3px;
+      }
+
+      .a4-slot { border-radius: 2px; position: relative; overflow: hidden; }
+
+      .a4-slot::after { content: ""; }
+      .a4-slot.warn-slot::after {
+        content: "⚠";
+        position: absolute;
+        top: 2px;
+        right: 3px;
+        font-size: 0.48rem;
+        color: #bf5b17;
+      }
+
+      .p1 { background: linear-gradient(130deg, #b8eada, #7dd8c8); }
+      .p2 { background: linear-gradient(130deg, #b8d0f0, #90b8e0); }
+      .p3 { background: linear-gradient(130deg, #d8eca8, #b8dc78); }
+      .p4 { background: linear-gradient(130deg, #f0d0e4, #e0a8c8); }
+      .p5 { background: linear-gradient(130deg, #fcdca4, #f4b860); }
+      .p6 { background: linear-gradient(130deg, #d0c8f8, #b0a0f0); }
+      .p7 { background: linear-gradient(130deg, #f8c0d0, #f098b0); }
+      .p8 { background: linear-gradient(130deg, #c8eef8, #98d8f0); }
+
+      .pg-ctrl {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 0.76rem;
+      }
+
+      .pg-btn {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        border: 1px solid var(--b1);
+        background: var(--s1);
+        color: var(--t0);
+        font-size: 0.76rem;
+        cursor: pointer;
+        display: grid;
+        place-items: center;
+        transition: all 120ms;
+      }
+
+      .pg-btn:hover { background: var(--s2); border-color: var(--ac); }
+      .pg-btn:disabled { opacity: 0.25; cursor: default; pointer-events: none; }
+
+      .warn-bar {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.71rem;
+        color: var(--warn);
+        background: var(--warn-dim);
+        border: 1px solid var(--warn);
+        border-radius: 8px;
+        padding: 7px 10px;
+      }
+
+      /* ==========================================================
+         SCREEN D — Complete
+         ========================================================== */
+      .done-icon {
+        width: 58px;
+        height: 58px;
+        border-radius: 50%;
+        border: 2.5px solid var(--ac);
+        background: var(--ac-dim);
+        display: grid;
+        place-items: center;
+        font-size: 1.6rem;
+        margin: 6px auto;
+        box-shadow: 0 0 28px var(--ac-glow);
+      }
+
+      .done-card {
+        border: 1px solid var(--b0);
+        border-radius: 14px;
+        overflow: hidden;
+        background: var(--s1);
+      }
+
+      .done-row {
+        padding: 10px 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .done-row + .done-row { border-top: 1px solid var(--b0); }
+
+      .done-k {
+        font-size: 0.65rem;
+        font-weight: 800;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        color: var(--t2);
+      }
+
+      .done-v {
+        font-size: 0.84rem;
+        font-weight: 700;
+        word-break: break-all;
+      }
+
+      /* ==========================================================
+         NOTES PANEL
+         ========================================================== */
+      .notes {
+        background: var(--s0);
+        border: 1px solid var(--b0);
+        border-radius: 20px;
+        padding: 22px;
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+        transition: background 0.38s;
+      }
+
+      .n-head {
+        font-size: 0.66rem;
+        font-weight: 800;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        color: var(--t2);
+        margin-bottom: 10px;
+      }
+
+      /* Palette */
+      .palette {
+        display: flex;
+        gap: 5px;
+      }
+
+      .pal-chip {
+        flex: 1;
+        aspect-ratio: 1;
+        border-radius: 10px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        padding-bottom: 5px;
+        overflow: hidden;
+      }
+
+      .pal-lbl {
+        font-size: 0.5rem;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        background: rgba(0, 0, 0, 0.38);
+        color: rgba(255, 255, 255, 0.9);
+        border-radius: 4px;
+        padding: 1px 4px;
+        text-transform: uppercase;
+      }
+
+      .pal-desc {
+        margin-top: 9px;
+        font-size: 0.74rem;
+        color: var(--t1);
+        line-height: 1.6;
+      }
+
+      /* FR list */
+      .fr-list { display: grid; gap: 7px; }
+
+      .fr-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        font-size: 0.8rem;
+      }
+
+      .fr-tag {
+        font-family: ui-monospace, "SF Mono", monospace;
+        font-size: 0.64rem;
+        font-weight: 700;
+        background: var(--ac-dim);
+        color: var(--ac);
+        padding: 2px 6px;
+        border-radius: 4px;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+
+      .fr-txt { color: var(--t1); line-height: 1.4; font-size: 0.78rem; }
+
+      /* Code box */
+      .code-box {
+        font-family: ui-monospace, "SF Mono", monospace;
+        font-size: 0.71rem;
+        color: var(--t1);
+        line-height: 1.8;
+        background: var(--s1);
+        border: 1px solid var(--b0);
+        border-radius: 10px;
+        padding: 10px 12px;
+      }
+
+      /* Chips */
+      .chips { display: flex; flex-wrap: wrap; gap: 5px; }
+
+      .chip {
+        font-size: 0.7rem;
+        background: var(--s2);
+        border: 1px solid var(--b1);
+        border-radius: 6px;
+        padding: 4px 9px;
+        color: var(--t1);
+      }
+
+      /* ==========================================================
+         RESPONSIVE
+         ========================================================== */
+      @media (max-width: 800px) {
+        .stage { grid-template-columns: 1fr; }
+        .phone { max-width: 296px; margin: 0 auto; }
+        .sc-tabs { grid-template-columns: repeat(2, 1fr); }
+        .pg-header { flex-direction: column; }
+        .theme-sw { flex-wrap: wrap; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+
+      <!-- ── Page Header ── -->
+      <header class="pg-header">
+        <div>
+          <h1 class="app-title">A4 Print Layout</h1>
+          <p class="app-sub">Design Concepts — RDD v0.2 / iPhone 17 縦持ち想定</p>
+        </div>
+        <div class="theme-sw" role="group" aria-label="テーマ切替">
+          <button class="t-btn on" data-tsw="nocturne">
+            <span class="swatch" style="background:#4ade80;"></span>NOCTURNE
+          </button>
+          <button class="t-btn" data-tsw="hanshi">
+            <span class="swatch" style="background:#bf3517;"></span>HANSHI
+          </button>
+          <button class="t-btn" data-tsw="prism">
+            <span class="swatch" style="background:#f472b6;"></span>PRISM
+          </button>
+        </div>
+      </header>
+
+      <!-- ── Screen Tabs ── -->
+      <nav class="sc-tabs" aria-label="画面切替">
+        <button class="sc-tab on" data-tgt="sc-a">
+          A — 画像選択<span class="tab-step">STEP 1</span>
+        </button>
+        <button class="sc-tab" data-tgt="sc-b">
+          B — レイアウト<span class="tab-step">STEP 2</span>
+        </button>
+        <button class="sc-tab" data-tgt="sc-c">
+          C — プレビュー<span class="tab-step">STEP 3</span>
+        </button>
+        <button class="sc-tab" data-tgt="sc-d">
+          D — 完了<span class="tab-step">STEP 4</span>
+        </button>
+      </nav>
+
+      <!-- ── Stage ── -->
+      <section class="stage">
+
+        <!-- Phone -->
+        <div class="phone">
+          <div class="island">
+            <span class="island-mic"></span>
+            <span class="island-cam"></span>
+          </div>
+          <div class="phone-screen">
+
+            <!-- ============ SCREEN A: 画像選択 ============ -->
+            <article id="sc-a" class="sc on">
+              <div class="st-bar"><span>9:41</span><span>●●● ▲ ▮</span></div>
+              <div class="step-row">
+                <span class="sdot on"></span><span class="sdot"></span>
+                <span class="sdot"></span><span class="sdot"></span>
+              </div>
+              <div class="sc-body">
+                <div class="sc-nav">
+                  <span class="sc-h">画像を選択</span>
+                </div>
+                <p class="sc-note">JPEG / PNG · 複数選択可</p>
+                <div class="card">
+                  <div class="drop-zone">
+                    <span class="drop-ico">＋</span>
+                    タップして画像を追加
+                  </div>
+                  <div class="thumb-grid">
+                    <div class="thumb th1"></div>
+                    <div class="thumb th2"></div>
+                    <div class="thumb th3"></div>
+                    <div class="thumb th4"></div>
+                    <div class="thumb th5"></div>
+                    <div class="thumb th6"></div>
+                  </div>
+                  <div class="count-row">
+                    <span>選択済み</span>
+                    <span class="badge">6枚</span>
+                  </div>
+                </div>
+              </div>
+              <div class="sc-cta">
+                <button class="btn btn-ac" onclick="goTo('sc-b')">次へ進む →</button>
+              </div>
+            </article>
+
+            <!-- ============ SCREEN B: レイアウト設定 ============ -->
+            <article id="sc-b" class="sc">
+              <div class="st-bar"><span>9:41</span><span>●●● ▲ ▮</span></div>
+              <div class="step-row">
+                <span class="sdot"></span><span class="sdot on"></span>
+                <span class="sdot"></span><span class="sdot"></span>
+              </div>
+              <div class="sc-body">
+                <div class="sc-nav">
+                  <button class="back-btn" onclick="goTo('sc-a')">← 戻る</button>
+                  <span class="sc-h">レイアウト設定</span>
+                </div>
+
+                <div>
+                  <p class="sec-label">分割レイアウト</p>
+                  <div class="lay-list" id="lay-opts">
+
+                    <div class="lay-opt" data-n="1" onclick="pickLay(this)">
+                      <span class="radio"></span>
+                      <span class="mg" style="grid-template-columns:1fr;grid-template-rows:1fr;">
+                        <span class="mg-c"></span>
+                      </span>
+                      <span>A4 1分割</span>
+                    </div>
+
+                    <div class="lay-opt" data-n="2" onclick="pickLay(this)">
+                      <span class="radio"></span>
+                      <span class="mg" style="grid-template-columns:1fr;grid-template-rows:1fr 1fr;">
+                        <span class="mg-c"></span><span class="mg-c"></span>
+                      </span>
+                      <span>2分割 (1×2)</span>
+                    </div>
+
+                    <div class="lay-opt" data-n="4" onclick="pickLay(this)">
+                      <span class="radio"></span>
+                      <span class="mg" style="grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;">
+                        <span class="mg-c"></span><span class="mg-c"></span>
+                        <span class="mg-c"></span><span class="mg-c"></span>
+                      </span>
+                      <span>4分割 (2×2)</span>
+                    </div>
+
+                    <div class="lay-opt" data-n="6" onclick="pickLay(this)">
+                      <span class="radio"></span>
+                      <span class="mg" style="grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr;">
+                        <span class="mg-c"></span><span class="mg-c"></span>
+                        <span class="mg-c"></span><span class="mg-c"></span>
+                        <span class="mg-c"></span><span class="mg-c"></span>
+                      </span>
+                      <span>6分割 (2×3)</span>
+                    </div>
+
+                    <div class="lay-opt sel" data-n="8" onclick="pickLay(this)">
+                      <span class="radio"></span>
+                      <span class="mg" style="grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr 1fr;">
+                        <span class="mg-c"></span><span class="mg-c"></span>
+                        <span class="mg-c"></span><span class="mg-c"></span>
+                        <span class="mg-c"></span><span class="mg-c"></span>
+                        <span class="mg-c"></span><span class="mg-c"></span>
+                      </span>
+                      <span>8分割 (2×4)</span>
+                    </div>
+
+                  </div>
+                </div>
+
+                <div>
+                  <p class="sec-label">配置モード</p>
+                  <div class="fit-row">
+                    <div class="fit-opt sel" onclick="pickFit(this)">全体表示（余白あり）</div>
+                    <div class="fit-opt" onclick="pickFit(this)">はみ出し許容</div>
+                  </div>
+                </div>
+
+                <div class="info-box">
+                  不足画像 → 空枠表示<br/>超過画像 → 自動で次ページへ
+                </div>
+              </div>
+              <div class="sc-cta">
+                <button class="btn btn-ac" onclick="goTo('sc-c')">プレビューへ →</button>
+              </div>
+            </article>
+
+            <!-- ============ SCREEN C: プレビュー ============ -->
+            <article id="sc-c" class="sc">
+              <div class="st-bar"><span>9:41</span><span>●●● ▲ ▮</span></div>
+              <div class="step-row">
+                <span class="sdot"></span><span class="sdot"></span>
+                <span class="sdot on"></span><span class="sdot"></span>
+              </div>
+              <div class="sc-body">
+                <div class="sc-nav">
+                  <button class="back-btn" onclick="goTo('sc-b')">← 戻る</button>
+                  <span class="sc-h">プレビュー</span>
+                </div>
+
+                <div class="a4-wrap">
+                  <div class="a4-paper" style="grid-template-columns:1fr 1fr;grid-template-rows:repeat(4,1fr);">
+                    <div class="a4-slot p1 warn-slot"></div>
+                    <div class="a4-slot p2"></div>
+                    <div class="a4-slot p3"></div>
+                    <div class="a4-slot p4 warn-slot"></div>
+                    <div class="a4-slot p5"></div>
+                    <div class="a4-slot p6"></div>
+                    <div class="a4-slot p7"></div>
+                    <div class="a4-slot p8"></div>
+                  </div>
+                </div>
+
+                <div class="pg-ctrl">
+                  <button class="pg-btn" id="prev-pg" disabled>＜</button>
+                  <span id="pg-lbl" style="font-size:0.76rem;">ページ <strong>1</strong> / 2</span>
+                  <button class="pg-btn" id="next-pg">＞</button>
+                </div>
+
+                <div class="warn-bar">
+                  ⚠&nbsp;低解像度の可能性: <strong style="margin-left:4px;">2枚</strong>
+                </div>
+              </div>
+              <div class="sc-cta">
+                <button class="btn btn-ac" onclick="goTo('sc-d')">PDFを生成</button>
+              </div>
+            </article>
+
+            <!-- ============ SCREEN D: 完了 ============ -->
+            <article id="sc-d" class="sc">
+              <div class="st-bar"><span>9:41</span><span>●●● ▲ ▮</span></div>
+              <div class="step-row">
+                <span class="sdot"></span><span class="sdot"></span>
+                <span class="sdot"></span><span class="sdot on"></span>
+              </div>
+              <div class="sc-body">
+                <span class="sc-h" style="text-align:center;">PDF生成完了</span>
+                <p style="text-align:center;font-size:0.74rem;color:var(--t1);">保存または共有を選択</p>
+                <div class="done-icon">✓</div>
+                <div class="done-card">
+                  <div class="done-row">
+                    <span class="done-k">ファイル名</span>
+                    <span class="done-v" style="font-size:0.78rem;">print-layout-20260303-1200.pdf</span>
+                  </div>
+                  <div class="done-row">
+                    <span class="done-k">ページ数</span>
+                    <span class="done-v">2 ページ</span>
+                  </div>
+                </div>
+              </div>
+              <div class="sc-cta">
+                <button class="btn btn-ac">保存する</button>
+                <button class="btn btn-sub">共有する</button>
+                <button class="btn btn-gh" onclick="goTo('sc-a')">もう一度作る</button>
+              </div>
+            </article>
+
+          </div><!-- /phone-screen -->
+        </div><!-- /phone -->
+
+        <!-- ── Notes Panel ── -->
+        <aside class="notes">
+
+          <!-- Color Palette -->
+          <div>
+            <p class="n-head">カラーパレット</p>
+            <div class="palette" id="pal"></div>
+            <p class="pal-desc" id="pal-desc"></p>
+          </div>
+
+          <!-- FR Spec -->
+          <div>
+            <p class="n-head">機能要件 (RDD §7)</p>
+            <div class="fr-list">
+              <div class="fr-row">
+                <span class="fr-tag">FR-01</span>
+                <span class="fr-txt">端末内の複数画像選択（JPEG / PNG）</span>
+              </div>
+              <div class="fr-row">
+                <span class="fr-tag">FR-02</span>
+                <span class="fr-txt">レイアウトテンプレート選択（1/2/4/6/8分割）</span>
+              </div>
+              <div class="fr-row">
+                <span class="fr-tag">FR-03</span>
+                <span class="fr-txt">アスペクト比維持で画像配置 (contain / cover)</span>
+              </div>
+              <div class="fr-row">
+                <span class="fr-tag">FR-04</span>
+                <span class="fr-txt">生成前プレビュー・低解像度警告表示</span>
+              </div>
+              <div class="fr-row">
+                <span class="fr-tag">FR-05</span>
+                <span class="fr-txt">A4 PDF生成 → 保存 / 共有</span>
+              </div>
+              <div class="fr-row">
+                <span class="fr-tag">FR-06</span>
+                <span class="fr-txt">エラーハンドリング・再試行導線</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Layout Formula -->
+          <div>
+            <p class="n-head">レイアウト計算式 (RDD §14.5)</p>
+            <div class="code-box">
+              usableW = 210 − margin×2 − gap×(cols−1)<br/>
+              slotW   = usableW / cols<br/>
+              slotH   = usableH / rows<br/>
+              reqPx   = mm / 25.4 × 300<br/>
+              pt      = mm × 72 / 25.4
+            </div>
+          </div>
+
+          <!-- Tech Stack -->
+          <div>
+            <p class="n-head">技術スタック (RDD §14.2)</p>
+            <div class="chips">
+              <span class="chip">React + TypeScript</span>
+              <span class="chip">Vite</span>
+              <span class="chip">pdf-lib</span>
+              <span class="chip">Vanilla CSS</span>
+              <span class="chip">Vitest</span>
+              <span class="chip">Playwright</span>
+              <span class="chip">Web Share API</span>
+              <span class="chip">File API</span>
+            </div>
+          </div>
+
+        </aside>
+      </section>
+    </main>
+
+    <script>
+      /* ── Theme definitions ── */
+      const THEMES = {
+        nocturne: {
+          desc: "深夜スタジオ調。高コントラストで視認性を最大化。ミントグリーンのアクセントが機能的・精緻な印象を与える暗色テーマ。",
+          palette: [
+            { hex: "#0b0d16", label: "BG" },
+            { hex: "#1c1f30", label: "Surface" },
+            { hex: "#252840", label: "Surface+" },
+            { hex: "#4ade80", label: "Accent" },
+            { hex: "#fb923c", label: "Warn" },
+          ],
+        },
+        hanshi: {
+          desc: "和紙の温かみ。余白を活かしたミニマル構成。朱色のアクセントで日本の印刷文化・手仕事のニュアンスを込めた明色テーマ。",
+          palette: [
+            { hex: "#f2ece0", label: "BG" },
+            { hex: "#ffffff", label: "Paper" },
+            { hex: "#ede7da", label: "Tint" },
+            { hex: "#bf3517", label: "Accent" },
+            { hex: "#a16207", label: "Warn" },
+          ],
+        },
+        prism: {
+          desc: "宇宙的なグラスモーフィズム。透過面と光の屈折を表現。ピンク × シアンのグラデーションで未来感・高級感を演出する暗色テーマ。",
+          palette: [
+            { hex: "#050310", label: "Void" },
+            { hex: "#1a1430", label: "Glass" },
+            { hex: "#2a2248", label: "Glass+" },
+            { hex: "#f472b6", label: "Accent" },
+            { hex: "#fbbf24", label: "Warn" },
+          ],
+        },
+      };
+
+      /* ── Render palette ── */
+      function renderPalette(key) {
+        const t = THEMES[key];
+        document.getElementById('pal').innerHTML = t.palette
+          .map(p => `
+            <div class="pal-chip" style="background:${p.hex};" title="${p.hex}">
+              <span class="pal-lbl">${p.label}</span>
+            </div>`)
+          .join('');
+        document.getElementById('pal-desc').textContent = t.desc;
+      }
+
+      /* ── Theme switching ── */
+      const tBtns = document.querySelectorAll('[data-tsw]');
+      tBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const key = btn.dataset.tsw;
+          document.documentElement.setAttribute('data-theme', key);
+          tBtns.forEach(b => b.classList.toggle('on', b === btn));
+          renderPalette(key);
+        });
+      });
+
+      /* ── Screen switching ── */
+      const scTabs = document.querySelectorAll('.sc-tab');
+      const screens = document.querySelectorAll('.sc');
+
+      function goTo(id) {
+        screens.forEach(s => s.classList.remove('on'));
+        scTabs.forEach(t => t.classList.remove('on'));
+        const target = document.getElementById(id);
+        if (target) target.classList.add('on');
+        scTabs.forEach(t => { if (t.dataset.tgt === id) t.classList.add('on'); });
+      }
+
+      scTabs.forEach(t => t.addEventListener('click', () => goTo(t.dataset.tgt)));
+
+      /* ── Layout option selection ── */
+      function pickLay(el) {
+        document.querySelectorAll('#lay-opts .lay-opt').forEach(o => o.classList.remove('sel'));
+        el.classList.add('sel');
+      }
+
+      /* ── Fit mode selection ── */
+      function pickFit(el) {
+        document.querySelectorAll('.fit-opt').forEach(o => o.classList.remove('sel'));
+        el.classList.add('sel');
+      }
+
+      /* ── Page navigation (Screen C) ── */
+      let pg = 1;
+      const total = 2;
+
+      document.getElementById('prev-pg').addEventListener('click', () => {
+        if (pg > 1) { pg--; syncNav(); }
+      });
+      document.getElementById('next-pg').addEventListener('click', () => {
+        if (pg < total) { pg++; syncNav(); }
+      });
+
+      function syncNav() {
+        document.getElementById('pg-lbl').innerHTML = `ページ <strong>${pg}</strong> / ${total}`;
+        document.getElementById('prev-pg').disabled = pg === 1;
+        document.getElementById('next-pg').disabled = pg === total;
+      }
+
+      /* ── Init ── */
+      renderPalette('nocturne');
+    </script>
+  </body>
+</html>
