@@ -447,6 +447,7 @@
        * @property {number} widthPx
        * @property {number} heightPx
        * @property {"image/jpeg"|"image/png"} mimeType
+       * @property {number} orientation
        */
 
       /**
@@ -462,15 +463,30 @@
         lastLoadErrors = [];
         const settled = await Promise.allSettled(
           files.map(async (file, index) => {
-            const bytes = new Uint8Array(await file.arrayBuffer());
-            const size = await readImageSize(file);
+            const mimeType = /** @type {"image/jpeg"|"image/png"} */ (file.type);
+            const originalBytes = new Uint8Array(await file.arrayBuffer());
+            let bytes = originalBytes;
+            let size = await readImageSize(file);
+            let orientation = 1;
+
+            if (mimeType === "image/jpeg") {
+              orientation = readJpegExifOrientation(originalBytes);
+              if (orientation !== 1) {
+                const normalized = await normalizeJpegForPdf(file);
+                bytes = normalized.bytes;
+                size = { width: normalized.width, height: normalized.height };
+                log(`${file.name}: EXIF orientation=${orientation} を正規化`);
+              }
+            }
+
             return {
               id: `${Date.now()}-${index}`,
               name: file.name,
               bytes,
               widthPx: size.width,
               heightPx: size.height,
-              mimeType: /** @type {"image/jpeg"|"image/png"} */ (file.type),
+              mimeType,
+              orientation,
             };
           }),
         );
@@ -544,9 +560,12 @@
             const slotXPt = mmToPt(slot.xMm);
             const slotYPt = pageHeightPt - mmToPt(slot.yMm + slot.heightMm);
 
-            const scale = Math.min(slotWidthPt / asset.widthPx, slotHeightPt / asset.heightPx);
-            const drawWidthPt = asset.widthPx * scale;
-            const drawHeightPt = asset.heightPx * scale;
+            // pdf-libに埋め込まれた実寸を基準にすることで、EXIF向きの影響による縦横比崩れを防ぐ
+            const sourceWidthPx = embedded.width;
+            const sourceHeightPx = embedded.height;
+            const scale = Math.min(slotWidthPt / sourceWidthPx, slotHeightPt / sourceHeightPx);
+            const drawWidthPt = sourceWidthPx * scale;
+            const drawHeightPt = sourceHeightPx * scale;
             const drawXPt = slotXPt + (slotWidthPt - drawWidthPt) / 2;
             const drawYPt = slotYPt + (slotHeightPt - drawHeightPt) / 2;
 
@@ -607,6 +626,97 @@
 
           image.src = url;
         });
+      }
+
+      function normalizeJpegForPdf(file) {
+        return new Promise((resolve, reject) => {
+          const url = URL.createObjectURL(file);
+          const image = new Image();
+
+          image.onload = async () => {
+            try {
+              const canvas = document.createElement("canvas");
+              canvas.width = image.naturalWidth;
+              canvas.height = image.naturalHeight;
+              const ctx = canvas.getContext("2d");
+              if (!ctx) {
+                throw new Error("Canvas初期化に失敗");
+              }
+              ctx.drawImage(image, 0, 0);
+
+              canvas.toBlob(async (blob) => {
+                if (!blob) {
+                  reject(new Error("JPEG正規化に失敗"));
+                  return;
+                }
+                const bytes = new Uint8Array(await blob.arrayBuffer());
+                resolve({ bytes, width: canvas.width, height: canvas.height });
+              }, "image/jpeg", 1);
+            } catch (error) {
+              reject(error);
+            } finally {
+              URL.revokeObjectURL(url);
+            }
+          };
+
+          image.onerror = () => {
+            URL.revokeObjectURL(url);
+            reject(new Error("JPEG正規化に失敗"));
+          };
+
+          image.src = url;
+        });
+      }
+
+      function readJpegExifOrientation(bytes) {
+        try {
+          const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+          if (view.getUint16(0, false) !== 0xffd8) {
+            return 1;
+          }
+
+          let offset = 2;
+          while (offset < view.byteLength) {
+            const marker = view.getUint16(offset, false);
+            offset += 2;
+
+            if (marker === 0xffe1) {
+              const app1Length = view.getUint16(offset, false);
+              offset += 2;
+              if (view.getUint32(offset, false) !== 0x45786966) {
+                return 1;
+              }
+              offset += 6;
+
+              const little = view.getUint16(offset, false) === 0x4949;
+              const ifdOffset = view.getUint32(offset + 4, little);
+              let dirStart = offset + ifdOffset;
+              const entries = view.getUint16(dirStart, little);
+              dirStart += 2;
+
+              for (let i = 0; i < entries; i += 1) {
+                const entry = dirStart + i * 12;
+                const tag = view.getUint16(entry, little);
+                if (tag === 0x0112) {
+                  return view.getUint16(entry + 8, little);
+                }
+              }
+
+              return 1;
+            }
+
+            if ((marker & 0xff00) !== 0xff00) {
+              break;
+            }
+
+            const size = view.getUint16(offset, false);
+            offset += size;
+          }
+        } catch (_error) {
+          return 1;
+        }
+
+        return 1;
       }
 
       function renderPreview(assets) {
@@ -715,3 +825,4 @@
     </script>
   </body>
 </html>
+
