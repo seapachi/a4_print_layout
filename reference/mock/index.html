@@ -1,0 +1,449 @@
+﻿<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>A4 Print Layout Mock</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #f6f3ec;
+        --paper: #fffdf8;
+        --ink: #1d2a36;
+        --muted: #687684;
+        --line: #d8d2c6;
+        --accent: #0f766e;
+        --accent-soft: #cde9e5;
+        --warm: #f3c9a9;
+        --shadow: 0 18px 40px rgba(17, 28, 38, 0.12);
+        --radius-lg: 24px;
+        --radius-md: 14px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Noto Sans JP", "Sora", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 80% 15%, rgba(243, 201, 169, 0.45), transparent 40%),
+          radial-gradient(circle at 10% 85%, rgba(205, 233, 229, 0.6), transparent 45%),
+          var(--bg);
+        min-height: 100vh;
+      }
+
+      .page {
+        max-width: 1040px;
+        margin: 0 auto;
+        padding: 28px 20px 40px;
+      }
+
+      .heading {
+        margin-bottom: 18px;
+      }
+
+      .title {
+        margin: 0;
+        font-family: "Sora", sans-serif;
+        font-weight: 700;
+        font-size: clamp(1.4rem, 3vw, 2rem);
+        letter-spacing: 0.01em;
+      }
+
+      .subtitle {
+        margin: 6px 0 0;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      .tabs {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .tab-btn {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: rgba(255, 253, 248, 0.78);
+        color: var(--ink);
+        padding: 10px 12px;
+        font-family: "Sora", sans-serif;
+        font-size: 0.82rem;
+        cursor: pointer;
+        transition: all 160ms ease;
+      }
+
+      .tab-btn.active {
+        background: var(--ink);
+        color: #ffffff;
+        border-color: var(--ink);
+      }
+
+      .stage {
+        display: grid;
+        grid-template-columns: 320px 1fr;
+        gap: 22px;
+        align-items: start;
+      }
+
+      .phone {
+        background: linear-gradient(165deg, #f8f5ef, #fffdf8);
+        border-radius: 42px;
+        border: 1px solid #d7d0c4;
+        box-shadow: var(--shadow);
+        padding: 12px;
+      }
+
+      .phone-inner {
+        background: var(--paper);
+        border: 1px solid #e1dbcf;
+        border-radius: 32px;
+        overflow: hidden;
+        min-height: 648px;
+      }
+
+      .screen {
+        display: none;
+        padding: 20px 16px 90px;
+        min-height: 648px;
+        position: relative;
+      }
+
+      .screen.active {
+        display: block;
+        animation: fade 220ms ease;
+      }
+
+      @keyframes fade {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .screen h2 {
+        margin: 0;
+        font-family: "Sora", sans-serif;
+        font-size: 1.02rem;
+      }
+
+      .label {
+        color: var(--muted);
+        font-size: 0.74rem;
+        margin-top: 4px;
+      }
+
+      .card {
+        margin-top: 16px;
+        background: #ffffff;
+        border: 1px solid #e8e2d7;
+        border-radius: var(--radius-md);
+        padding: 12px;
+      }
+
+      .ghost {
+        border: 1px dashed #c9bfae;
+        border-radius: 10px;
+        min-height: 94px;
+        background: #fbf9f4;
+        display: grid;
+        place-items: center;
+        color: #7d8a96;
+        font-size: 0.8rem;
+      }
+
+      .thumbs {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      .thumb {
+        aspect-ratio: 1;
+        border-radius: 10px;
+        background: linear-gradient(145deg, #dfebe7, #f3c9a9);
+      }
+
+      .row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 10px;
+        font-size: 0.84rem;
+      }
+
+      .options {
+        display: grid;
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      .option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.9rem;
+        padding: 10px;
+        background: #fff;
+        border: 1px solid #e6dfd2;
+        border-radius: 10px;
+      }
+
+      .option.active {
+        border-color: var(--accent);
+        background: rgba(205, 233, 229, 0.4);
+      }
+
+      .dot {
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        border: 2px solid #9da8b1;
+      }
+
+      .option.active .dot {
+        border-color: var(--accent);
+        box-shadow: inset 0 0 0 3px #fff;
+        background: var(--accent);
+      }
+
+      .preview-sheet {
+        margin-top: 12px;
+        background: #fff;
+        border: 1px solid #ded7ca;
+        border-radius: 12px;
+        padding: 10px;
+      }
+
+      .grid-8 {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+      }
+
+      .slot {
+        aspect-ratio: 4 / 3;
+        border-radius: 7px;
+        background: linear-gradient(135deg, #e6f2ef, #f8d9c2);
+      }
+
+      .status {
+        margin-top: 10px;
+        font-size: 0.78rem;
+        color: #99603d;
+        background: #fff2e8;
+        border: 1px solid #f3d0b7;
+        border-radius: 9px;
+        padding: 8px;
+      }
+
+      .success {
+        margin-top: 16px;
+        background: #eef8f6;
+        border: 1px solid #cbe8e3;
+        border-radius: 12px;
+        padding: 14px;
+        font-size: 0.86rem;
+      }
+
+      .cta {
+        position: absolute;
+        left: 16px;
+        right: 16px;
+        bottom: 16px;
+      }
+
+      .button {
+        width: 100%;
+        border: 0;
+        border-radius: 999px;
+        background: var(--ink);
+        color: #fff;
+        font-family: "Sora", sans-serif;
+        font-size: 0.9rem;
+        padding: 12px;
+      }
+
+      .button.secondary {
+        margin-top: 8px;
+        background: var(--accent-soft);
+        color: #11423f;
+      }
+
+      .notes {
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid #dfd7ca;
+        border-radius: var(--radius-lg);
+        padding: 18px;
+        box-shadow: 0 10px 24px rgba(20, 26, 32, 0.05);
+      }
+
+      .notes h3 {
+        margin: 0;
+        font-family: "Sora", sans-serif;
+        font-size: 1rem;
+      }
+
+      .notes p {
+        margin: 10px 0 0;
+        color: var(--muted);
+        line-height: 1.6;
+        font-size: 0.9rem;
+      }
+
+      .chip-row {
+        margin-top: 14px;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .chip {
+        border: 1px solid #e0d9cd;
+        border-radius: 999px;
+        padding: 7px 10px;
+        font-size: 0.78rem;
+        background: #fff;
+      }
+
+      @media (max-width: 900px) {
+        .stage {
+          grid-template-columns: 1fr;
+        }
+
+        .phone {
+          max-width: 340px;
+          margin: 0 auto;
+        }
+
+        .tabs {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header class="heading">
+        <h1 class="title">A4 Print Layout Mock</h1>
+        <p class="subtitle">シンプルでオシャレなトーンを意識した、iPhone向け画面モック</p>
+      </header>
+
+      <nav class="tabs" aria-label="画面切り替え">
+        <button class="tab-btn active" data-target="screen-a">A 画像選択</button>
+        <button class="tab-btn" data-target="screen-b">B レイアウト</button>
+        <button class="tab-btn" data-target="screen-c">C プレビュー</button>
+        <button class="tab-btn" data-target="screen-d">D 完了</button>
+      </nav>
+
+      <section class="stage">
+        <div class="phone">
+          <div class="phone-inner">
+            <article id="screen-a" class="screen active">
+              <h2>画像を選択</h2>
+              <p class="label">カメラロールから複数枚を追加</p>
+              <div class="card">
+                <div class="ghost">+ タップして画像を追加</div>
+                <div class="thumbs">
+                  <div class="thumb"></div>
+                  <div class="thumb"></div>
+                  <div class="thumb"></div>
+                  <div class="thumb"></div>
+                </div>
+                <div class="row"><span>選択済み</span><strong>8枚</strong></div>
+              </div>
+              <div class="cta"><button class="button">次へ進む</button></div>
+            </article>
+
+            <article id="screen-b" class="screen">
+              <h2>レイアウト設定</h2>
+              <p class="label">A4 / 2 / 4 / 6 / 8 分割を選択</p>
+              <div class="options">
+                <div class="option"><span class="dot"></span>A4 1分割</div>
+                <div class="option"><span class="dot"></span>2分割 (1x2)</div>
+                <div class="option"><span class="dot"></span>4分割 (2x2)</div>
+                <div class="option"><span class="dot"></span>6分割 (2x3)</div>
+                <div class="option active"><span class="dot"></span>8分割 (2x4)</div>
+              </div>
+              <div class="card">
+                <div class="row"><span>配置モード</span><strong>全体表示</strong></div>
+                <div class="row"><span>余白</span><strong>5mm</strong></div>
+              </div>
+              <div class="cta"><button class="button">プレビューへ</button></div>
+            </article>
+
+            <article id="screen-c" class="screen">
+              <h2>プレビュー</h2>
+              <p class="label">生成前に配置と解像度を確認</p>
+              <div class="preview-sheet">
+                <div class="grid-8">
+                  <div class="slot"></div><div class="slot"></div>
+                  <div class="slot"></div><div class="slot"></div>
+                  <div class="slot"></div><div class="slot"></div>
+                  <div class="slot"></div><div class="slot"></div>
+                </div>
+              </div>
+              <div class="row"><span>ページ</span><strong>1 / 2</strong></div>
+              <div class="status">低解像度の可能性がある画像: 2枚</div>
+              <div class="cta"><button class="button">PDFを生成</button></div>
+            </article>
+
+            <article id="screen-d" class="screen">
+              <h2>PDF生成完了</h2>
+              <p class="label">保存または共有を選択</p>
+              <div class="success">
+                ファイル名: print-layout-20260303-1200.pdf<br />
+                ページ数: 2
+              </div>
+              <div class="cta">
+                <button class="button">保存する</button>
+                <button class="button secondary">共有する</button>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <aside class="notes">
+          <h3>デザイン方針</h3>
+          <p>
+            温かみのある背景色と抑えたアクセントカラーで、実用ツール感を保ちながら軽さを出しています。
+            情報密度は高すぎないようにし、主要操作を下部CTAに固定して片手操作しやすい構成です。
+          </p>
+          <div class="chip-row">
+            <span class="chip">Simple</span>
+            <span class="chip">Elegant</span>
+            <span class="chip">One-hand UX</span>
+            <span class="chip">iPhone Chrome</span>
+          </div>
+        </aside>
+      </section>
+    </main>
+
+    <script>
+      const buttons = document.querySelectorAll('.tab-btn');
+      const screens = document.querySelectorAll('.screen');
+
+      for (const button of buttons) {
+        button.addEventListener('click', () => {
+          for (const b of buttons) b.classList.remove('active');
+          for (const screen of screens) screen.classList.remove('active');
+          button.classList.add('active');
+          const target = document.getElementById(button.dataset.target);
+          if (target) target.classList.add('active');
+        });
+      }
+    </script>
+  </body>
+</html>
