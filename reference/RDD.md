@@ -4,7 +4,7 @@
 - 文書名: 画像印刷レイアウトWebアプリ 要件定義書
 - 作成日: 2026-03-03
 - 対象: iPhone 17 + Chrome で利用するWebアプリ
-- 版数: v0.2（ワイヤー案・実装仕様追記）
+- 版数: v0.3（Warm Sandデザイン仕様追記）
 
 ## 2. 背景・目的
 ネット上で取得した様々なサイズの画像を、iPhone上で手軽に印刷向けレイアウトへ整形し、A4印刷可能なPDFとして出力できるようにする。
@@ -345,3 +345,189 @@ src/
 4. PDF生成（pdf-lib埋め込み、複数ページ対応）
 5. 保存/共有導線
 6. iPhone実機検証（Chrome / Safari）
+
+## 15. Warm Sand デザイン仕様
+### 15.1 デザインコンセプト
+- 正規テーマは `Warm Sand` とする
+- 目的は「印刷ツールとしての実用性」を保ちながら、柔らかく上品なトーンを提供すること
+- 情報密度は抑え、主要操作（CTA）を明確に見せる
+- 比較テーマ（`Mineral Mist` / `Editorial Cocoa`）は探索用とし、実装必須対象外とする
+
+### 15.2 デザイントークン（Warm Sand）
+本仕様は `reference/mock/index.html` のCSS変数名をそのまま採用する。
+
+#### 15.2.1 フォント
+| 変数 | 値 | 用途 |
+|---|---|---|
+| `--font-title` | `"Sora", sans-serif` | 見出し、ボタン |
+| `--font-body` | `"Noto Sans JP", sans-serif` | 本文、ラベル |
+
+#### 15.2.2 色
+| 変数 | 値 | 用途 |
+|---|---|---|
+| `--bg` | `#f6f3ec` | ページ背景 |
+| `--bg-glow-1` | `rgba(243, 201, 169, 0.45)` | 背景グラデーション1 |
+| `--bg-glow-2` | `rgba(205, 233, 229, 0.56)` | 背景グラデーション2 |
+| `--paper` | `#fffdf8` | カード/端末内背景 |
+| `--ink` | `#1d2a36` | 主文字色、Primaryボタン |
+| `--muted` | `#677683` | 補助文字色 |
+| `--line` | `#d9d2c6` | 枠線 |
+| `--accent` | `#0f766e` | 選択状態、強調 |
+| `--accent-soft` | `#cde9e5` | Secondaryボタン背景 |
+| `--warn-bg` | `#fff1e8` | 警告背景 |
+| `--warn-border` | `#f0c9b0` | 警告枠線 |
+| `--warn-text` | `#8d4f2b` | 警告文字 |
+| `--success-bg` | `#edf8f4` | 完了背景 |
+| `--success-border` | `#c4e6de` | 完了枠線 |
+| `--thumb-a` | `#dfebe7` | サムネイルグラデーション始点 |
+| `--thumb-b` | `#f3c9a9` | サムネイルグラデーション終点 |
+| `--slot-a` | `#dcede9` | プレビュー枠グラデーション始点 |
+| `--slot-b` | `#f4d4bc` | プレビュー枠グラデーション終点 |
+| `--phone-shell-a` | `#f8f5ef` | 端末フレーム始点 |
+| `--phone-shell-b` | `#fffdf8` | 端末フレーム終点 |
+
+#### 15.2.3 形状・影
+| 変数 | 値 | 用途 |
+|---|---|---|
+| `--shadow` | `0 20px 44px rgba(14, 22, 32, 0.12)` | 端末・カードの影 |
+
+角丸基準:
+- 端末外枠: `42px`
+- 端末内枠: `32px`
+- カード: `14px`
+- 要素（chip/option等）: `10px`
+- ピルボタン: `999px`
+
+余白基準:
+- 全体コンテナ: `padding 28px 20px 44px`
+- 画面内: `padding 20px 16px 90px`
+- セクション間ギャップ: `8px`〜`16px`
+
+### 15.3 タイポグラフィ階層
+| 役割 | フォント | サイズ | ウェイト |
+|---|---|---|---|
+| `title` | `--font-title` | `clamp(1.45rem, 3vw, 2rem)` | 700 |
+| `screen-title` | `--font-title` | `1.02rem` | 600〜700 |
+| `subtitle` | `--font-body` | `0.9rem` | 400 |
+| `label/caption` | `--font-body` | `0.72rem`〜`0.78rem` | 400 |
+| `body` | `--font-body` | `0.84rem`〜`0.9rem` | 400〜500 |
+| `button` | `--font-title` | `0.9rem` | 600 |
+
+### 15.4 画面別UIルール
+#### Screen A（画像選択）
+- 画像追加領域は破線ボックス（`ghost`）で表示
+- 選択済み枚数はカード末尾に配置
+- CTAは下部固定（`次へ進む`）
+
+#### Screen B（レイアウト設定）
+- レイアウト選択は `option` の縦リスト
+- 選択状態は `option.active`（`--accent`）で強調
+- 設定値（配置モード/余白）はカード内の2行表示
+
+#### Screen C（プレビュー）
+- A4疑似プレビューは `preview-sheet` 内2列グリッド
+- ページ情報は `row` 表示
+- 解像度注意は `status` で明示
+
+#### Screen D（完了）
+- 生成ファイル情報は `success` カードで表示
+- 主CTA: `保存する`、副CTA: `共有する`
+
+### 15.5 コンポーネントルール
+`Button`
+- Primary: 背景 `--ink`、文字 `#fff`
+- Secondary: 背景 `--accent-soft`
+- 高さ目安は `padding 12px`、角丸 `999px`
+
+`Card`
+- 背景は白系、`--line` 系の1px枠線、角丸 `14px`
+- 情報のまとまり単位で使用する
+
+`Option`
+- 通常は白背景+薄い枠線
+- 選択時は `--accent` 枠線 + `--accent-soft` 近傍背景
+
+`Status`
+- 警告: `--warn-*`
+- 成功: `--success-*`
+- 色だけに依存せず文言で状態を説明する
+
+`Chip`
+- 補助情報タグ。サイズは本文より小さい `0.75rem`
+
+### 15.6 状態定義
+- `default`: 通常表示
+- `hover`: PC時のみ視覚フィードバックを付与（背景/透過率）
+- `active`: 選択中状態。`option.active`, `tab-btn.active`, `theme-btn.active`
+- `disabled`: 非活性時はコントラストを下げる（将来実装時）
+- `error`: 警告/失敗は `status` + 明示文言
+- `loading`: `画像解析中` / `PDF生成中` のテキスト表示
+- `success`: 生成完了時に `success` カード表示
+
+### 15.7 レスポンシブ基準
+- 基準画面: iPhone縦（1カラム）
+- ブレークポイント: `max-width: 900px`
+- モバイル:
+  - `stage` を1カラム化
+  - `theme-buttons` を1カラム化
+- PC:
+  - `stage` は `320px + 可変` の2カラム
+
+### 15.8 アクセシビリティ基準
+- 主要テキストは背景と十分なコントラストを確保する（WCAG AA相当を目標）
+- 主要操作要素のタップ領域は最小44px四方を目安にする
+- 色だけで状態を伝えず、文言も併記する（例: `低解像度の可能性がある画像: 2枚`）
+- キーボード操作時のフォーカス可視化を実装時に追加する
+
+### 15.9 テーマ運用ルール
+- 型定義（仕様）:
+  - `ThemeKey = "warm" | "mineral" | "editorial"`
+  - `PRIMARY_THEME = "warm"`
+- `ThemeMeta` 必須項目:
+  - `name`
+  - `fontPair`
+  - `toneDescription`
+  - `tags`
+- デザイントークン契約:
+  - 全テーマで同一キーセット（`--bg`, `--ink`, `--accent` 等）を維持する
+- 実装優先順位:
+  - 必須: `warm`
+  - 任意: `mineral`, `editorial`
+
+### 15.10 モック対応箇所マッピング（reference/mock/index.html）
+| 仕様項目 | 対応セレクタ/要素 |
+|---|---|
+| テーマ切替 | `.theme-switcher`, `.theme-btn`, `body[data-theme]` |
+| 画面切替 | `.tabs`, `.tab-btn`, `.screen` |
+| 画像選択UI | `#screen-a`, `.ghost`, `.thumbs`, `.thumb` |
+| レイアウト設定UI | `#screen-b`, `.options`, `.option`, `.dot` |
+| プレビューUI | `#screen-c`, `.preview-sheet`, `.grid-8`, `.slot`, `.status` |
+| 出力完了UI | `#screen-d`, `.success`, `.button.secondary` |
+| 補助情報 | `.notes`, `#themeName`, `#themeCopy`, `#themeTags` |
+
+### 15.11 テストケース / 確認シナリオ
+1. 表示整合
+   - iPhone縦幅でScreen A/B/C/DのUIが崩れない
+   - Warm Sandでトークン値と表示が一致する
+2. 操作整合
+   - 画面タブ切替時に正しく遷移する
+   - テーマ切替後もレイアウト構造が変化しない
+3. 視認性
+   - 主要テキストの可読性が確保される
+   - 警告/成功は文言で意味が判別できる
+4. 回帰確認
+   - Warmを基準にしてもMineral/Editorial切替が壊れない
+   - 既存機能要件（A4/2/4/6/8分割）と矛盾しない
+
+### 15.12 受け入れ基準（デザイン仕様）
+- `RDD.md` に本章が追加され、Warm Sandの仕様が単独で理解できる
+- トークン、タイポ、画面別ルール、状態、アクセシビリティ基準が明文化されている
+- Warmが正規テーマ、他2テーマが比較テーマであることが明記されている
+- 実装者が追加判断なしでUI実装に着手できる粒度である
+
+### 15.13 前提・デフォルト
+- 技術構成は既存方針（React + TypeScript + Vite、APIなし）を維持する
+- フォントはGoogle Fonts配信を前提とする
+- `color-mix` 利用箇所は実装時にフォールバック色を併記する
+- 本章の目的はデザイン仕様化であり、機能仕様変更は含まない
+
