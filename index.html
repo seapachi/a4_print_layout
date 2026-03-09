@@ -177,7 +177,7 @@
       .thumb-grid {
         margin-top: 10px;
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
         gap: 6px;
       }
 
@@ -185,20 +185,42 @@
         border-radius: 8px;
         border: 1px solid var(--b0);
         background: var(--s2);
-        min-height: 45px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.68rem;
-        color: var(--t1);
-        text-align: center;
-        padding: 4px;
+        min-height: 76px;
         overflow: hidden;
+        position: relative;
       }
 
-      .thumb.empty {
-        border-style: dashed;
-        background: #f7f2e8;
+      .thumb-img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+        aspect-ratio: 1 / 1;
+      }
+
+      .thumb-name {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        font-size: 0.62rem;
+        color: #fff;
+        padding: 3px 4px;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.52), rgba(0, 0, 0, 0));
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .thumb-empty-msg {
+        margin-top: 10px;
+        border: 1px dashed var(--b1);
+        border-radius: 8px;
+        background: var(--s0);
+        color: var(--t1);
+        font-size: 0.74rem;
+        text-align: center;
+        padding: 10px;
       }
 
       .count-row {
@@ -403,24 +425,51 @@
       .slot-grid {
         display: grid;
         gap: 4px;
-        min-height: 220px;
+        width: 100%;
+        aspect-ratio: 210 / 297;
+        min-height: 280px;
+        background: #f8f4ed;
+        border-radius: 6px;
       }
 
       .slot {
         border: 1px solid var(--b0);
         border-radius: 5px;
-        background: linear-gradient(135deg, #f8f1e2, #f4ded2);
-        color: #6f5b4a;
-        font-size: 0.66rem;
-        line-height: 1.35;
-        padding: 4px;
-        word-break: break-word;
+        background: #f3ebdf;
+        overflow: hidden;
+        position: relative;
       }
 
       .slot.empty {
         background: #faf7f1;
         border-style: dashed;
         color: var(--t2);
+        font-size: 0.66rem;
+        display: grid;
+        place-items: center;
+        padding: 4px;
+      }
+
+      .slot-img {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .slot-cap {
+        position: absolute;
+        left: 3px;
+        right: 3px;
+        bottom: 3px;
+        font-size: 0.58rem;
+        line-height: 1.2;
+        padding: 2px 3px;
+        border-radius: 3px;
+        color: #fff;
+        background: rgba(0, 0, 0, 0.42);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       .pg-ctrl {
@@ -497,6 +546,27 @@
       .done-v {
         font-size: 0.74rem;
         font-weight: 700;
+      }
+
+      .pdf-view {
+        margin-top: 10px;
+        border: 1px solid var(--b0);
+        border-radius: 11px;
+        background: var(--s1);
+        padding: 8px;
+      }
+
+      .pdf-view iframe {
+        width: 100%;
+        height: 220px;
+        border: 1px solid var(--b0);
+        border-radius: 8px;
+        background: #fff;
+      }
+
+      .pdf-open-link {
+        margin-top: 0;
+        width: 100%;
       }
 
       .sc-cta {
@@ -632,7 +702,6 @@
               <div class="step-row"><span class="sdot"></span><span class="sdot on"></span><span class="sdot"></span><span class="sdot"></span></div>
 
               <div class="sc-nav">
-                <button class="back-btn" type="button" data-go="sc-a">← 戻る</button>
                 <span class="sc-h">レイアウト設定</span>
               </div>
 
@@ -675,6 +744,7 @@
 
               <div class="sc-cta">
                 <button class="btn btn-ac" type="button" data-go="sc-c">プレビューへ</button>
+                <button class="btn btn-gh" type="button" data-go="sc-a">戻る</button>
               </div>
             </article>
 
@@ -682,7 +752,6 @@
               <div class="step-row"><span class="sdot"></span><span class="sdot"></span><span class="sdot on"></span><span class="sdot"></span></div>
 
               <div class="sc-nav">
-                <button class="back-btn" type="button" data-go="sc-b">← 戻る</button>
                 <span class="sc-h">プレビュー</span>
               </div>
               <p class="sc-note">1ページ目から順に確認できます。</p>
@@ -706,6 +775,7 @@
 
               <div class="sc-cta">
                 <button id="generateButton" class="btn btn-ac" type="button">PDFを生成</button>
+                <button class="btn btn-gh" type="button" data-go="sc-b">戻る</button>
               </div>
             </article>
 
@@ -713,7 +783,6 @@
               <div class="step-row"><span class="sdot"></span><span class="sdot"></span><span class="sdot"></span><span class="sdot on"></span></div>
 
               <div class="sc-nav">
-                <button class="back-btn" type="button" data-go="sc-c">← 戻る</button>
                 <span class="sc-h">PDF生成完了</span>
               </div>
               <p class="sc-note" style="text-align:center;">保存または共有を選択してください。</p>
@@ -724,9 +793,15 @@
                 <div class="done-row"><span class="done-k">ページ数</span><span id="donePageCount" class="done-v">0 ページ</span></div>
               </div>
 
+              <div id="pdfViewerWrap" class="pdf-view" style="display:none">
+                <iframe id="pdfViewer" title="生成されたPDFプレビュー"></iframe>
+              </div>
+
               <div class="sc-cta">
+                <a id="openPdfLink" class="btn btn-sub pdf-open-link" href="#" target="_blank" rel="noopener" style="display:none">PDFを開く（表示できない場合）</a>
                 <a id="saveLink" class="btn btn-sub" href="#" download style="display:none">保存する</a>
                 <button id="shareButton" class="btn btn-ac" type="button" disabled>共有する</button>
+                <button class="btn btn-gh" type="button" data-go="sc-c">戻る</button>
                 <button id="restartButton" class="btn btn-gh" type="button" data-go="sc-a">もう一度作る</button>
               </div>
             </article>
@@ -779,6 +854,9 @@
       const generateButton = document.getElementById("generateButton");
       const shareButton = document.getElementById("shareButton");
       const saveLink = document.getElementById("saveLink");
+      const pdfViewerWrap = document.getElementById("pdfViewerWrap");
+      const pdfViewer = document.getElementById("pdfViewer");
+      const openPdfLink = document.getElementById("openPdfLink");
       const statusBox = document.getElementById("status");
       const errorBox = document.getElementById("errorBox");
       const slotGrid = document.getElementById("slotGrid");
@@ -851,7 +929,7 @@
       restartButton.addEventListener("click", () => {
         fileInput.value = "";
         selectedFiles = [];
-        selectedAssets = [];
+        releaseSelectedAssets();
         lastLoadErrors = [];
         previewPage = 1;
         clearResult();
@@ -868,12 +946,12 @@
         loadingRevision += 1;
         const revision = loadingRevision;
         selectedFiles = Array.from(fileInput.files || []);
+        releaseSelectedAssets();
         metricSelected.textContent = String(selectedFiles.length);
         selectedCountBadge.textContent = `${selectedFiles.length}枚`;
         clearResult();
 
         if (selectedFiles.length === 0) {
-          selectedAssets = [];
           previewPage = 1;
           renderErrors([]);
           renderThumbs([]);
@@ -895,10 +973,14 @@
           }
         }
 
-        selectedAssets = await loadSelectedImages(validFiles);
-        if (revision !== loadingRevision) return;
+        const loadedAssets = await loadSelectedImages(validFiles);
+        if (revision !== loadingRevision) {
+          revokeAssetPreviewUrls(loadedAssets);
+          return;
+        }
 
         lastLoadErrors = [...unsupported, ...lastLoadErrors];
+        selectedAssets = loadedAssets;
         previewPage = 1;
         renderErrors(lastLoadErrors);
         renderThumbs(selectedAssets);
@@ -995,6 +1077,7 @@
           button.classList.toggle("sel", button.dataset.fit === mode);
         });
         previewFitLabel.textContent = `配置: ${FIT_LABELS[mode]}`;
+        renderPreview(selectedAssets);
       }
 
       function getCurrentLayout() {
@@ -1008,15 +1091,32 @@
 
       function renderThumbs(assets) {
         thumbGrid.innerHTML = "";
-        const limit = 6;
-
-        for (let i = 0; i < limit; i += 1) {
-          const item = assets[i];
-          const cell = document.createElement("div");
-          cell.className = item ? "thumb" : "thumb empty";
-          cell.textContent = item ? truncateName(item.name, 18) : "空";
-          thumbGrid.appendChild(cell);
+        if (!assets || assets.length === 0) {
+          const empty = document.createElement("div");
+          empty.className = "thumb-empty-msg";
+          empty.textContent = "画像を選択すると、ここにプレビューが表示されます。";
+          thumbGrid.appendChild(empty);
+          return;
         }
+
+        assets.forEach((item) => {
+          const cell = document.createElement("div");
+          cell.className = "thumb";
+
+          const image = document.createElement("img");
+          image.className = "thumb-img";
+          image.src = item.previewUrl;
+          image.alt = item.name;
+          image.loading = "lazy";
+
+          const name = document.createElement("span");
+          name.className = "thumb-name";
+          name.textContent = item.name;
+
+          cell.appendChild(image);
+          cell.appendChild(name);
+          thumbGrid.appendChild(cell);
+        });
       }
 
       function renderPreview(assets) {
@@ -1038,9 +1138,24 @@
           const item = pageAssets[i];
           const slot = document.createElement("div");
           slot.className = item ? "slot" : "slot empty";
-          slot.textContent = item
-            ? `${start + i + 1}. ${truncateName(item.name, 22)}\n${item.widthPx}x${item.heightPx}`
-            : `${start + i + 1}. 空枠`;
+
+          if (item) {
+            const image = document.createElement("img");
+            image.className = "slot-img";
+            image.src = item.previewUrl;
+            image.alt = item.name;
+            image.style.objectFit = currentFitMode;
+            image.loading = "lazy";
+
+            const caption = document.createElement("span");
+            caption.className = "slot-cap";
+            caption.textContent = `${start + i + 1}. ${item.name}`;
+
+            slot.appendChild(image);
+            slot.appendChild(caption);
+          } else {
+            slot.textContent = `${start + i + 1}. 空枠`;
+          }
           slotGrid.appendChild(slot);
         }
 
@@ -1067,6 +1182,7 @@
        * @property {number} heightPx
        * @property {"image/jpeg"|"image/png"} mimeType
        * @property {number} orientation
+       * @property {string} previewUrl
        */
 
       /**
@@ -1108,6 +1224,7 @@
               heightPx: size.height,
               mimeType,
               orientation,
+              previewUrl: URL.createObjectURL(new Blob([bytes], { type: mimeType })),
             };
           }),
         );
@@ -1442,7 +1559,25 @@
         shareButton.disabled = isBusy || !currentBlob;
       }
 
+      function revokeAssetPreviewUrls(assets) {
+        if (!assets || assets.length === 0) return;
+        assets.forEach((asset) => {
+          if (asset && typeof asset.previewUrl === "string" && asset.previewUrl.startsWith("blob:")) {
+            URL.revokeObjectURL(asset.previewUrl);
+          }
+        });
+      }
+
+      function releaseSelectedAssets() {
+        revokeAssetPreviewUrls(selectedAssets);
+        selectedAssets = [];
+      }
+
       function clearResult() {
+        if (pdfViewer) {
+          pdfViewer.removeAttribute("src");
+        }
+
         if (currentDownloadUrl) {
           URL.revokeObjectURL(currentDownloadUrl);
           currentDownloadUrl = "";
@@ -1454,6 +1589,9 @@
         donePageCount.textContent = "0 ページ";
         saveLink.style.display = "none";
         saveLink.removeAttribute("href");
+        openPdfLink.style.display = "none";
+        openPdfLink.removeAttribute("href");
+        pdfViewerWrap.style.display = "none";
       }
 
       function applyGeneratedBlob(blob, filename) {
@@ -1464,6 +1602,10 @@
         saveLink.href = currentDownloadUrl;
         saveLink.download = filename;
         saveLink.style.display = "block";
+        pdfViewer.src = currentDownloadUrl;
+        openPdfLink.href = currentDownloadUrl;
+        openPdfLink.style.display = "inline-flex";
+        pdfViewerWrap.style.display = "block";
         shareButton.disabled = false;
         doneFileName.textContent = filename;
       }

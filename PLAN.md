@@ -23,6 +23,10 @@
 | T-017 | Screen D戻る導線追加 + レイアウト設定ミニ図の縦長化 | `index.html`, `EXPLANATION.md`, `README.md`, `PLAN.md` | 完了 | D画面戻る導線を追加、B画面のミニ図を縦長化 |
 | T-018 | PCワイド時のヘッダー左ズレ修正（420px中央揃え） | `index.html`, `EXPLANATION.md`, `README.md`, `PLAN.md` | 完了 | ヘッダー幅を `app-surface` と一致させ中央配置 |
 | T-019 | 既存preview画像の `reference/preview/` への移動 | `reference/preview/*`, `PLAN.md` | 完了 | ルート直下 `preview-*.png` を集約管理 |
+| T-020 | 戻る導線の下部統一（B/C/D） | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | B/C/Dの上部戻るを撤去し下部CTAへ統一 |
+| T-021 | Screen Aの選択画像プレビュー全件表示 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | 6件固定表示を廃止し全件サムネイルへ変更 |
+| T-022 | Screen CのA4レイアウト実画像プレビュー化 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | スロット内テキストを実画像表示へ置換 |
+| T-023 | PDF生成後のScreen D埋め込み表示 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | viewer埋め込み + フォールバック導線 |
 
 ## 状態定義
 - 未着手
@@ -61,3 +65,9 @@
 - T-019移動対象（13件）: ルート直下 `preview-*.png` を `reference/preview/` へ一括移動
 - T-019検証: ルート直下 `preview-*.png` は 0 件、`reference/preview/` には 14 件（既存1件 + 移動13件）
 - T-018レイアウト検証: Playwright評価で `.pg-header.left` と `.app-surface.left` の差分 `< 1px` を確認（`alignment-check: ok`）
+- T-020〜T-023疎通確認: `curl -I http://127.0.0.1:8000/index.html` -> `HTTP/1.0 200 OK`
+- T-020〜T-023スクリーンショット（A画面）: `reference/preview/preview-t020-023-screen-a-20260309224853.png`（A画面で全件サムネイル表示を確認）
+- T-020〜T-023スクリーンショット（B画面）: `reference/preview/preview-t020-023-screen-b-20260309224853.png`（下部戻る導線を確認）
+- T-020〜T-023スクリーンショット（C画面）: `reference/preview/preview-t020-023-screen-c-20260309224853.png`（A4比率の実画像プレビューを確認）
+- T-020〜T-023スクリーンショット（D画面）: `reference/preview/preview-t020-023-screen-d-20260309224853.png`（viewer領域 + PDFを開くフォールバック導線を確認）
+- T-020〜T-023スモークテスト: Playwrightで `3画像投入 -> B/A戻る -> C/B戻る -> PDF生成 -> D/C戻る` と `fallbackリンク表示` を確認（`smoke: ok`）
