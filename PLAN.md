@@ -15,7 +15,7 @@
 | T-009 | Apple HIG反映スキル作成 | `~/.codex/skills/apple-hig-ui-reflector/*`, `PLAN.md` | 完了 | HIG参照ガイド + `quick_validate.py` 通過 |
 | T-010 | OOUI設計ガイド文書の作成 | `reference/ooui.md`, `PLAN.md` | 完了 | OOUI適用の基礎整理 |
 | T-011 | ローカルPlaywright環境の整合性修復 | `package.json`, `package-lock.json`, `PLAN.md` | 完了 | 依存正規化 + Chromium起動確認 |
-| T-012 | Apple HIGスキルを本文取得前提で再構築 | `~/.codex/skills/apple-hig-ui-reflector/*`, `PLAN.md` | 進行中 | Playwright本文抽出 + 参照再作成 |
+| T-012 | Apple HIGスキルを本文取得前提で再構築 | `~/.codex/skills/apple-hig-ui-reflector/*`, `PLAN.md` | 完了 | Playwright本文抽出 + 参照再作成 + 検証通過 |
 
 ## 状態定義
 - 未着手
@@ -30,3 +30,5 @@
 - スキル検証: `python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py ~/.codex/skills/apple-hig-ui-reflector` -> `Skill is valid!`
 - Playwright導入: `npm i -D @playwright/test` / `npx playwright install chromium`
 - Playwright疎通確認: `node -e "const { chromium } = require('playwright'); ..."` -> `Example Domain`
+- HIG本文抽出（単体）: `node ~/.codex/skills/apple-hig-ui-reflector/scripts/hig_scrape.js --url .../layout --out /tmp/hig-layout-live.json`
+- HIG本文抽出（カタログ）: `node ~/.codex/skills/apple-hig-ui-reflector/scripts/hig_scrape.js --catalog --out-dir ~/.codex/skills/apple-hig-ui-reflector/references/generated`
