@@ -27,6 +27,7 @@
 | T-021 | Screen Aの選択画像プレビュー全件表示 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | 6件固定表示を廃止し全件サムネイルへ変更 |
 | T-022 | Screen CのA4レイアウト実画像プレビュー化 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | スロット内テキストを実画像表示へ置換 |
 | T-023 | PDF生成後のScreen D埋め込み表示 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | viewer埋め込み + フォールバック導線 |
+| T-024 | Screen B/C/Dの表示領域とCTA重なり解消 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | 絶対配置CTAを通常フロー化して重なりを防止 |
 
 ## 状態定義
 - 未着手
@@ -71,3 +72,8 @@
 - T-020〜T-023スクリーンショット（C画面）: `reference/preview/preview-t020-023-screen-c-20260309224853.png`（A4比率の実画像プレビューを確認）
 - T-020〜T-023スクリーンショット（D画面）: `reference/preview/preview-t020-023-screen-d-20260309224853.png`（viewer領域 + PDFを開くフォールバック導線を確認）
 - T-020〜T-023スモークテスト: Playwrightで `3画像投入 -> B/A戻る -> C/B戻る -> PDF生成 -> D/C戻る` と `fallbackリンク表示` を確認（`smoke: ok`）
+- T-024疎通確認: `curl -I http://127.0.0.1:8000/index.html` -> `HTTP/1.0 200 OK`
+- T-024スクリーンショット（B画面）: `reference/preview/preview-t024-screen-b-20260309225754.png`（設定領域とCTAの非重なりを確認）
+- T-024スクリーンショット（C画面）: `reference/preview/preview-t024-screen-c-20260309225754.png`（A4プレビュー領域とCTAの非重なりを確認）
+- T-024スクリーンショット（D画面）: `reference/preview/preview-t024-screen-d-20260309225754.png`（viewer領域とCTAの非重なりを確認）
+- T-024レイアウト検証: Playwright評価で `sc-b/sc-c/sc-d` の表示領域と `.sc-cta` の重なり判定がすべて `false`（`OVERLAP_CHECK {"sc-b":false,"sc-c":false,"sc-d":false}`）

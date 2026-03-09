@@ -88,11 +88,12 @@
         display: none;
         min-height: 690px;
         position: relative;
-        padding: 14px 14px 88px;
+        padding: 14px;
       }
 
       .sc.on {
-        display: block;
+        display: flex;
+        flex-direction: column;
       }
 
       .step-row {
@@ -570,10 +571,8 @@
       }
 
       .sc-cta {
-        position: absolute;
-        left: 14px;
-        right: 14px;
-        bottom: 14px;
+        margin-top: auto;
+        padding-top: 10px;
         display: grid;
         gap: 8px;
       }
