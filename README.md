@@ -8,9 +8,15 @@
 - A4 (210x297mm) / 8分割 (2x4)
 - PDF生成後に「共有する」または「保存する」
 
-## 2. ファイル
-- `index.html`: PoC本体
+## 2. ファイル構成
+- `index.html`: PoC本体（単体HTML）
 - `validation-checklist.md`: 実機検証チェックシート
+- `reference/RDD.md`: 要件定義書
+- `reference/ooui.md`: OOUI設計ガイド
+- `reference/mock/`: 画面モック
+- `reference/preview/`: プレビュー確認用スクリーンショット
+- `PLAN.md`: タスク進捗と実行ログ
+- `EXPLANATION.md`: 開発者向け仕様メモ
 
 ## 3. 実行方法
 1. `index.html` をブラウザで開く
@@ -38,4 +44,3 @@
 - React化時はPoC関数契約をそのまま移植する
 - 1/2/4/6分割は `computeSlots` の一般化で追加可能
 - 実機検証結果は `validation-checklist.md` と `RDD.md` に追記する
-
