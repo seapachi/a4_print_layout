@@ -20,6 +20,8 @@
 | T-014 | HIG/OOUI準拠MOCの再設計実装 | `AGENTS.md`, `PLAN.md`, `reference/mock/index_hig_ooui.html`, `EXPLANATION.md` | 完了 | iOS調単一テーマ + OOUIオブジェクト中心UI |
 | T-015 | Hansi本実装 + 1/2/4/6/8分割 + cover対応 | `index.html`, `EXPLANATION.md`, `README.md`, `PLAN.md` | 完了 | 右パネル廃止・1カラム化・ログ折りたたみ・分割/fit連動 |
 | T-016 | スマホ内部レイアウトのみ反映（外枠/上部タブ/ステータスバー削除） | `index.html`, `EXPLANATION.md`, `README.md`, `PLAN.md` | 完了 | 内部レイアウトカード化・遷移は次へ/戻る維持 |
+| T-017 | Screen D戻る導線追加 + レイアウト設定ミニ図の縦長化 | `index.html`, `EXPLANATION.md`, `README.md`, `PLAN.md` | 完了 | D画面戻る導線を追加、B画面のミニ図を縦長化 |
+| T-018 | PCワイド時のヘッダー左ズレ修正（420px中央揃え） | `index.html`, `EXPLANATION.md`, `README.md`, `PLAN.md` | 完了 | ヘッダー幅を `app-surface` と一致させ中央配置 |
 
 ## 状態定義
 - 未着手
@@ -47,3 +49,12 @@
 - 内部レイアウトスクリーンショット: `preview-inner-layout-desktop-20260310-004604.png`（Screen B表示で撮影）
 - 内部レイアウトモバイル確認: `preview-inner-layout-mobile-20260310-004604.png`（390x844, 6分割選択状態）
 - 内部レイアウトスモークテスト: Playwrightで `2分割 + cover + 3画像` を投入し、`2ページ` 生成とScreen D表示を確認（`smoke: ok`）
+- T-017疎通確認: `curl -I http://127.0.0.1:8000/index.html` -> `HTTP/1.0 200 OK`
+- T-017スクリーンショット（B画面）: `preview-screen-d-back-desktop-20260310-010327.png`（縦長ミニ図を確認）
+- T-017モバイル確認（B画面）: `preview-screen-d-back-mobile-20260310-010327.png`（390x844, 6分割選択状態）
+- T-017スクリーンショット（D画面）: `preview-screen-d-back-state-20260310-010412.png`（上部の戻る導線を確認）
+- T-017スモークテスト: Playwrightで `2分割 + cover + 3画像` を投入し、Screen D到達後に `← 戻る` でScreen Cへ復帰確認（`smoke: ok`）
+- T-018疎通確認: `curl -I http://127.0.0.1:8000/index.html` -> `HTTP/1.0 200 OK`
+- T-018スクリーンショット（desktop）: `preview-header-align-desktop-20260310-011304.png`（ヘッダーと `app-surface` 左端一致を確認）
+- T-018スクリーンショット（mobile）: `preview-header-align-mobile-20260310-011304.png`（390x844で折返し崩れなし）
+- T-018レイアウト検証: Playwright評価で `.pg-header.left` と `.app-surface.left` の差分 `< 1px` を確認（`alignment-check: ok`）

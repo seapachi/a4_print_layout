@@ -51,7 +51,8 @@
       }
 
       .pg-header {
-        margin-bottom: 16px;
+        width: min(100%, 420px);
+        margin: 0 auto 16px;
       }
 
       .app-title {
@@ -297,7 +298,7 @@
         border-radius: 11px;
         padding: 10px;
         display: grid;
-        grid-template-columns: 14px 52px 1fr;
+        grid-template-columns: 14px 38px 1fr;
         align-items: center;
         gap: 8px;
         cursor: pointer;
@@ -336,7 +337,9 @@
         border-radius: 6px;
         background: var(--s0);
         padding: 3px;
-        height: 32px;
+        width: 34px;
+        height: 52px;
+        justify-self: center;
       }
 
       .mg-c {
@@ -709,7 +712,10 @@
             <article id="sc-d" class="sc">
               <div class="step-row"><span class="sdot"></span><span class="sdot"></span><span class="sdot"></span><span class="sdot on"></span></div>
 
-              <span class="sc-h" style="display:block;text-align:center;">PDF生成完了</span>
+              <div class="sc-nav">
+                <button class="back-btn" type="button" data-go="sc-c">← 戻る</button>
+                <span class="sc-h">PDF生成完了</span>
+              </div>
               <p class="sc-note" style="text-align:center;">保存または共有を選択してください。</p>
 
               <div class="done-icon">✓</div>
