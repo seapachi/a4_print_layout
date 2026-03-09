@@ -1,0 +1,27 @@
+{
+  "name": "a4_print_layout",
+  "version": "1.0.0",
+  "description": "`index.html` は、A4 8分割固定で画像からPDFを生成する最小PoCです。",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seapachi/a4_print_layout.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/seapachi/a4_print_layout/issues"
+  },
+  "homepage": "https://github.com/seapachi/a4_print_layout#readme"
+}
