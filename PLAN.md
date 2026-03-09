@@ -17,6 +17,7 @@
 | T-011 | ローカルPlaywright環境の整合性修復 | `package.json`, `package-lock.json`, `PLAN.md` | 完了 | 依存正規化 + Chromium起動確認 |
 | T-012 | Apple HIGスキルを本文取得前提で再構築 | `~/.codex/skills/apple-hig-ui-reflector/*`, `PLAN.md` | 完了 | Playwright本文抽出 + 参照再作成 + 検証通過 |
 | T-013 | リポジトリ構成の整理（配置と除外設定の見直し） | `.gitignore`, `README.md`, `PLAN.md`, `reference/preview/*` | 完了 | preview画像を `reference/preview/` へ移動、重複1件削除、ignore整理を実施 |
+| T-014 | HIG/OOUI準拠MOCの再設計実装 | `AGENTS.md`, `PLAN.md`, `reference/mock/index_hig_ooui.html`, `EXPLANATION.md` | 完了 | iOS調単一テーマ + OOUIオブジェクト中心UI |
 
 ## 状態定義
 - 未着手
@@ -33,3 +34,6 @@
 - Playwright疎通確認: `node -e "const { chromium } = require('playwright'); ..."` -> `Example Domain`
 - HIG本文抽出（単体）: `node ~/.codex/skills/apple-hig-ui-reflector/scripts/hig_scrape.js --url .../layout --out /tmp/hig-layout-live.json`
 - HIG本文抽出（カタログ）: `node ~/.codex/skills/apple-hig-ui-reflector/scripts/hig_scrape.js --catalog --out-dir ~/.codex/skills/apple-hig-ui-reflector/references/generated`
+- HIG/OOUI MOC疎通確認: `curl -I http://127.0.0.1:8000/index.html` / `curl -I http://127.0.0.1:8000/reference/mock/index_hig_ooui.html` -> `HTTP/1.0 200 OK`
+- HIG/OOUI MOCスクリーンショット: `preview-hig-ooui-20260309-233027.png`（Playwrightでタブ操作後に撮影）
+- HIG/OOUI MOCモバイル確認: `preview-hig-ooui-mobile-20260309-233123.png`（390x844でレイアウト崩れなし）

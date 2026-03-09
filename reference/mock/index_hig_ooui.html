@@ -1,0 +1,910 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>A4 Print Layout - HIG OOUI Mock</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #eef3fa;
+        --bg-soft: #f6f9ff;
+        --surface: #ffffff;
+        --surface-muted: #f2f5fb;
+        --ink: #18202a;
+        --muted: #5d6b7f;
+        --line: #d5deea;
+        --primary: #0a84ff;
+        --primary-press: #006fda;
+        --success: #16885d;
+        --warning: #a96500;
+        --danger: #9f2a23;
+        --shadow: 0 18px 42px rgba(16, 33, 60, 0.14);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        color: var(--ink);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Noto Sans JP", sans-serif;
+        background:
+          radial-gradient(circle at 12% 15%, #dce8ff 0%, transparent 36%),
+          radial-gradient(circle at 85% 85%, #d7f0ff 0%, transparent 42%),
+          var(--bg);
+      }
+
+      .page {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 28px 20px 44px;
+      }
+
+      .page-header h1 {
+        margin: 0;
+        font-size: clamp(1.45rem, 2.8vw, 2rem);
+        line-height: 1.2;
+      }
+
+      .page-header p {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .workspace {
+        margin-top: 22px;
+        display: grid;
+        grid-template-columns: 340px 1fr;
+        gap: 24px;
+        align-items: start;
+      }
+
+      .phone {
+        background: linear-gradient(170deg, #f8fbff, #f1f5fc);
+        border: 1px solid var(--line);
+        border-radius: 42px;
+        padding: 12px;
+        box-shadow: var(--shadow);
+      }
+
+      .phone-inner {
+        border: 1px solid #dbe3ef;
+        border-radius: 30px;
+        background: var(--surface);
+        min-height: 680px;
+        overflow: hidden;
+      }
+
+      .phone-top {
+        padding: 10px 16px 6px;
+        display: flex;
+        justify-content: center;
+      }
+
+      .phone-notch {
+        width: 88px;
+        height: 6px;
+        border-radius: 999px;
+        background: #d0d8e4;
+      }
+
+      .object-tabs {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        padding: 0 14px 12px;
+      }
+
+      .object-tab {
+        min-height: 44px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--surface-muted);
+        color: var(--ink);
+        font-size: 0.8rem;
+        font-weight: 600;
+        line-height: 1.2;
+        cursor: pointer;
+        transition: 130ms ease;
+      }
+
+      .object-tab:hover {
+        border-color: #b7c7df;
+        background: #ebf2ff;
+      }
+
+      .object-tab:active {
+        transform: translateY(1px);
+        background: #dceaff;
+      }
+
+      .object-tab:focus-visible,
+      .action-btn:focus-visible,
+      .preset-btn:focus-visible {
+        outline: 3px solid color-mix(in srgb, var(--primary) 30%, #ffffff 70%);
+        outline-offset: 2px;
+      }
+
+      .object-tab.active {
+        border-color: var(--primary);
+        background: #eaf3ff;
+        color: #08417a;
+      }
+
+      .object-panel {
+        display: none;
+        padding: 0 14px 18px;
+      }
+
+      .object-panel.active {
+        display: block;
+      }
+
+      .panel-title {
+        margin: 2px 0 2px;
+        font-size: 1rem;
+        line-height: 1.3;
+      }
+
+      .panel-sub {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.8rem;
+        line-height: 1.4;
+      }
+
+      .card {
+        margin-top: 12px;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: var(--surface);
+        padding: 12px;
+      }
+
+      .kv {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        font-size: 0.84rem;
+      }
+
+      .kv + .kv {
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px solid #e9eef6;
+      }
+
+      .media-grid {
+        margin-top: 10px;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 6px;
+      }
+
+      .media-thumb {
+        aspect-ratio: 1;
+        border-radius: 8px;
+        border: 1px solid #d3deef;
+        background: linear-gradient(135deg, #dbe8ff, #c5d9f9);
+        display: grid;
+        place-items: center;
+        color: #30527f;
+        font-size: 0.68rem;
+        font-weight: 600;
+      }
+
+      .media-thumb.empty {
+        background: #f5f8fd;
+        color: #90a0ba;
+      }
+
+      .preset-grid {
+        margin-top: 10px;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .preset-btn {
+        min-height: 44px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #f8fbff;
+        color: #1c2d40;
+        font-size: 0.78rem;
+        font-weight: 600;
+        cursor: pointer;
+        text-align: left;
+        padding: 8px 10px;
+        transition: 120ms ease;
+      }
+
+      .preset-btn:hover {
+        border-color: #adc3e6;
+      }
+
+      .preset-btn:active {
+        transform: translateY(1px);
+      }
+
+      .preset-btn.active {
+        border-color: var(--primary);
+        background: #eaf3ff;
+      }
+
+      .status-row {
+        margin-top: 10px;
+        border-radius: 10px;
+        border: 1px solid #dce4f2;
+        background: #f6f9fe;
+        padding: 9px 10px;
+        font-size: 0.76rem;
+        line-height: 1.45;
+        display: flex;
+        gap: 8px;
+      }
+
+      .status-row strong {
+        font-weight: 700;
+      }
+
+      .status-icon {
+        font-weight: 700;
+        min-width: 1.1em;
+      }
+
+      .status-warning .status-icon {
+        color: var(--warning);
+      }
+
+      .status-success .status-icon {
+        color: var(--success);
+      }
+
+      .status-idle .status-icon {
+        color: var(--muted);
+      }
+
+      .preview-sheet {
+        margin-top: 10px;
+        border: 1px solid #cfd8e8;
+        border-radius: 10px;
+        background: #fdfefe;
+        padding: 9px;
+      }
+
+      .preview-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 6px;
+      }
+
+      .preview-cell {
+        aspect-ratio: 1;
+        border: 1px dashed #c7d5eb;
+        border-radius: 7px;
+        background: #eef4ff;
+      }
+
+      .preview-cell.filled {
+        border-style: solid;
+        background: linear-gradient(140deg, #d9e8ff, #c5e6d8);
+      }
+
+      .actions {
+        margin-top: 12px;
+        display: grid;
+        gap: 8px;
+      }
+
+      .action-btn {
+        min-height: 44px;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+        background: #f7faff;
+        color: #1f2b3a;
+        font-size: 0.84rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 120ms ease;
+        padding: 10px 12px;
+      }
+
+      .action-btn:hover {
+        background: #edf4ff;
+      }
+
+      .action-btn:active {
+        transform: translateY(1px);
+      }
+
+      .action-btn.primary {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: #ffffff;
+      }
+
+      .action-btn.primary:hover {
+        background: #0a77e4;
+      }
+
+      .action-btn.primary:active {
+        background: var(--primary-press);
+      }
+
+      .action-btn.subtle {
+        background: #ffffff;
+      }
+
+      .action-btn.danger {
+        border-color: #e9c3be;
+        color: var(--danger);
+        background: #fff7f6;
+      }
+
+      .action-btn:disabled {
+        cursor: not-allowed;
+        opacity: 0.56;
+        background: #eef2f8;
+        color: #64748c;
+      }
+
+      .notes {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.92);
+        padding: 16px;
+      }
+
+      .notes h2 {
+        margin: 0;
+        font-size: 1.05rem;
+      }
+
+      .notes > p {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 0.84rem;
+        line-height: 1.5;
+      }
+
+      .memo-card {
+        margin-top: 12px;
+        border: 1px solid #dce3ef;
+        border-radius: 12px;
+        background: #f8fbff;
+        padding: 12px;
+      }
+
+      .memo-title {
+        margin: 0;
+        font-size: 0.9rem;
+      }
+
+      .memo-list {
+        margin: 8px 0 0;
+        padding-left: 18px;
+        color: #2b3d53;
+        font-size: 0.82rem;
+        line-height: 1.5;
+      }
+
+      .hig-links {
+        margin-top: 12px;
+        border: 1px dashed #c7d5ea;
+        border-radius: 10px;
+        padding: 10px;
+        background: #ffffff;
+      }
+
+      .hig-links p {
+        margin: 0 0 6px;
+        font-size: 0.78rem;
+        color: #4a5f7c;
+      }
+
+      .hig-links ul {
+        margin: 0;
+        padding-left: 18px;
+        font-size: 0.75rem;
+        line-height: 1.45;
+      }
+
+      .hig-links a {
+        color: #145ca8;
+      }
+
+      @media (max-width: 920px) {
+        .workspace {
+          grid-template-columns: 1fr;
+        }
+
+        .phone {
+          max-width: 360px;
+          margin: 0 auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header class="page-header">
+        <h1>A4 Print Layout MOC (HIG + OOUI)</h1>
+        <p>オブジェクト中心で状態と操作を整理した、iOS向け単一テーマのUIモックです。</p>
+      </header>
+
+      <div class="workspace">
+        <section class="phone" aria-label="iPhoneモック">
+          <div class="phone-inner">
+            <div class="phone-top" aria-hidden="true"><div class="phone-notch"></div></div>
+
+            <nav class="object-tabs" role="tablist" aria-label="対象オブジェクト">
+              <button
+                type="button"
+                class="object-tab"
+                role="tab"
+                data-object-tab="photos"
+                aria-controls="panel-photos"
+              >
+                画像コレクション
+              </button>
+              <button
+                type="button"
+                class="object-tab"
+                role="tab"
+                data-object-tab="layout"
+                aria-controls="panel-layout"
+              >
+                レイアウト
+              </button>
+              <button
+                type="button"
+                class="object-tab"
+                role="tab"
+                data-object-tab="pages"
+                aria-controls="panel-pages"
+              >
+                ページ
+              </button>
+              <button
+                type="button"
+                class="object-tab"
+                role="tab"
+                data-object-tab="job"
+                aria-controls="panel-job"
+              >
+                出力ジョブ
+              </button>
+            </nav>
+
+            <article id="panel-photos" class="object-panel" role="tabpanel" data-panel="photos">
+              <h2 class="panel-title">画像コレクション</h2>
+              <p class="panel-sub">現在の画像セットを確認し、必要枚数まで追加します。</p>
+
+              <div class="card">
+                <div class="kv"><span>選択済み画像</span><strong data-state-key="photos.count">8枚</strong></div>
+                <div class="kv"><span>推奨枚数（現在レイアウト）</span><strong data-state-key="layout.recommended">8枚</strong></div>
+                <div id="photoGrid" class="media-grid" aria-label="画像サムネイル一覧"></div>
+              </div>
+
+              <div class="status-row status-warning" data-state-key="photos.warningText">
+                <span class="status-icon" aria-hidden="true">!</span>
+                <span><strong>確認:</strong> 低解像度の可能性がある画像が2枚あります。</span>
+              </div>
+
+              <div class="actions">
+                <button type="button" class="action-btn primary" data-action="add-photo">画像を追加</button>
+                <button type="button" class="action-btn subtle" data-action="remove-photo">画像を1枚外す</button>
+              </div>
+            </article>
+
+            <article id="panel-layout" class="object-panel" role="tabpanel" data-panel="layout">
+              <h2 class="panel-title">レイアウト</h2>
+              <p class="panel-sub">出力対象に合う分割パターンを選択して適用します。</p>
+
+              <div class="card">
+                <div class="kv"><span>選択中プリセット</span><strong data-state-key="layout.label">8分割 (2x4)</strong></div>
+                <div class="kv"><span>1ページあたり画像数</span><strong data-state-key="layout.cells">8枚</strong></div>
+                <div class="preset-grid" id="presetGrid">
+                  <button type="button" class="preset-btn" data-action="set-preset" data-preset="1x1">A4 1分割</button>
+                  <button type="button" class="preset-btn" data-action="set-preset" data-preset="1x2">2分割 (1x2)</button>
+                  <button type="button" class="preset-btn" data-action="set-preset" data-preset="2x2">4分割 (2x2)</button>
+                  <button type="button" class="preset-btn" data-action="set-preset" data-preset="2x3">6分割 (2x3)</button>
+                  <button type="button" class="preset-btn" data-action="set-preset" data-preset="2x4">8分割 (2x4)</button>
+                </div>
+              </div>
+
+              <div class="status-row status-idle">
+                <span class="status-icon" aria-hidden="true">i</span>
+                <span><strong>反映:</strong> 適用するとページ計算を更新します。</span>
+              </div>
+
+              <div class="actions">
+                <button type="button" class="action-btn primary" data-action="apply-layout">レイアウトを適用</button>
+              </div>
+            </article>
+
+            <article id="panel-pages" class="object-panel" role="tabpanel" data-panel="pages">
+              <h2 class="panel-title">ページ</h2>
+              <p class="panel-sub">配置結果をページ単位で確認します。</p>
+
+              <div class="card">
+                <div class="kv"><span>現在ページ</span><strong data-state-key="pages.current">1</strong></div>
+                <div class="kv"><span>総ページ数</span><strong data-state-key="pages.total">2</strong></div>
+                <div class="preview-sheet">
+                  <div id="pageGrid" class="preview-grid" aria-label="ページ内の配置プレビュー"></div>
+                </div>
+              </div>
+
+              <div class="status-row status-warning" data-state-key="pages.warningText">
+                <span class="status-icon" aria-hidden="true">!</span>
+                <span><strong>注意:</strong> 画質警告の画像が含まれる可能性があります。</span>
+              </div>
+
+              <div class="actions">
+                <button type="button" class="action-btn primary" data-action="next-page">次のページを表示</button>
+                <button type="button" class="action-btn subtle" data-action="prev-page">前のページを表示</button>
+              </div>
+            </article>
+
+            <article id="panel-job" class="object-panel" role="tabpanel" data-panel="job">
+              <h2 class="panel-title">出力ジョブ</h2>
+              <p class="panel-sub">PDF生成の状態を確認し、保存または共有します。</p>
+
+              <div class="card">
+                <div class="kv"><span>ジョブ状態</span><strong data-state-key="job.statusLabel">未生成</strong></div>
+                <div class="kv"><span>ファイル名</span><strong data-state-key="job.fileName">print-layout-20260309.pdf</strong></div>
+              </div>
+
+              <div id="jobStatusRow" class="status-row status-idle">
+                <span class="status-icon" aria-hidden="true">●</span>
+                <span data-state-key="job.statusText"><strong>待機中:</strong> まだPDFを生成していません。</span>
+              </div>
+
+              <div class="actions">
+                <button type="button" class="action-btn primary" data-action="generate-pdf">PDFを生成</button>
+                <button type="button" class="action-btn subtle" data-action="save-pdf" data-state-key="job.saveBtn">保存する</button>
+                <button type="button" class="action-btn subtle" data-action="share-pdf" data-state-key="job.shareBtn">共有する</button>
+                <button type="button" class="action-btn danger" data-action="delete-job" disabled>ジョブを削除（未実装）</button>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <aside class="notes" aria-label="オブジェクト状態メモ">
+          <h2>オブジェクト状態メモ</h2>
+          <p id="objectDescription">選択中オブジェクトの状態と可能操作を表示します。</p>
+
+          <section class="memo-card">
+            <h3 id="memoTitle" class="memo-title">画像コレクション</h3>
+            <ul id="memoList" class="memo-list"></ul>
+          </section>
+
+          <section class="hig-links" aria-label="HIG参照">
+            <p>今回の設計で参照したHIG:</p>
+            <ul>
+              <li><a href="https://developer.apple.com/design/human-interface-guidelines/layout">Layout</a></li>
+              <li><a href="https://developer.apple.com/design/human-interface-guidelines/buttons">Buttons</a></li>
+              <li><a href="https://developer.apple.com/design/human-interface-guidelines/accessibility">Accessibility</a></li>
+            </ul>
+          </section>
+        </aside>
+      </div>
+    </main>
+
+    <script>
+      const PRESETS = {
+        "1x1": { label: "A4 1分割", cells: 1 },
+        "1x2": { label: "2分割 (1x2)", cells: 2 },
+        "2x2": { label: "4分割 (2x2)", cells: 4 },
+        "2x3": { label: "6分割 (2x3)", cells: 6 },
+        "2x4": { label: "8分割 (2x4)", cells: 8 },
+      };
+
+      const state = {
+        currentObject: "photos",
+        photos: {
+          count: 8,
+          max: 24,
+          lowRes: 2,
+        },
+        layout: {
+          preset: "2x4",
+        },
+        pages: {
+          current: 1,
+        },
+        job: {
+          status: "idle",
+          fileName: "print-layout-20260309.pdf",
+        },
+      };
+
+      const objectMeta = {
+        photos: {
+          title: "画像コレクション",
+          description: "画像というオブジェクトの在庫と品質を管理します。",
+          bullets: () => [
+            `画像数: ${state.photos.count}枚`,
+            `推奨枚数: ${recommendedCount()}枚`,
+            `品質警告: ${state.photos.lowRes}枚`,
+          ],
+        },
+        layout: {
+          title: "レイアウト",
+          description: "レイアウトオブジェクトの属性（分割数）を選択します。",
+          bullets: () => [
+            `現在の分割: ${PRESETS[state.layout.preset].label}`,
+            `1ページの容量: ${PRESETS[state.layout.preset].cells}枚`,
+            "操作: レイアウトを適用",
+          ],
+        },
+        pages: {
+          title: "ページ",
+          description: "ページオブジェクトの状態を確認し、表示対象を切り替えます。",
+          bullets: () => [
+            `現在ページ: ${state.pages.current} / ${totalPages()}`,
+            `配置可能枚数: ${PRESETS[state.layout.preset].cells}枚 / ページ`,
+            `残り画像: ${Math.max(state.photos.count - state.pages.current * PRESETS[state.layout.preset].cells, 0)}枚`,
+          ],
+        },
+        job: {
+          title: "出力ジョブ",
+          description: "出力ジョブオブジェクトの進行状態を管理します。",
+          bullets: () => [
+            `状態: ${jobStatusLabel()}`,
+            `保存可否: ${state.job.status === "done" ? "可能" : "不可"}`,
+            "破壊的操作: 未実装（無効化）",
+          ],
+        },
+      };
+
+      function totalPages() {
+        return Math.max(1, Math.ceil(state.photos.count / PRESETS[state.layout.preset].cells));
+      }
+
+      function recommendedCount() {
+        return PRESETS[state.layout.preset].cells;
+      }
+
+      function jobStatusLabel() {
+        if (state.job.status === "rendering") return "生成中";
+        if (state.job.status === "done") return "生成完了";
+        return "未生成";
+      }
+
+      function jobStatusText() {
+        if (state.job.status === "rendering") {
+          return "<strong>処理中:</strong> PDFを生成しています。完了までお待ちください。";
+        }
+        if (state.job.status === "done") {
+          return "<strong>完了:</strong> PDFの生成が完了しました。保存または共有が可能です。";
+        }
+        return "<strong>待機中:</strong> まだPDFを生成していません。";
+      }
+
+      function setObjectTab(tabId) {
+        if (!objectMeta[tabId]) return;
+        state.currentObject = tabId;
+        renderAll();
+      }
+
+      function dispatchAction(actionId, payload = {}) {
+        switch (actionId) {
+          case "add-photo":
+            state.photos.count = Math.min(state.photos.max, state.photos.count + 1);
+            if (state.photos.count > recommendedCount()) state.photos.lowRes = Math.max(0, state.photos.lowRes - 1);
+            state.pages.current = Math.min(state.pages.current, totalPages());
+            break;
+          case "remove-photo":
+            state.photos.count = Math.max(0, state.photos.count - 1);
+            state.photos.lowRes = Math.min(state.photos.lowRes, state.photos.count);
+            state.pages.current = Math.min(state.pages.current, totalPages());
+            break;
+          case "set-preset":
+            if (PRESETS[payload.preset]) {
+              state.layout.preset = payload.preset;
+              state.pages.current = Math.min(state.pages.current, totalPages());
+            }
+            break;
+          case "apply-layout":
+            state.currentObject = "pages";
+            state.pages.current = 1;
+            break;
+          case "next-page":
+            state.pages.current = Math.min(totalPages(), state.pages.current + 1);
+            break;
+          case "prev-page":
+            state.pages.current = Math.max(1, state.pages.current - 1);
+            break;
+          case "generate-pdf":
+            if (state.job.status === "rendering") break;
+            state.job.status = "rendering";
+            renderAll();
+            window.setTimeout(() => {
+              state.job.status = "done";
+              renderAll();
+            }, 1200);
+            break;
+          case "save-pdf":
+          case "share-pdf":
+            if (state.job.status !== "done") break;
+            state.currentObject = "job";
+            break;
+          default:
+            break;
+        }
+        renderAll();
+      }
+
+      function renderTabs() {
+        document.querySelectorAll("[data-object-tab]").forEach((button) => {
+          const active = button.dataset.objectTab === state.currentObject;
+          button.classList.toggle("active", active);
+          button.setAttribute("aria-selected", active ? "true" : "false");
+          button.tabIndex = active ? 0 : -1;
+        });
+      }
+
+      function renderPanels() {
+        document.querySelectorAll("[data-panel]").forEach((panel) => {
+          const active = panel.dataset.panel === state.currentObject;
+          panel.classList.toggle("active", active);
+          panel.hidden = !active;
+        });
+      }
+
+      function renderStateText() {
+        const keyMap = {
+          "photos.count": `${state.photos.count}枚`,
+          "layout.recommended": `${recommendedCount()}枚`,
+          "layout.label": PRESETS[state.layout.preset].label,
+          "layout.cells": `${PRESETS[state.layout.preset].cells}枚`,
+          "pages.current": String(state.pages.current),
+          "pages.total": String(totalPages()),
+          "job.statusLabel": jobStatusLabel(),
+          "job.fileName": state.job.fileName,
+        };
+
+        document.querySelectorAll("[data-state-key]").forEach((el) => {
+          const key = el.dataset.stateKey;
+          if (keyMap[key]) el.textContent = keyMap[key];
+        });
+
+        const photoWarn = document.querySelector('[data-state-key="photos.warningText"] span:last-child');
+        if (photoWarn) {
+          const hasWarn = state.photos.lowRes > 0;
+          photoWarn.innerHTML = hasWarn
+            ? `<strong>確認:</strong> 低解像度の可能性がある画像が${state.photos.lowRes}枚あります。`
+            : "<strong>良好:</strong> 画像品質の警告はありません。";
+          photoWarn.parentElement.classList.toggle("status-warning", hasWarn);
+          photoWarn.parentElement.classList.toggle("status-success", !hasWarn);
+          photoWarn.previousElementSibling.textContent = hasWarn ? "!" : "✓";
+        }
+
+        const pageWarn = document.querySelector('[data-state-key="pages.warningText"] span:last-child');
+        if (pageWarn) {
+          const hasWarn = state.photos.lowRes > 0;
+          pageWarn.innerHTML = hasWarn
+            ? `<strong>注意:</strong> 低解像度候補 ${state.photos.lowRes}枚を確認してください。`
+            : "<strong>確認済み:</strong> 品質警告はありません。";
+          pageWarn.parentElement.classList.toggle("status-warning", hasWarn);
+          pageWarn.parentElement.classList.toggle("status-success", !hasWarn);
+          pageWarn.previousElementSibling.textContent = hasWarn ? "!" : "✓";
+        }
+      }
+
+      function renderPhotoGrid() {
+        const grid = document.getElementById("photoGrid");
+        if (!grid) return;
+        const visible = Math.max(8, Math.min(12, state.photos.count));
+        grid.innerHTML = "";
+        for (let i = 0; i < visible; i += 1) {
+          const item = document.createElement("div");
+          item.className = "media-thumb";
+          if (i < state.photos.count) {
+            item.textContent = `IMG ${String(i + 1).padStart(2, "0")}`;
+          } else {
+            item.classList.add("empty");
+            item.textContent = "空";
+          }
+          grid.appendChild(item);
+        }
+      }
+
+      function renderPresetButtons() {
+        document.querySelectorAll(".preset-btn").forEach((button) => {
+          button.classList.toggle("active", button.dataset.preset === state.layout.preset);
+        });
+      }
+
+      function renderPageGrid() {
+        const grid = document.getElementById("pageGrid");
+        if (!grid) return;
+
+        const cells = PRESETS[state.layout.preset].cells;
+        const rows = Math.ceil(cells / 2);
+        grid.style.gridTemplateRows = `repeat(${rows}, minmax(0, 1fr))`;
+        grid.innerHTML = "";
+
+        const start = (state.pages.current - 1) * cells;
+        const end = start + cells;
+
+        for (let i = 0; i < cells; i += 1) {
+          const cell = document.createElement("div");
+          cell.className = "preview-cell";
+          if (start + i < state.photos.count && start + i < end) {
+            cell.classList.add("filled");
+          }
+          grid.appendChild(cell);
+        }
+      }
+
+      function renderJobStatus() {
+        const statusRow = document.getElementById("jobStatusRow");
+        if (statusRow) {
+          statusRow.classList.remove("status-idle", "status-warning", "status-success");
+          if (state.job.status === "done") statusRow.classList.add("status-success");
+          else if (state.job.status === "rendering") statusRow.classList.add("status-warning");
+          else statusRow.classList.add("status-idle");
+
+          const icon = statusRow.querySelector(".status-icon");
+          const text = statusRow.querySelector('[data-state-key="job.statusText"]');
+          if (icon) icon.textContent = state.job.status === "done" ? "✓" : state.job.status === "rendering" ? "…" : "●";
+          if (text) text.innerHTML = jobStatusText();
+        }
+
+        const canExport = state.job.status === "done";
+        document.querySelector('[data-action="save-pdf"]').disabled = !canExport;
+        document.querySelector('[data-action="share-pdf"]').disabled = !canExport;
+        document.querySelector('[data-action="generate-pdf"]').disabled = state.job.status === "rendering";
+      }
+
+      function renderMemo() {
+        const meta = objectMeta[state.currentObject];
+        const title = document.getElementById("memoTitle");
+        const desc = document.getElementById("objectDescription");
+        const list = document.getElementById("memoList");
+
+        if (!meta || !title || !desc || !list) return;
+
+        title.textContent = meta.title;
+        desc.textContent = meta.description;
+
+        list.innerHTML = "";
+        meta.bullets().forEach((line) => {
+          const li = document.createElement("li");
+          li.textContent = line;
+          list.appendChild(li);
+        });
+      }
+
+      function renderAll() {
+        renderTabs();
+        renderPanels();
+        renderStateText();
+        renderPhotoGrid();
+        renderPresetButtons();
+        renderPageGrid();
+        renderJobStatus();
+        renderMemo();
+      }
+
+      document.querySelectorAll("[data-object-tab]").forEach((button) => {
+        button.addEventListener("click", () => setObjectTab(button.dataset.objectTab));
+      });
+
+      document.querySelectorAll("[data-action]").forEach((button) => {
+        button.addEventListener("click", () => {
+          dispatchAction(button.dataset.action, { preset: button.dataset.preset });
+        });
+      });
+
+      renderAll();
+    </script>
+  </body>
+</html>
