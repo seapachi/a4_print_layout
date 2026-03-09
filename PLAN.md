@@ -22,6 +22,7 @@
 | T-016 | スマホ内部レイアウトのみ反映（外枠/上部タブ/ステータスバー削除） | `index.html`, `EXPLANATION.md`, `README.md`, `PLAN.md` | 完了 | 内部レイアウトカード化・遷移は次へ/戻る維持 |
 | T-017 | Screen D戻る導線追加 + レイアウト設定ミニ図の縦長化 | `index.html`, `EXPLANATION.md`, `README.md`, `PLAN.md` | 完了 | D画面戻る導線を追加、B画面のミニ図を縦長化 |
 | T-018 | PCワイド時のヘッダー左ズレ修正（420px中央揃え） | `index.html`, `EXPLANATION.md`, `README.md`, `PLAN.md` | 完了 | ヘッダー幅を `app-surface` と一致させ中央配置 |
+| T-019 | 既存preview画像の `reference/preview/` への移動 | `reference/preview/*`, `PLAN.md` | 完了 | ルート直下 `preview-*.png` を集約管理 |
 
 ## 状態定義
 - 未着手
@@ -39,22 +40,24 @@
 - HIG本文抽出（単体）: `node ~/.codex/skills/apple-hig-ui-reflector/scripts/hig_scrape.js --url .../layout --out /tmp/hig-layout-live.json`
 - HIG本文抽出（カタログ）: `node ~/.codex/skills/apple-hig-ui-reflector/scripts/hig_scrape.js --catalog --out-dir ~/.codex/skills/apple-hig-ui-reflector/references/generated`
 - HIG/OOUI MOC疎通確認: `curl -I http://127.0.0.1:8000/index.html` / `curl -I http://127.0.0.1:8000/reference/mock/index_hig_ooui.html` -> `HTTP/1.0 200 OK`
-- HIG/OOUI MOCスクリーンショット: `preview-hig-ooui-20260309-233027.png`（Playwrightでタブ操作後に撮影）
-- HIG/OOUI MOCモバイル確認: `preview-hig-ooui-mobile-20260309-233123.png`（390x844でレイアウト崩れなし）
+- HIG/OOUI MOCスクリーンショット: `reference/preview/preview-hig-ooui-20260309-233027.png`（Playwrightでタブ操作後に撮影）
+- HIG/OOUI MOCモバイル確認: `reference/preview/preview-hig-ooui-mobile-20260309-233123.png`（390x844でレイアウト崩れなし）
 - Hansi実装疎通確認: `curl -I http://127.0.0.1:8000/index.html` -> `HTTP/1.0 200 OK`
-- Hansi実装スクリーンショット: `preview-hansi-desktop-20260310-002631.png`（B設定タブへ遷移後に撮影）
-- Hansi実装モバイル確認: `preview-hansi-mobile-20260310-002631.png`（390x844, 6分割選択状態で撮影）
+- Hansi実装スクリーンショット: `reference/preview/preview-hansi-desktop-20260310-002631.png`（B設定タブへ遷移後に撮影）
+- Hansi実装モバイル確認: `reference/preview/preview-hansi-mobile-20260310-002631.png`（390x844, 6分割選択状態で撮影）
 - Hansi実装スモークテスト: Playwrightで `2分割 + cover + 3画像` を投入し、`2ページ` 生成とScreen D表示を確認（`smoke: ok`）
 - 内部レイアウト疎通確認: `curl -I http://127.0.0.1:8000/index.html` -> `HTTP/1.0 200 OK`
-- 内部レイアウトスクリーンショット: `preview-inner-layout-desktop-20260310-004604.png`（Screen B表示で撮影）
-- 内部レイアウトモバイル確認: `preview-inner-layout-mobile-20260310-004604.png`（390x844, 6分割選択状態）
+- 内部レイアウトスクリーンショット: `reference/preview/preview-inner-layout-desktop-20260310-004604.png`（Screen B表示で撮影）
+- 内部レイアウトモバイル確認: `reference/preview/preview-inner-layout-mobile-20260310-004604.png`（390x844, 6分割選択状態）
 - 内部レイアウトスモークテスト: Playwrightで `2分割 + cover + 3画像` を投入し、`2ページ` 生成とScreen D表示を確認（`smoke: ok`）
 - T-017疎通確認: `curl -I http://127.0.0.1:8000/index.html` -> `HTTP/1.0 200 OK`
-- T-017スクリーンショット（B画面）: `preview-screen-d-back-desktop-20260310-010327.png`（縦長ミニ図を確認）
-- T-017モバイル確認（B画面）: `preview-screen-d-back-mobile-20260310-010327.png`（390x844, 6分割選択状態）
-- T-017スクリーンショット（D画面）: `preview-screen-d-back-state-20260310-010412.png`（上部の戻る導線を確認）
+- T-017スクリーンショット（B画面）: `reference/preview/preview-screen-d-back-desktop-20260310-010327.png`（縦長ミニ図を確認）
+- T-017モバイル確認（B画面）: `reference/preview/preview-screen-d-back-mobile-20260310-010327.png`（390x844, 6分割選択状態）
+- T-017スクリーンショット（D画面）: `reference/preview/preview-screen-d-back-state-20260310-010412.png`（上部の戻る導線を確認）
 - T-017スモークテスト: Playwrightで `2分割 + cover + 3画像` を投入し、Screen D到達後に `← 戻る` でScreen Cへ復帰確認（`smoke: ok`）
 - T-018疎通確認: `curl -I http://127.0.0.1:8000/index.html` -> `HTTP/1.0 200 OK`
-- T-018スクリーンショット（desktop）: `preview-header-align-desktop-20260310-011304.png`（ヘッダーと `app-surface` 左端一致を確認）
-- T-018スクリーンショット（mobile）: `preview-header-align-mobile-20260310-011304.png`（390x844で折返し崩れなし）
+- T-018スクリーンショット（desktop）: `reference/preview/preview-header-align-desktop-20260310-011304.png`（ヘッダーと `app-surface` 左端一致を確認）
+- T-018スクリーンショット（mobile）: `reference/preview/preview-header-align-mobile-20260310-011304.png`（390x844で折返し崩れなし）
+- T-019移動対象（13件）: ルート直下 `preview-*.png` を `reference/preview/` へ一括移動
+- T-019検証: ルート直下 `preview-*.png` は 0 件、`reference/preview/` には 14 件（既存1件 + 移動13件）
 - T-018レイアウト検証: Playwright評価で `.pg-header.left` と `.app-surface.left` の差分 `< 1px` を確認（`alignment-check: ok`）
