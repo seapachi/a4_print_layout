@@ -19,6 +19,7 @@
 | T-013 | リポジトリ構成の整理（配置と除外設定の見直し） | `.gitignore`, `README.md`, `PLAN.md`, `reference/preview/*` | 完了 | preview画像を `reference/preview/` へ移動、重複1件削除、ignore整理を実施 |
 | T-014 | HIG/OOUI準拠MOCの再設計実装 | `AGENTS.md`, `PLAN.md`, `reference/mock/index_hig_ooui.html`, `EXPLANATION.md` | 完了 | iOS調単一テーマ + OOUIオブジェクト中心UI |
 | T-015 | Hansi本実装 + 1/2/4/6/8分割 + cover対応 | `index.html`, `EXPLANATION.md`, `README.md`, `PLAN.md` | 完了 | 右パネル廃止・1カラム化・ログ折りたたみ・分割/fit連動 |
+| T-016 | スマホ内部レイアウトのみ反映（外枠/上部タブ/ステータスバー削除） | `index.html`, `EXPLANATION.md`, `README.md`, `PLAN.md` | 完了 | 内部レイアウトカード化・遷移は次へ/戻る維持 |
 
 ## 状態定義
 - 未着手
@@ -42,3 +43,7 @@
 - Hansi実装スクリーンショット: `preview-hansi-desktop-20260310-002631.png`（B設定タブへ遷移後に撮影）
 - Hansi実装モバイル確認: `preview-hansi-mobile-20260310-002631.png`（390x844, 6分割選択状態で撮影）
 - Hansi実装スモークテスト: Playwrightで `2分割 + cover + 3画像` を投入し、`2ページ` 生成とScreen D表示を確認（`smoke: ok`）
+- 内部レイアウト疎通確認: `curl -I http://127.0.0.1:8000/index.html` -> `HTTP/1.0 200 OK`
+- 内部レイアウトスクリーンショット: `preview-inner-layout-desktop-20260310-004604.png`（Screen B表示で撮影）
+- 内部レイアウトモバイル確認: `preview-inner-layout-mobile-20260310-004604.png`（390x844, 6分割選択状態）
+- 内部レイアウトスモークテスト: Playwrightで `2分割 + cover + 3画像` を投入し、`2ページ` 生成とScreen D表示を確認（`smoke: ok`）
