@@ -34,6 +34,7 @@
 | T-028 | frontend-designでA/B/C/DのミニマルMOC再設計 | `reference/mock/index_frontend_desight.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | 遷移のみダミー実装 |
 | T-029 | iPhone向け固定CTA化（A/B/C/D） | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | `.sc-body` と固定CTA分離、safe-area/dvh対応、D画面CTA主副分割 |
 | T-030 | Playwright可視セレクタ運用ルール追記 | `AGENTS.md`, `PLAN.md` | 完了 | `.on` 画面スコープの明文化 |
+| T-031 | Screen Dの `PDFを開く` ボタン左寄せ修正 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | 表示指定を `block` に統一し中央揃えを回復 |
 
 ## 状態定義
 - 未着手
@@ -105,3 +106,7 @@
 - T-029遷移回帰確認: Playwrightで `sc-a -> sc-b -> sc-c -> sc-b -> sc-a` を `data-go` クリックで確認（`trail=["sc-a","sc-b","sc-c","sc-b","sc-a"]`）
 - T-029依存確認: Playwright評価で `window.PDFLib` の読み込み済みを確認（`pdfLibLoaded=true`）
 - T-030運用ルール更新: `AGENTS.md` に「Playwright操作ルール（追加）」を追記し、可視画面限定セレクタ（`#sc-*.on`）の優先を明文化
+- T-031疎通確認: `curl -I http://127.0.0.1:8000/index.html` -> `HTTP/1.0 200 OK`
+- T-031スクリーンショット（Screen D）: `/tmp/t031-screen-d-pdf-open-2026-03-15T00-18-00.png`（390x844, `PDFを開く` ボタン中央揃えを確認）
+- T-031画像内容確認: `view_image` で上記画像を確認（撮影成功・ビューア表示成功）
+- T-031レイアウト検証: Playwright評価で `#sc-d.on #openPdfLink` の `display=\"block\"` `textAlign=\"center\"` `width=mainWidth` `leftDelta=0` `rightDelta=0` を確認
