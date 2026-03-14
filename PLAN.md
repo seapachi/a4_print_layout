@@ -33,6 +33,7 @@
 | T-027 | Claude Code由来 `frontend-design` スキル導入 | `~/.codex/skills/frontend-design/*`, `PLAN.md` | 完了 | `anthropics/claude-code` から導入 |
 | T-028 | frontend-designでA/B/C/DのミニマルMOC再設計 | `reference/mock/index_frontend_desight.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | 遷移のみダミー実装 |
 | T-029 | iPhone向け固定CTA化（A/B/C/D） | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | `.sc-body` と固定CTA分離、safe-area/dvh対応、D画面CTA主副分割 |
+| T-030 | Playwright可視セレクタ運用ルール追記 | `AGENTS.md`, `PLAN.md` | 完了 | `.on` 画面スコープの明文化 |
 
 ## 状態定義
 - 未着手
@@ -103,3 +104,4 @@
 - T-029追加検証（D画面多ボタン）: `saveVisible=true` `openVisible=true` `ctaInsideSurface=true` を両ビューポートで確認
 - T-029遷移回帰確認: Playwrightで `sc-a -> sc-b -> sc-c -> sc-b -> sc-a` を `data-go` クリックで確認（`trail=["sc-a","sc-b","sc-c","sc-b","sc-a"]`）
 - T-029依存確認: Playwright評価で `window.PDFLib` の読み込み済みを確認（`pdfLibLoaded=true`）
+- T-030運用ルール更新: `AGENTS.md` に「Playwright操作ルール（追加）」を追記し、可視画面限定セレクタ（`#sc-*.on`）の優先を明文化
