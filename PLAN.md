@@ -35,6 +35,7 @@
 | T-029 | iPhone向け固定CTA化（A/B/C/D） | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | `.sc-body` と固定CTA分離、safe-area/dvh対応、D画面CTA主副分割 |
 | T-030 | Playwright可視セレクタ運用ルール追記 | `AGENTS.md`, `PLAN.md` | 完了 | `.on` 画面スコープの明文化 |
 | T-031 | Screen Dの `PDFを開く` ボタン左寄せ修正 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | 表示指定を `block` に統一し中央揃えを回復 |
+| T-032 | iPhone下余白調整 + Screen D簡素化 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | モバイル高さを再調整し、D画面はviewer折りたたみ + 5操作の1画面初期表示へ再構成 |
 
 ## 状態定義
 - 未着手
@@ -110,3 +111,8 @@
 - T-031スクリーンショット（Screen D）: `/tmp/t031-screen-d-pdf-open-2026-03-15T00-18-00.png`（390x844, `PDFを開く` ボタン中央揃えを確認）
 - T-031画像内容確認: `view_image` で上記画像を確認（撮影成功・ビューア表示成功）
 - T-031レイアウト検証: Playwright評価で `#sc-d.on #openPdfLink` の `display=\"block\"` `textAlign=\"center\"` `width=mainWidth` `leftDelta=0` `rightDelta=0` を確認
+- T-032疎通確認: `curl -I http://127.0.0.1:8000/index.html` -> `HTTP/1.0 200 OK`
+- T-032スクリーンショット（Screen A/B/C/D）: `/tmp/t032-screen-a-20260315-004148.png` `/tmp/t032-screen-b-20260315-004148.png` `/tmp/t032-screen-c-20260315-004148.png` `/tmp/t032-screen-d-20260315-004148.png`
+- T-032画像内容確認: `view_image` で上記4枚を確認（撮影成功・ビューア表示成功）
+- T-032レイアウト検証: Playwright評価で `iPhone 12 / iPhone 15` 相当の `A/B/C` は `surfaceBottomGap >= 19px` `lastBtnBottomGapToViewport >= 32px`、`D` 初期表示は `bodyNeedsScroll=false` かつ `共有する/保存する/PDFを開く/戻る/もう一度作る` の5操作表示を確認
+- T-032viewer展開検証: Playwright評価で `#pdfPreviewDetails` を開いた後、`previewDisclosureOpen=true` `viewerVisible=true` `bodyNeedsScroll=true` を確認

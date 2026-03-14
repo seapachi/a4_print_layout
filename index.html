@@ -109,7 +109,7 @@
       }
 
       #sc-d {
-        --sc-cta-space: 264px;
+        --sc-cta-space: 188px;
       }
 
       .sc-body {
@@ -498,20 +498,20 @@
       }
 
       .done-icon {
-        margin: 16px auto 10px;
-        width: 62px;
-        height: 62px;
+        margin: 10px auto 8px;
+        width: 52px;
+        height: 52px;
         border-radius: 50%;
         border: 2px solid var(--ac);
         background: var(--ac-dim);
         color: var(--ac);
         display: grid;
         place-items: center;
-        font-size: 1.35rem;
+        font-size: 1.15rem;
       }
 
       .done-card {
-        margin-top: 4px;
+        margin-top: 2px;
         border: 1px solid var(--b0);
         border-radius: 11px;
         background: var(--s1);
@@ -522,7 +522,7 @@
         display: flex;
         justify-content: space-between;
         gap: 10px;
-        padding: 9px 10px;
+        padding: 7px 10px;
       }
 
       .done-row + .done-row {
@@ -531,19 +531,61 @@
 
       .done-k {
         color: var(--t1);
-        font-size: 0.72rem;
+        font-size: 0.7rem;
       }
 
       .done-v {
-        font-size: 0.74rem;
+        font-size: 0.72rem;
         font-weight: 700;
       }
 
-      .pdf-view {
-        margin-top: 10px;
+      .done-note {
+        margin-top: 2px;
+        margin-bottom: 0;
+        font-size: 0.74rem;
+        line-height: 1.35;
+      }
+
+      .pdf-preview-disclosure {
+        margin-top: 8px;
         border: 1px solid var(--b0);
         border-radius: 11px;
         background: var(--s1);
+        overflow: hidden;
+      }
+
+      .pdf-preview-disclosure summary {
+        list-style: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px 12px;
+        font-size: 0.76rem;
+        font-weight: 700;
+        color: var(--t0);
+      }
+
+      .pdf-preview-disclosure summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .pdf-preview-disclosure summary::after {
+        content: "＋";
+        font-size: 0.95rem;
+        line-height: 1;
+        color: var(--ac);
+      }
+
+      .pdf-preview-disclosure[open] summary::after {
+        content: "−";
+      }
+
+      .pdf-view {
+        margin-top: 0;
+        border-top: 1px solid var(--b0);
+        background: transparent;
         padding: 8px;
       }
 
@@ -586,6 +628,12 @@
       .sc-cta-main,
       .sc-cta-sub {
         display: grid;
+        gap: 8px;
+      }
+
+      .cta-pair {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 8px;
       }
 
@@ -662,8 +710,8 @@
         }
 
         .app-surface {
-          height: min(var(--sc-base-height), calc(100dvh - 190px));
-          min-height: 620px;
+          height: clamp(560px, calc(100dvh - 140px), 620px);
+          min-height: 0;
         }
 
         .fit-row {
@@ -806,7 +854,7 @@
                 <div class="sc-nav">
                   <span class="sc-h">PDF生成完了</span>
                 </div>
-                <p class="sc-note" style="text-align:center;">保存または共有を選択してください。</p>
+                <p class="sc-note done-note" style="text-align:center;">保存または共有を選択してください。</p>
 
                 <div class="done-icon">✓</div>
                 <div class="done-card">
@@ -814,20 +862,27 @@
                   <div class="done-row"><span class="done-k">ページ数</span><span id="donePageCount" class="done-v">0 ページ</span></div>
                 </div>
 
-                <div id="pdfViewerWrap" class="pdf-view" style="display:none">
-                  <iframe id="pdfViewer" title="生成されたPDFプレビュー"></iframe>
-                </div>
+                <details id="pdfPreviewDetails" class="pdf-preview-disclosure">
+                  <summary>PDFを確認する</summary>
+                  <div id="pdfViewerWrap" class="pdf-view" style="display:none">
+                    <iframe id="pdfViewer" title="生成されたPDFプレビュー"></iframe>
+                  </div>
+                </details>
               </div>
 
               <div class="sc-cta">
                 <div class="sc-cta-main">
                   <button id="shareButton" class="btn btn-ac" type="button" disabled>共有する</button>
-                  <a id="saveLink" class="btn btn-sub" href="#" download style="display:none">保存する</a>
-                  <a id="openPdfLink" class="btn btn-sub pdf-open-link" href="#" target="_blank" rel="noopener" style="display:none">PDFを開く（表示できない場合）</a>
+                  <div class="cta-pair">
+                    <a id="saveLink" class="btn btn-sub" href="#" download style="display:none">保存する</a>
+                    <a id="openPdfLink" class="btn btn-sub pdf-open-link" href="#" target="_blank" rel="noopener" style="display:none">PDFを開く</a>
+                  </div>
                 </div>
                 <div class="sc-cta-sub">
-                  <button class="btn btn-gh" type="button" data-go="sc-c">戻る</button>
-                  <button id="restartButton" class="btn btn-gh" type="button" data-go="sc-a">もう一度作る</button>
+                  <div class="cta-pair">
+                    <button class="btn btn-gh" type="button" data-go="sc-c">戻る</button>
+                    <button id="restartButton" class="btn btn-gh" type="button" data-go="sc-a">もう一度作る</button>
+                  </div>
                 </div>
               </div>
             </article>
@@ -884,6 +939,7 @@
       const saveLink = document.getElementById("saveLink");
       const pdfViewerWrap = document.getElementById("pdfViewerWrap");
       const pdfViewer = document.getElementById("pdfViewer");
+      const pdfPreviewDetails = document.getElementById("pdfPreviewDetails");
       const openPdfLink = document.getElementById("openPdfLink");
       const errorBox = document.getElementById("errorBox");
       const slotGrid = document.getElementById("slotGrid");
@@ -957,6 +1013,9 @@
         lastLoadErrors = [];
         previewPage = 1;
         clearResult();
+        if (pdfPreviewDetails) {
+          pdfPreviewDetails.open = false;
+        }
         renderErrors([]);
         renderThumbs([]);
         renderPreview([]);
@@ -1622,6 +1681,9 @@
         openPdfLink.style.display = "none";
         openPdfLink.removeAttribute("href");
         pdfViewerWrap.style.display = "none";
+        if (pdfPreviewDetails) {
+          pdfPreviewDetails.open = false;
+        }
       }
 
       function applyGeneratedBlob(blob, filename) {
@@ -1636,6 +1698,9 @@
         openPdfLink.href = currentDownloadUrl;
         openPdfLink.style.display = "block";
         pdfViewerWrap.style.display = "block";
+        if (pdfPreviewDetails) {
+          pdfPreviewDetails.open = false;
+        }
         shareButton.disabled = false;
         doneFileName.textContent = filename;
       }
