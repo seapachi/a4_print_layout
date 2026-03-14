@@ -39,6 +39,7 @@
 | T-033 | Screen B初期レイアウトを4分割へ変更 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | 初回選択状態とプレビュー初期表示を4分割へ統一 |
 | T-034 | Screen Dの見出し再配置とPDFプレビュー拡張 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | 見出し右へ完了アイコン移設、viewer展開時の高さを `clamp(320px, 48dvh, 460px)` へ拡張 |
 | T-035 | Screen Bの分割レイアウトを2列化して1画面表示へ圧縮 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | 分割候補の2列カード化とモバイル縦高さの最適化 |
+| T-036 | コミットメッセージ案を番号付きで提示する運用へ更新 | `AGENTS.md`, `PLAN.md` | 完了 | `1. ... / 2. ...` 形式で数字選択できるよう明文化 |
 
 ## 状態定義
 - 未着手
@@ -131,3 +132,4 @@
 - T-035スクリーンショット（Screen B）: `/tmp/t035-screen-b-20260315-2col.png`（iPhone 12相当, 分割レイアウト2列表示とCTAまでの1画面表示を確認）
 - T-035画像内容確認: `view_image` で上記画像を確認（撮影成功・ビューア表示成功）
 - T-035レイアウト検証: Playwright評価で `#sc-b.on .sc-body` の `bodyNeedsScroll=false`、`#lay-opts` の `gridTemplateColumns=\"164px 164px\"`、`.fit-row` の `gridTemplateColumns=\"164px 164px\"`、`ctaInsideSurface=true` を確認
+- T-036運用ルール更新: `AGENTS.md` のコミット方針に、コミットメッセージ案を `1. ... / 2. ...` 形式で番号付き提示し、数字だけで選べるようにするルールを追加
