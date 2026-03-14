@@ -215,6 +215,7 @@
 
       .thumb-empty-msg {
         margin-top: 10px;
+        grid-column: 1 / -1;
         border: 1px dashed var(--b1);
         border-radius: 8px;
         background: var(--s0);
@@ -241,66 +242,30 @@
         font-weight: 700;
       }
 
-      .metrics {
-        margin-top: 10px;
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 6px;
-      }
-
-      .metric {
-        background: var(--s0);
+      .errors {
+        margin-top: 8px;
+        font-size: 0.74rem;
         border: 1px solid var(--b0);
         border-radius: 10px;
-        padding: 7px;
-      }
-
-      .metric .k {
-        font-size: 0.67rem;
-        color: var(--t1);
-      }
-
-      .metric .v {
-        margin-top: 3px;
-        font-size: 0.86rem;
-        font-weight: 700;
-      }
-
-      .status {
-        margin-top: 10px;
-        border-radius: 10px;
-        border: 1px solid var(--b0);
         background: var(--s0);
         color: var(--t1);
         padding: 8px;
-        font-size: 0.76rem;
       }
 
-      .status.success {
-        border-color: var(--ok);
-        color: var(--ok);
-        background: var(--ok-dim);
-      }
-
-      .status.warn {
+      .errors.warn {
         border-color: var(--warn);
         color: var(--warn);
         background: var(--warn-dim);
       }
 
-      .status.error {
+      .errors.error {
         border-color: var(--ac);
         color: var(--ac);
         background: var(--ac-dim);
       }
 
-      .errors {
-        margin-top: 8px;
-        font-size: 0.74rem;
-      }
-
       .errors ul {
-        margin: 4px 0 0;
+        margin: 6px 0 0;
         padding-left: 18px;
       }
 
@@ -640,10 +605,6 @@
       }
 
       @media (max-width: 760px) {
-        .metrics {
-          grid-template-columns: 1fr;
-        }
-
         .fit-row {
           grid-template-columns: 1fr;
         }
@@ -655,7 +616,7 @@
     <main class="page">
       <header class="pg-header">
         <h1 class="app-title">A4 Print Layout</h1>
-        <p class="app-sub">Hansi Theme / 内部レイアウト実装 / A4 1・2・4・6・8分割</p>
+        <p class="app-sub">スマホの写真をA4印刷PDFにかんたん配置（1/2/4/6/8分割）</p>
       </header>
 
       <section class="stage">
@@ -682,13 +643,6 @@
                   <span id="selectedCountBadge" class="badge">0枚</span>
                 </div>
 
-                <div class="metrics">
-                  <div class="metric"><div class="k">選択ファイル</div><div class="v" id="metricSelected">0</div></div>
-                  <div class="metric"><div class="k">有効画像</div><div class="v" id="metricValid">0</div></div>
-                  <div class="metric"><div class="k">想定ページ</div><div class="v" id="metricPages">0</div></div>
-                </div>
-
-                <div id="status" class="status info">待機中</div>
                 <div id="errorBox" class="errors" style="display:none"></div>
               </div>
 
@@ -739,7 +693,7 @@
                 <button type="button" class="fit-opt" data-fit="cover">はみ出し許容（トリミング）</button>
               </div>
 
-              <div class="info-box">不足画像は空枠表示、超過画像は次ページへ自動配置。Coverは中央基準で切り抜きます。</div>
+              <div class="info-box">不足画像は空枠表示、超過画像は次ページへ自動配置。トリミングは中央基準で切り抜きます。</div>
 
               <div class="sc-cta">
                 <button class="btn btn-ac" type="button" data-go="sc-c">プレビューへ</button>
@@ -757,7 +711,7 @@
 
               <div class="preview-meta">
                 <span id="previewLayoutLabel">レイアウト: 8分割 (2x4)</span>
-                <span id="previewFitLabel">配置: contain</span>
+                <span id="previewFitLabel">配置: 全体表示</span>
               </div>
 
               <div class="a4-wrap">
@@ -770,7 +724,7 @@
                 <button class="pg-btn" id="next-pg" type="button" disabled>＞</button>
               </div>
 
-              <div class="warn-bar">低解像度警告は生成時にログ・ステータスへ集約表示します。</div>
+              <div class="warn-bar">低解像度警告は生成時にログと警告表示へ集約します。</div>
 
               <div class="sc-cta">
                 <button id="generateButton" class="btn btn-ac" type="button">PDFを生成</button>
@@ -830,8 +784,8 @@
       };
 
       const FIT_LABELS = {
-        contain: "contain",
-        cover: "cover",
+        contain: "全体表示",
+        cover: "トリミング",
       };
 
       let currentLayoutKey = "8";
@@ -848,6 +802,8 @@
       let currentFileName = "";
       let currentDownloadUrl = "";
       let loadingRevision = 0;
+      let currentStatusText = "";
+      let currentStatusType = "info";
 
       const fileInput = document.getElementById("fileInput");
       const generateButton = document.getElementById("generateButton");
@@ -856,13 +812,9 @@
       const pdfViewerWrap = document.getElementById("pdfViewerWrap");
       const pdfViewer = document.getElementById("pdfViewer");
       const openPdfLink = document.getElementById("openPdfLink");
-      const statusBox = document.getElementById("status");
       const errorBox = document.getElementById("errorBox");
       const slotGrid = document.getElementById("slotGrid");
       const logBox = document.getElementById("logBox");
-      const metricSelected = document.getElementById("metricSelected");
-      const metricValid = document.getElementById("metricValid");
-      const metricPages = document.getElementById("metricPages");
       const previewLayoutLabel = document.getElementById("previewLayoutLabel");
       const previewFitLabel = document.getElementById("previewFitLabel");
       const doneFileName = document.getElementById("doneFileName");
@@ -935,9 +887,7 @@
         renderErrors([]);
         renderThumbs([]);
         renderPreview([]);
-        updateMetrics();
         selectedCountBadge.textContent = "0枚";
-        metricSelected.textContent = "0";
         setStatus("待機中", "info");
       });
 
@@ -946,16 +896,16 @@
         const revision = loadingRevision;
         selectedFiles = Array.from(fileInput.files || []);
         releaseSelectedAssets();
-        metricSelected.textContent = String(selectedFiles.length);
         selectedCountBadge.textContent = `${selectedFiles.length}枚`;
         clearResult();
+        lastLoadErrors = [];
+        renderErrors([]);
 
         if (selectedFiles.length === 0) {
           previewPage = 1;
           renderErrors([]);
           renderThumbs([]);
           renderPreview([]);
-          updateMetrics();
           setStatus("待機中", "info");
           return;
         }
@@ -984,7 +934,6 @@
         renderErrors(lastLoadErrors);
         renderThumbs(selectedAssets);
         renderPreview(selectedAssets);
-        updateMetrics();
 
         if (selectedAssets.length === 0) {
           setStatus("有効な画像がありません。JPEG/PNGを選択してください。", "error");
@@ -1015,12 +964,12 @@
           const pages = Math.ceil(selectedAssets.length / slots.length);
           donePageCount.textContent = `${pages} ページ`;
           setStatus(`完了: ${fileName} (${pages}ページ)`, "success");
-          log(`pdf generated: layout=${currentLayoutKey}, fit=${currentFitMode}, pages=${pages}, assets=${selectedAssets.length}`);
+          log(`PDF生成: レイアウト=${currentLayoutKey}, 配置=${FIT_LABELS[currentFitMode]}, ページ=${pages}, 画像=${selectedAssets.length}`);
           goTo("sc-d");
         } catch (error) {
           const message = normalizeError(error);
           setStatus(`生成に失敗しました: ${message}`, "error");
-          log(`pdf generation failed: ${message}`);
+          log(`PDF生成失敗: ${message}`);
         } finally {
           setBusy(false);
         }
@@ -1036,15 +985,15 @@
           const result = await shareOrDownload(currentBlob, currentFileName);
           if (result === "shared") {
             setStatus("共有シートを開きました。", "success");
-            log("share: success");
+            log("共有: 成功");
           } else {
             setStatus("共有未対応環境です。保存リンクを使用してください。", "warn");
-            log("share: fallback to download");
+            log("共有: 未対応のため保存リンクへフォールバック");
           }
         } catch (error) {
           const message = normalizeError(error);
           setStatus(`共有に失敗しました: ${message}`, "error");
-          log(`share failed: ${message}`);
+          log(`共有失敗: ${message}`);
         }
       });
 
@@ -1067,7 +1016,6 @@
         });
 
         renderPreview(selectedAssets);
-        updateMetrics();
       }
 
       function setFitMode(mode) {
@@ -1093,7 +1041,7 @@
         if (!assets || assets.length === 0) {
           const empty = document.createElement("div");
           empty.className = "thumb-empty-msg";
-          empty.textContent = "画像を選択すると、ここにプレビューが表示されます。";
+          empty.textContent = "画像を選択するとここにプレビューが表示されます";
           thumbGrid.appendChild(empty);
           return;
         }
@@ -1165,13 +1113,6 @@
         nextPageButton.disabled = previewPage >= totalPages;
       }
 
-      function updateMetrics() {
-        metricValid.textContent = String(selectedAssets.length);
-        const perPage = getCurrentLayout().slotsPerPage;
-        const pages = selectedAssets.length === 0 ? 0 : Math.ceil(selectedAssets.length / perPage);
-        metricPages.textContent = String(pages);
-      }
-
       /**
        * @typedef {Object} ImageAsset
        * @property {string} id
@@ -1209,7 +1150,7 @@
               bytes = normalized.bytes;
               size = { width: normalized.width, height: normalized.height };
               if (orientation !== 1) {
-                log(`${file.name}: EXIF orientation=${orientation} を正規化`);
+                log(`${file.name}: EXIF orientation=${orientation} を補正`);
               }
             } else {
               size = await readImageSize(file);
@@ -1366,7 +1307,7 @@
           } catch (error) {
             const message = normalizeError(error);
             if (!message.includes("AbortError")) {
-              log(`share error: ${message}`);
+              log(`共有エラー: ${message}`);
             }
           }
         }
@@ -1542,14 +1483,31 @@
       }
 
       function renderErrors(errors) {
-        if (!errors || errors.length === 0) {
+        const details = errors || [];
+        const showStatus = currentStatusType === "warn" || currentStatusType === "error";
+
+        if (!showStatus && details.length === 0) {
           errorBox.style.display = "none";
           errorBox.innerHTML = "";
+          errorBox.className = "errors";
           return;
         }
 
         errorBox.style.display = "block";
-        errorBox.innerHTML = `<strong>警告</strong><ul>${errors.map((line) => `<li>${escapeHtml(line)}</li>`).join("")}</ul>`;
+        errorBox.className = `errors ${showStatus ? currentStatusType : ""}`.trim();
+
+        const sections = [];
+        if (showStatus) {
+          const title = currentStatusType === "error" ? "エラー" : "警告";
+          sections.push(`<strong>${title}</strong><div>${escapeHtml(currentStatusText)}</div>`);
+        }
+
+        if (details.length > 0) {
+          const listLabel = showStatus ? "詳細" : "警告";
+          sections.push(`<strong>${listLabel}</strong><ul>${details.map((line) => `<li>${escapeHtml(line)}</li>`).join("")}</ul>`);
+        }
+
+        errorBox.innerHTML = sections.join("");
       }
 
       function setBusy(isBusy) {
@@ -1610,8 +1568,10 @@
       }
 
       function setStatus(text, type) {
-        statusBox.textContent = text;
-        statusBox.className = `status ${type}`;
+        currentStatusText = text;
+        currentStatusType = type;
+        const details = type === "warn" || type === "error" ? lastLoadErrors : [];
+        renderErrors(details);
       }
 
       function createOutputName() {
@@ -1661,10 +1621,9 @@
       setFitMode(currentFitMode);
       renderThumbs([]);
       renderPreview([]);
-      updateMetrics();
       setStatus("待機中", "info");
-      log(`theme=${ThemeMeta.name}`);
-      log(`layout=${currentLayoutKey}, fit=${currentFitMode}`);
+      log(`テーマ=${ThemeMeta.name}`);
+      log(`レイアウト=${currentLayoutKey}, 配置=${FIT_LABELS[currentFitMode]}`);
     </script>
   </body>
 </html>
