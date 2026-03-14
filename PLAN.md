@@ -36,6 +36,7 @@
 | T-030 | Playwright可視セレクタ運用ルール追記 | `AGENTS.md`, `PLAN.md` | 完了 | `.on` 画面スコープの明文化 |
 | T-031 | Screen Dの `PDFを開く` ボタン左寄せ修正 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | 表示指定を `block` に統一し中央揃えを回復 |
 | T-032 | iPhone下余白調整 + Screen D簡素化 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | モバイル高さを再調整し、D画面はviewer折りたたみ + 5操作の1画面初期表示へ再構成 |
+| T-033 | Screen B初期レイアウトを4分割へ変更 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | 初回選択状態とプレビュー初期表示を4分割へ統一 |
 
 ## 状態定義
 - 未着手
@@ -116,3 +117,7 @@
 - T-032画像内容確認: `view_image` で上記4枚を確認（撮影成功・ビューア表示成功）
 - T-032レイアウト検証: Playwright評価で `iPhone 12 / iPhone 15` 相当の `A/B/C` は `surfaceBottomGap >= 19px` `lastBtnBottomGapToViewport >= 32px`、`D` 初期表示は `bodyNeedsScroll=false` かつ `共有する/保存する/PDFを開く/戻る/もう一度作る` の5操作表示を確認
 - T-032viewer展開検証: Playwright評価で `#pdfPreviewDetails` を開いた後、`previewDisclosureOpen=true` `viewerVisible=true` `bodyNeedsScroll=true` を確認
+- T-033疎通確認: `curl -I http://127.0.0.1:8000/index.html` -> `HTTP/1.0 200 OK`
+- T-033スクリーンショット（Screen B）: `reference/preview/preview-t033-screen-b-20260315-010258.png`（390x844, 初期選択が4分割であることを確認）
+- T-033画像内容確認: `view_image` で上記画像を確認（撮影成功・ビューア表示成功）
+- T-033初期値検証: Playwright評価で `#sc-b.on [data-layout].sel` が `data-layout=\"4\"`、`#previewLayoutLabel` が `レイアウト: 4分割 (2x2)` を確認

@@ -824,7 +824,7 @@
                 <p class="sc-note">1ページ目から順に確認できます。</p>
 
                 <div class="preview-meta">
-                  <span id="previewLayoutLabel">レイアウト: 8分割 (2x4)</span>
+                  <span id="previewLayoutLabel">レイアウト: 4分割 (2x2)</span>
                   <span id="previewFitLabel">配置: 全体表示</span>
                 </div>
 
@@ -916,7 +916,7 @@
         cover: "トリミング",
       };
 
-      let currentLayoutKey = "8";
+      let currentLayoutKey = "4";
       let currentFitMode = "contain";
       let previewPage = 1;
 
@@ -1160,7 +1160,7 @@
       }
 
       function getCurrentLayout() {
-        return LAYOUT_PRESETS[currentLayoutKey] || LAYOUT_PRESETS["8"];
+        return LAYOUT_PRESETS[currentLayoutKey] || LAYOUT_PRESETS["4"];
       }
 
       function getPreviewTotalPages(assetCount) {
