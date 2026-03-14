@@ -23,6 +23,8 @@
         --warn-dim: rgba(161, 98, 7, 0.12);
         --ok: #2f7a4d;
         --ok-dim: rgba(47, 122, 77, 0.1);
+        --sc-base-height: 690px;
+        --sc-pad: 14px;
       }
 
       *,
@@ -39,6 +41,7 @@
 
       body {
         min-height: 100vh;
+        min-height: 100dvh;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
         color: var(--t0);
         background: var(--body-bg);
@@ -80,20 +83,42 @@
         border: 1px solid var(--b0);
         border-radius: 24px;
         overflow: hidden;
-        min-height: 690px;
+        height: var(--sc-base-height);
+        min-height: var(--sc-base-height);
+        position: relative;
         box-shadow: 0 16px 30px rgba(25, 15, 5, 0.12);
       }
 
       .sc {
         display: none;
-        min-height: 690px;
+        height: 100%;
+        min-height: 0;
         position: relative;
-        padding: 14px;
+        padding: var(--sc-pad) var(--sc-pad) 0;
+        overflow: hidden;
+        --sc-cta-space: 132px;
       }
 
       .sc.on {
         display: flex;
         flex-direction: column;
+      }
+
+      #sc-a {
+        --sc-cta-space: 96px;
+      }
+
+      #sc-d {
+        --sc-cta-space: 264px;
+      }
+
+      .sc-body {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding-bottom: calc(var(--sc-cta-space) + env(safe-area-inset-bottom, 0px));
+        padding-right: 2px;
       }
 
       .step-row {
@@ -536,8 +561,30 @@
       }
 
       .sc-cta {
-        margin-top: auto;
-        padding-top: 10px;
+        position: absolute;
+        left: var(--sc-pad);
+        right: var(--sc-pad);
+        bottom: 0;
+        display: grid;
+        gap: 8px;
+        padding: 12px 0 calc(12px + env(safe-area-inset-bottom, 0px));
+        z-index: 2;
+      }
+
+      .sc-cta::before {
+        content: "";
+        position: absolute;
+        left: -2px;
+        right: -2px;
+        top: -42px;
+        bottom: 0;
+        background: linear-gradient(to top, rgba(253, 251, 246, 0.98) 74%, rgba(253, 251, 246, 0));
+        pointer-events: none;
+        z-index: -1;
+      }
+
+      .sc-cta-main,
+      .sc-cta-sub {
         display: grid;
         gap: 8px;
       }
@@ -605,6 +652,20 @@
       }
 
       @media (max-width: 760px) {
+        .page {
+          min-height: 100dvh;
+          padding: 20px 12px calc(26px + env(safe-area-inset-bottom, 0px));
+        }
+
+        .pg-header {
+          margin-bottom: 12px;
+        }
+
+        .app-surface {
+          height: min(var(--sc-base-height), calc(100dvh - 190px));
+          min-height: 620px;
+        }
+
         .fit-row {
           grid-template-columns: 1fr;
         }
@@ -622,28 +683,30 @@
       <section class="stage">
         <div class="app-surface">
             <article id="sc-a" class="sc on">
-              <div class="step-row"><span class="sdot on"></span><span class="sdot"></span><span class="sdot"></span><span class="sdot"></span></div>
+              <div class="sc-body">
+                <div class="step-row"><span class="sdot on"></span><span class="sdot"></span><span class="sdot"></span><span class="sdot"></span></div>
 
-              <span class="sc-h">画像を選択</span>
-              <p class="sc-note">JPEG / PNG 複数選択。端末内処理のみ。</p>
+                <span class="sc-h">画像を選択</span>
+                <p class="sc-note">JPEG / PNG 複数選択。端末内処理のみ。</p>
 
-              <div class="card">
-                <label for="fileInput" class="drop-zone">
-                  <span>
-                    <span class="drop-ico">＋</span><br />
-                    タップして画像を追加
-                  </span>
-                </label>
-                <input id="fileInput" type="file" multiple accept="image/jpeg,image/png" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" />
+                <div class="card">
+                  <label for="fileInput" class="drop-zone">
+                    <span>
+                      <span class="drop-ico">＋</span><br />
+                      タップして画像を追加
+                    </span>
+                  </label>
+                  <input id="fileInput" type="file" multiple accept="image/jpeg,image/png" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" />
 
-                <div id="thumbGrid" class="thumb-grid"></div>
+                  <div id="thumbGrid" class="thumb-grid"></div>
 
-                <div class="count-row">
-                  <span>選択済み</span>
-                  <span id="selectedCountBadge" class="badge">0枚</span>
+                  <div class="count-row">
+                    <span>選択済み</span>
+                    <span id="selectedCountBadge" class="badge">0枚</span>
+                  </div>
+
+                  <div id="errorBox" class="errors" style="display:none"></div>
                 </div>
-
-                <div id="errorBox" class="errors" style="display:none"></div>
               </div>
 
               <div class="sc-cta">
@@ -652,48 +715,50 @@
             </article>
 
             <article id="sc-b" class="sc">
-              <div class="step-row"><span class="sdot"></span><span class="sdot on"></span><span class="sdot"></span><span class="sdot"></span></div>
+              <div class="sc-body">
+                <div class="step-row"><span class="sdot"></span><span class="sdot on"></span><span class="sdot"></span><span class="sdot"></span></div>
 
-              <div class="sc-nav">
-                <span class="sc-h">レイアウト設定</span>
+                <div class="sc-nav">
+                  <span class="sc-h">レイアウト設定</span>
+                </div>
+
+                <p class="sec-label">分割レイアウト</p>
+                <div class="lay-list" id="lay-opts">
+                  <button type="button" class="lay-opt" data-layout="1">
+                    <span class="radio"></span>
+                    <span class="mg" style="grid-template-columns:1fr;grid-template-rows:1fr;"><span class="mg-c"></span></span>
+                    <span>A4 1分割 (1x1)</span>
+                  </button>
+                  <button type="button" class="lay-opt" data-layout="2">
+                    <span class="radio"></span>
+                    <span class="mg" style="grid-template-columns:1fr;grid-template-rows:1fr 1fr;"><span class="mg-c"></span><span class="mg-c"></span></span>
+                    <span>2分割 (1x2)</span>
+                  </button>
+                  <button type="button" class="lay-opt" data-layout="4">
+                    <span class="radio"></span>
+                    <span class="mg" style="grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;"><span class="mg-c"></span><span class="mg-c"></span><span class="mg-c"></span><span class="mg-c"></span></span>
+                    <span>4分割 (2x2)</span>
+                  </button>
+                  <button type="button" class="lay-opt" data-layout="6">
+                    <span class="radio"></span>
+                    <span class="mg" style="grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr;"><span class="mg-c"></span><span class="mg-c"></span><span class="mg-c"></span><span class="mg-c"></span><span class="mg-c"></span><span class="mg-c"></span></span>
+                    <span>6分割 (2x3)</span>
+                  </button>
+                  <button type="button" class="lay-opt" data-layout="8">
+                    <span class="radio"></span>
+                    <span class="mg" style="grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr 1fr;"><span class="mg-c"></span><span class="mg-c"></span><span class="mg-c"></span><span class="mg-c"></span><span class="mg-c"></span><span class="mg-c"></span><span class="mg-c"></span><span class="mg-c"></span></span>
+                    <span>8分割 (2x4)</span>
+                  </button>
+                </div>
+
+                <p class="sec-label">配置モード</p>
+                <div class="fit-row">
+                  <button type="button" class="fit-opt" data-fit="contain">全体表示（余白あり）</button>
+                  <button type="button" class="fit-opt" data-fit="cover">はみ出し許容（トリミング）</button>
+                </div>
+
+                <div class="info-box">不足画像は空枠表示、超過画像は次ページへ自動配置。トリミングは中央基準で切り抜きます。</div>
               </div>
-
-              <p class="sec-label">分割レイアウト</p>
-              <div class="lay-list" id="lay-opts">
-                <button type="button" class="lay-opt" data-layout="1">
-                  <span class="radio"></span>
-                  <span class="mg" style="grid-template-columns:1fr;grid-template-rows:1fr;"><span class="mg-c"></span></span>
-                  <span>A4 1分割 (1x1)</span>
-                </button>
-                <button type="button" class="lay-opt" data-layout="2">
-                  <span class="radio"></span>
-                  <span class="mg" style="grid-template-columns:1fr;grid-template-rows:1fr 1fr;"><span class="mg-c"></span><span class="mg-c"></span></span>
-                  <span>2分割 (1x2)</span>
-                </button>
-                <button type="button" class="lay-opt" data-layout="4">
-                  <span class="radio"></span>
-                  <span class="mg" style="grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;"><span class="mg-c"></span><span class="mg-c"></span><span class="mg-c"></span><span class="mg-c"></span></span>
-                  <span>4分割 (2x2)</span>
-                </button>
-                <button type="button" class="lay-opt" data-layout="6">
-                  <span class="radio"></span>
-                  <span class="mg" style="grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr;"><span class="mg-c"></span><span class="mg-c"></span><span class="mg-c"></span><span class="mg-c"></span><span class="mg-c"></span><span class="mg-c"></span></span>
-                  <span>6分割 (2x3)</span>
-                </button>
-                <button type="button" class="lay-opt" data-layout="8">
-                  <span class="radio"></span>
-                  <span class="mg" style="grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr 1fr;"><span class="mg-c"></span><span class="mg-c"></span><span class="mg-c"></span><span class="mg-c"></span><span class="mg-c"></span><span class="mg-c"></span><span class="mg-c"></span><span class="mg-c"></span></span>
-                  <span>8分割 (2x4)</span>
-                </button>
-              </div>
-
-              <p class="sec-label">配置モード</p>
-              <div class="fit-row">
-                <button type="button" class="fit-opt" data-fit="contain">全体表示（余白あり）</button>
-                <button type="button" class="fit-opt" data-fit="cover">はみ出し許容（トリミング）</button>
-              </div>
-
-              <div class="info-box">不足画像は空枠表示、超過画像は次ページへ自動配置。トリミングは中央基準で切り抜きます。</div>
 
               <div class="sc-cta">
                 <button class="btn btn-ac" type="button" data-go="sc-c">プレビューへ</button>
@@ -702,29 +767,31 @@
             </article>
 
             <article id="sc-c" class="sc">
-              <div class="step-row"><span class="sdot"></span><span class="sdot"></span><span class="sdot on"></span><span class="sdot"></span></div>
+              <div class="sc-body">
+                <div class="step-row"><span class="sdot"></span><span class="sdot"></span><span class="sdot on"></span><span class="sdot"></span></div>
 
-              <div class="sc-nav">
-                <span class="sc-h">プレビュー</span>
+                <div class="sc-nav">
+                  <span class="sc-h">プレビュー</span>
+                </div>
+                <p class="sc-note">1ページ目から順に確認できます。</p>
+
+                <div class="preview-meta">
+                  <span id="previewLayoutLabel">レイアウト: 8分割 (2x4)</span>
+                  <span id="previewFitLabel">配置: 全体表示</span>
+                </div>
+
+                <div class="a4-wrap">
+                  <div id="slotGrid" class="slot-grid"></div>
+                </div>
+
+                <div class="pg-ctrl">
+                  <button class="pg-btn" id="prev-pg" type="button" disabled>＜</button>
+                  <span id="pg-lbl" style="font-size:0.74rem;">ページ <strong>1</strong> / 1</span>
+                  <button class="pg-btn" id="next-pg" type="button" disabled>＞</button>
+                </div>
+
+                <div class="warn-bar">低解像度警告は生成時にログと警告表示へ集約します。</div>
               </div>
-              <p class="sc-note">1ページ目から順に確認できます。</p>
-
-              <div class="preview-meta">
-                <span id="previewLayoutLabel">レイアウト: 8分割 (2x4)</span>
-                <span id="previewFitLabel">配置: 全体表示</span>
-              </div>
-
-              <div class="a4-wrap">
-                <div id="slotGrid" class="slot-grid"></div>
-              </div>
-
-              <div class="pg-ctrl">
-                <button class="pg-btn" id="prev-pg" type="button" disabled>＜</button>
-                <span id="pg-lbl" style="font-size:0.74rem;">ページ <strong>1</strong> / 1</span>
-                <button class="pg-btn" id="next-pg" type="button" disabled>＞</button>
-              </div>
-
-              <div class="warn-bar">低解像度警告は生成時にログと警告表示へ集約します。</div>
 
               <div class="sc-cta">
                 <button id="generateButton" class="btn btn-ac" type="button">PDFを生成</button>
@@ -733,29 +800,35 @@
             </article>
 
             <article id="sc-d" class="sc">
-              <div class="step-row"><span class="sdot"></span><span class="sdot"></span><span class="sdot"></span><span class="sdot on"></span></div>
+              <div class="sc-body">
+                <div class="step-row"><span class="sdot"></span><span class="sdot"></span><span class="sdot"></span><span class="sdot on"></span></div>
 
-              <div class="sc-nav">
-                <span class="sc-h">PDF生成完了</span>
-              </div>
-              <p class="sc-note" style="text-align:center;">保存または共有を選択してください。</p>
+                <div class="sc-nav">
+                  <span class="sc-h">PDF生成完了</span>
+                </div>
+                <p class="sc-note" style="text-align:center;">保存または共有を選択してください。</p>
 
-              <div class="done-icon">✓</div>
-              <div class="done-card">
-                <div class="done-row"><span class="done-k">ファイル名</span><span id="doneFileName" class="done-v">-</span></div>
-                <div class="done-row"><span class="done-k">ページ数</span><span id="donePageCount" class="done-v">0 ページ</span></div>
-              </div>
+                <div class="done-icon">✓</div>
+                <div class="done-card">
+                  <div class="done-row"><span class="done-k">ファイル名</span><span id="doneFileName" class="done-v">-</span></div>
+                  <div class="done-row"><span class="done-k">ページ数</span><span id="donePageCount" class="done-v">0 ページ</span></div>
+                </div>
 
-              <div id="pdfViewerWrap" class="pdf-view" style="display:none">
-                <iframe id="pdfViewer" title="生成されたPDFプレビュー"></iframe>
+                <div id="pdfViewerWrap" class="pdf-view" style="display:none">
+                  <iframe id="pdfViewer" title="生成されたPDFプレビュー"></iframe>
+                </div>
               </div>
 
               <div class="sc-cta">
-                <a id="openPdfLink" class="btn btn-sub pdf-open-link" href="#" target="_blank" rel="noopener" style="display:none">PDFを開く（表示できない場合）</a>
-                <a id="saveLink" class="btn btn-sub" href="#" download style="display:none">保存する</a>
-                <button id="shareButton" class="btn btn-ac" type="button" disabled>共有する</button>
-                <button class="btn btn-gh" type="button" data-go="sc-c">戻る</button>
-                <button id="restartButton" class="btn btn-gh" type="button" data-go="sc-a">もう一度作る</button>
+                <div class="sc-cta-main">
+                  <button id="shareButton" class="btn btn-ac" type="button" disabled>共有する</button>
+                  <a id="saveLink" class="btn btn-sub" href="#" download style="display:none">保存する</a>
+                  <a id="openPdfLink" class="btn btn-sub pdf-open-link" href="#" target="_blank" rel="noopener" style="display:none">PDFを開く（表示できない場合）</a>
+                </div>
+                <div class="sc-cta-sub">
+                  <button class="btn btn-gh" type="button" data-go="sc-c">戻る</button>
+                  <button id="restartButton" class="btn btn-gh" type="button" data-go="sc-a">もう一度作る</button>
+                </div>
               </div>
             </article>
         </div>

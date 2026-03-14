@@ -32,6 +32,7 @@
 | T-026 | AGENTS運用ルール強化（失敗分析・コミット確認・メッセージ提案） | `AGENTS.md`, `PLAN.md` | 完了 | 失敗分析ループとコミット確認時のメッセージ提案を明文化 |
 | T-027 | Claude Code由来 `frontend-design` スキル導入 | `~/.codex/skills/frontend-design/*`, `PLAN.md` | 完了 | `anthropics/claude-code` から導入 |
 | T-028 | frontend-designでA/B/C/DのミニマルMOC再設計 | `reference/mock/index_frontend_desight.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | 遷移のみダミー実装 |
+| T-029 | iPhone向け固定CTA化（A/B/C/D） | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | `.sc-body` と固定CTA分離、safe-area/dvh対応、D画面CTA主副分割 |
 
 ## 状態定義
 - 未着手
@@ -92,3 +93,13 @@
 - T-028スクリーンショット（desktop）: `/tmp/frontend-desight-desktop-20260314-230619.png`（Screen C表示状態）
 - T-028スクリーンショット（mobile）: `/tmp/frontend-desight-mobile-20260314-230619.png`（iPhone 12, Screen D表示状態）
 - T-028画像内容確認: `view_image` で上記2枚の表示内容を確認（撮影成功・ビューア表示成功）
+- T-029疎通確認: `curl -I http://127.0.0.1:8000/index.html` -> `HTTP/1.0 200 OK`
+- T-029スクリーンショット（390x844）: `/tmp/t029-mobile390x844-sc-a-2026-03-14T14-25-13-059Z.png` `/tmp/t029-mobile390x844-sc-b-2026-03-14T14-25-13-059Z.png` `/tmp/t029-mobile390x844-sc-c-2026-03-14T14-25-13-059Z.png` `/tmp/t029-mobile390x844-sc-d-2026-03-14T14-25-13-059Z.png`
+- T-029スクリーンショット（393x852）: `/tmp/t029-mobile393x852-sc-a-2026-03-14T14-25-13-059Z.png` `/tmp/t029-mobile393x852-sc-b-2026-03-14T14-25-13-059Z.png` `/tmp/t029-mobile393x852-sc-c-2026-03-14T14-25-13-059Z.png` `/tmp/t029-mobile393x852-sc-d-2026-03-14T14-25-13-059Z.png`
+- T-029スクリーンショット（desktop）: `/tmp/t029-desktop-sc-c-2026-03-14T14-25-13-059Z.png`
+- T-029多ボタンCTA確認（D画面）: `/tmp/t029-mobile390x844-sc-d-with-links-2026-03-14T14-28-54-179Z.png` `/tmp/t029-mobile393x852-sc-d-with-links-2026-03-14T14-28-54-179Z.png`
+- T-029画像内容確認: `view_image` で上記代表画像を確認（撮影成功・ビューア表示成功）
+- T-029レイアウト検証: Playwright評価で `390x844/393x852` の `sc-a/sc-b/sc-c/sc-d` すべて `ctaInsideSurface=true` `primaryVisible=true` `bodyScrollableMode=true`
+- T-029追加検証（D画面多ボタン）: `saveVisible=true` `openVisible=true` `ctaInsideSurface=true` を両ビューポートで確認
+- T-029遷移回帰確認: Playwrightで `sc-a -> sc-b -> sc-c -> sc-b -> sc-a` を `data-go` クリックで確認（`trail=["sc-a","sc-b","sc-c","sc-b","sc-a"]`）
+- T-029依存確認: Playwright評価で `window.PDFLib` の読み込み済みを確認（`pdfLibLoaded=true`）
