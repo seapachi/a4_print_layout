@@ -29,6 +29,7 @@
 | T-023 | PDF生成後のScreen D埋め込み表示 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | viewer埋め込み + フォールバック導線 |
 | T-024 | Screen B/C/Dの表示領域とCTA重なり解消 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | 絶対配置CTAを通常フロー化して重なりを防止 |
 | T-025 | 画面A/C文言整理と不要表示削除（初心者向け表現に統一） | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | 画面A情報簡素化 + fit文言日本語化 + ヘッダー文言更新 |
+| T-026 | AGENTS運用ルール強化（失敗分析・コミット確認・メッセージ提案） | `AGENTS.md`, `PLAN.md` | 完了 | 失敗分析ループとコミット確認時のメッセージ提案を明文化 |
 
 ## 状態定義
 - 未着手
@@ -83,3 +84,4 @@
 - T-025スクリーンショット（C画面）: `reference/preview/preview-t025-screen-c-20260314-144029.png`（`配置: 全体表示` と日本語統一を確認）
 - T-025画像内容確認: `view_image` で上記2枚の表示内容を確認（撮影成功・ビューア表示成功）
 - T-025動作確認: Playwright評価で `#status`/メトリクス非存在、空状態メッセージ `grid-column: 1 / -1`、非対応ファイル警告表示、`配置: 全体表示` を確認（`missingStatus=true, missingMetrics=true, hasWarning=true`）
+- T-026運用ルール更新: `AGENTS.md` に「実行失敗の分析とルール改善」を追加し、コミット確認時の日本語コミットメッセージ提案を必須化
