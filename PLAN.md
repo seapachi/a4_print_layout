@@ -37,6 +37,7 @@
 | T-031 | Screen Dの `PDFを開く` ボタン左寄せ修正 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | 表示指定を `block` に統一し中央揃えを回復 |
 | T-032 | iPhone下余白調整 + Screen D簡素化 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | モバイル高さを再調整し、D画面はviewer折りたたみ + 5操作の1画面初期表示へ再構成 |
 | T-033 | Screen B初期レイアウトを4分割へ変更 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | 初回選択状態とプレビュー初期表示を4分割へ統一 |
+| T-034 | Screen Dの見出し再配置とPDFプレビュー拡張 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | 見出し右へ完了アイコン移設、viewer展開時の高さを `clamp(320px, 48dvh, 460px)` へ拡張 |
 
 ## 状態定義
 - 未着手
@@ -121,3 +122,7 @@
 - T-033スクリーンショット（Screen B）: `reference/preview/preview-t033-screen-b-20260315-010258.png`（390x844, 初期選択が4分割であることを確認）
 - T-033画像内容確認: `view_image` で上記画像を確認（撮影成功・ビューア表示成功）
 - T-033初期値検証: Playwright評価で `#sc-b.on [data-layout].sel` が `data-layout=\"4\"`、`#previewLayoutLabel` が `レイアウト: 4分割 (2x2)` を確認
+- T-034疎通確認: `curl -I http://127.0.0.1:8000/index.html` -> `HTTP/1.0 200 OK`
+- T-034スクリーンショット（Screen D）: `/tmp/t034-screen-d-20260315-013817.png`（iPhone 12相当, 完了アイコン右寄せとviewer拡張を確認）
+- T-034画像内容確認: `view_image` で上記画像を確認（撮影成功・ビューア表示成功）
+- T-034レイアウト検証: Playwright評価で `#pdfPreviewDetails.open=true`、`#pdfViewer.height=320px`、`iconRightOfTitle=true` を確認

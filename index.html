@@ -497,17 +497,24 @@
         padding: 7px;
       }
 
+      .sc-nav-done {
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 2px;
+      }
+
       .done-icon {
-        margin: 10px auto 8px;
-        width: 52px;
-        height: 52px;
+        margin: 0;
+        width: 32px;
+        height: 32px;
         border-radius: 50%;
         border: 2px solid var(--ac);
         background: var(--ac-dim);
         color: var(--ac);
         display: grid;
         place-items: center;
-        font-size: 1.15rem;
+        font-size: 0.84rem;
+        flex: 0 0 auto;
       }
 
       .done-card {
@@ -586,12 +593,12 @@
         margin-top: 0;
         border-top: 1px solid var(--b0);
         background: transparent;
-        padding: 8px;
+        padding: 10px;
       }
 
       .pdf-view iframe {
         width: 100%;
-        height: 220px;
+        height: clamp(320px, 48dvh, 460px);
         border: 1px solid var(--b0);
         border-radius: 8px;
         background: #fff;
@@ -851,12 +858,11 @@
               <div class="sc-body">
                 <div class="step-row"><span class="sdot"></span><span class="sdot"></span><span class="sdot"></span><span class="sdot on"></span></div>
 
-                <div class="sc-nav">
+                <div class="sc-nav sc-nav-done">
                   <span class="sc-h">PDF生成完了</span>
+                  <div class="done-icon" aria-hidden="true">✓</div>
                 </div>
                 <p class="sc-note done-note" style="text-align:center;">保存または共有を選択してください。</p>
-
-                <div class="done-icon">✓</div>
                 <div class="done-card">
                   <div class="done-row"><span class="done-k">ファイル名</span><span id="doneFileName" class="done-v">-</span></div>
                   <div class="done-row"><span class="done-k">ページ数</span><span id="donePageCount" class="done-v">0 ページ</span></div>
