@@ -40,6 +40,7 @@
 | T-034 | Screen Dの見出し再配置とPDFプレビュー拡張 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | 見出し右へ完了アイコン移設、viewer展開時の高さを `clamp(320px, 48dvh, 460px)` へ拡張 |
 | T-035 | Screen Bの分割レイアウトを2列化して1画面表示へ圧縮 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | 分割候補の2列カード化とモバイル縦高さの最適化 |
 | T-036 | コミットメッセージ案を番号付きで提示する運用へ更新 | `AGENTS.md`, `PLAN.md` | 完了 | `1. ... / 2. ...` 形式で数字選択できるよう明文化 |
+| T-037 | Screen BのCTA高さを他画面と同じ共通サイズへ戻す | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | モバイル時の `#sc-b .btn` 上書きを解除して再検証 |
 
 ## 状態定義
 - 未着手
@@ -133,3 +134,7 @@
 - T-035画像内容確認: `view_image` で上記画像を確認（撮影成功・ビューア表示成功）
 - T-035レイアウト検証: Playwright評価で `#sc-b.on .sc-body` の `bodyNeedsScroll=false`、`#lay-opts` の `gridTemplateColumns=\"164px 164px\"`、`.fit-row` の `gridTemplateColumns=\"164px 164px\"`、`ctaInsideSurface=true` を確認
 - T-036運用ルール更新: `AGENTS.md` のコミット方針に、コミットメッセージ案を `1. ... / 2. ...` 形式で番号付き提示し、数字だけで選べるようにするルールを追加
+- T-037疎通確認: `curl -I http://127.0.0.1:8000/index.html` -> `HTTP/1.0 200 OK`
+- T-037スクリーンショット（Screen B）: `/tmp/t037-screen-b-common-btn-20260315.png`（iPhone 12相当, CTA高さを共通化した状態で1画面表示を確認）
+- T-037画像内容確認: `view_image` で上記画像を確認（撮影成功・ビューア表示成功）
+- T-037レイアウト検証: Playwright評価で `#sc-b.on .sc-body` の `bodyNeedsScroll=false`、`buttonHeight=43`、`ctaInsideSurface=true`、`#lay-opts` の `gridTemplateColumns=\"164px 164px\"` を確認
