@@ -302,25 +302,28 @@
 
       .lay-list {
         display: grid;
-        gap: 7px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 6px;
       }
 
       .lay-opt {
         border: 1px solid var(--b0);
         background: var(--s1);
-        border-radius: 11px;
-        padding: 10px;
+        border-radius: 12px;
+        padding: 8px;
         display: grid;
-        grid-template-columns: 14px 38px 1fr;
+        grid-template-columns: 32px minmax(0, 1fr) 14px;
+        grid-template-areas: "mini copy radio";
         align-items: center;
-        gap: 8px;
+        gap: 6px;
         cursor: pointer;
-        font-size: 0.76rem;
+        text-align: left;
       }
 
       .lay-opt.sel {
         border-color: var(--ac);
         background: var(--ac-dim);
+        box-shadow: 0 8px 18px rgba(191, 53, 23, 0.08);
       }
 
       .radio {
@@ -329,6 +332,8 @@
         border-radius: 50%;
         border: 2px solid var(--b1);
         position: relative;
+        grid-area: radio;
+        justify-self: end;
       }
 
       .lay-opt.sel .radio {
@@ -349,10 +354,29 @@
         border: 1px solid var(--b1);
         border-radius: 6px;
         background: var(--s0);
-        padding: 3px;
-        width: 34px;
-        height: 52px;
-        justify-self: center;
+        padding: 2px;
+        width: 32px;
+        height: 46px;
+        grid-area: mini;
+      }
+
+      .lay-copy {
+        grid-area: copy;
+        display: grid;
+        gap: 1px;
+      }
+
+      .lay-title {
+        font-size: 0.75rem;
+        font-weight: 700;
+        line-height: 1.15;
+        color: var(--t0);
+      }
+
+      .lay-sub {
+        font-size: 0.62rem;
+        line-height: 1.15;
+        color: var(--t1);
       }
 
       .mg-c {
@@ -370,10 +394,11 @@
       .fit-opt {
         border: 1px solid var(--b0);
         border-radius: 10px;
-        padding: 9px;
+        padding: 8px 7px;
         background: var(--s1);
         color: var(--t1);
-        font-size: 0.74rem;
+        font-size: 0.72rem;
+        line-height: 1.25;
         text-align: center;
         cursor: pointer;
       }
@@ -385,14 +410,14 @@
       }
 
       .info-box {
-        margin-top: 10px;
+        margin-top: 8px;
         border: 1px solid var(--b0);
         border-radius: 10px;
         background: var(--s0);
         color: var(--t1);
-        font-size: 0.72rem;
+        font-size: 0.69rem;
         line-height: 1.45;
-        padding: 9px;
+        padding: 8px;
       }
 
       .preview-meta {
@@ -721,8 +746,34 @@
           min-height: 0;
         }
 
-        .fit-row {
-          grid-template-columns: 1fr;
+        #sc-b {
+          --sc-cta-space: 106px;
+        }
+
+        #sc-b .sc-body {
+          padding-bottom: calc(var(--sc-cta-space) + env(safe-area-inset-bottom, 0px));
+        }
+
+        #sc-b .step-row {
+          margin-bottom: 8px;
+        }
+
+        #sc-b .sc-nav {
+          margin-bottom: 4px;
+        }
+
+        #sc-b .sec-label {
+          margin: 8px 0 5px;
+        }
+
+        #sc-b .lay-opt {
+          min-height: 74px;
+        }
+
+        #sc-b .fit-opt,
+        #sc-b .btn {
+          padding-top: 10px;
+          padding-bottom: 10px;
         }
       }
     </style>
@@ -782,27 +833,27 @@
                   <button type="button" class="lay-opt" data-layout="1">
                     <span class="radio"></span>
                     <span class="mg" style="grid-template-columns:1fr;grid-template-rows:1fr;"><span class="mg-c"></span></span>
-                    <span>A4 1分割 (1x1)</span>
+                    <span class="lay-copy"><span class="lay-title">1分割</span><span class="lay-sub">1 x 1</span></span>
                   </button>
                   <button type="button" class="lay-opt" data-layout="2">
                     <span class="radio"></span>
                     <span class="mg" style="grid-template-columns:1fr;grid-template-rows:1fr 1fr;"><span class="mg-c"></span><span class="mg-c"></span></span>
-                    <span>2分割 (1x2)</span>
+                    <span class="lay-copy"><span class="lay-title">2分割</span><span class="lay-sub">1 x 2</span></span>
                   </button>
                   <button type="button" class="lay-opt" data-layout="4">
                     <span class="radio"></span>
                     <span class="mg" style="grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;"><span class="mg-c"></span><span class="mg-c"></span><span class="mg-c"></span><span class="mg-c"></span></span>
-                    <span>4分割 (2x2)</span>
+                    <span class="lay-copy"><span class="lay-title">4分割</span><span class="lay-sub">2 x 2</span></span>
                   </button>
                   <button type="button" class="lay-opt" data-layout="6">
                     <span class="radio"></span>
                     <span class="mg" style="grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr;"><span class="mg-c"></span><span class="mg-c"></span><span class="mg-c"></span><span class="mg-c"></span><span class="mg-c"></span><span class="mg-c"></span></span>
-                    <span>6分割 (2x3)</span>
+                    <span class="lay-copy"><span class="lay-title">6分割</span><span class="lay-sub">2 x 3</span></span>
                   </button>
                   <button type="button" class="lay-opt" data-layout="8">
                     <span class="radio"></span>
                     <span class="mg" style="grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr 1fr;"><span class="mg-c"></span><span class="mg-c"></span><span class="mg-c"></span><span class="mg-c"></span><span class="mg-c"></span><span class="mg-c"></span><span class="mg-c"></span><span class="mg-c"></span></span>
-                    <span>8分割 (2x4)</span>
+                    <span class="lay-copy"><span class="lay-title">8分割</span><span class="lay-sub">2 x 4</span></span>
                   </button>
                 </div>
 
