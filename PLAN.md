@@ -30,6 +30,8 @@
 | T-024 | Screen B/C/Dの表示領域とCTA重なり解消 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | 絶対配置CTAを通常フロー化して重なりを防止 |
 | T-025 | 画面A/C文言整理と不要表示削除（初心者向け表現に統一） | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | 画面A情報簡素化 + fit文言日本語化 + ヘッダー文言更新 |
 | T-026 | AGENTS運用ルール強化（失敗分析・コミット確認・メッセージ提案） | `AGENTS.md`, `PLAN.md` | 完了 | 失敗分析ループとコミット確認時のメッセージ提案を明文化 |
+| T-027 | Claude Code由来 `frontend-design` スキル導入 | `~/.codex/skills/frontend-design/*`, `PLAN.md` | 完了 | `anthropics/claude-code` から導入 |
+| T-028 | frontend-designでA/B/C/DのミニマルMOC再設計 | `reference/mock/index_frontend_desight.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | 遷移のみダミー実装 |
 
 ## 状態定義
 - 未着手
@@ -85,3 +87,8 @@
 - T-025画像内容確認: `view_image` で上記2枚の表示内容を確認（撮影成功・ビューア表示成功）
 - T-025動作確認: Playwright評価で `#status`/メトリクス非存在、空状態メッセージ `grid-column: 1 / -1`、非対応ファイル警告表示、`配置: 全体表示` を確認（`missingStatus=true, missingMetrics=true, hasWarning=true`）
 - T-026運用ルール更新: `AGENTS.md` に「実行失敗の分析とルール改善」を追加し、コミット確認時の日本語コミットメッセージ提案を必須化
+- T-027スキル導入: `python3 ~/.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py --repo anthropics/claude-code --path plugins/frontend-design/skills/frontend-design` -> `/home/shi7111/.codex/skills/frontend-design` へ導入完了
+- T-028疎通確認: `python3 -m http.server 8000 --bind 127.0.0.1` 起動後、`curl -I http://127.0.0.1:8000/index.html` -> `HTTP/1.0 200 OK`
+- T-028スクリーンショット（desktop）: `/tmp/frontend-desight-desktop-20260314-230619.png`（Screen C表示状態）
+- T-028スクリーンショット（mobile）: `/tmp/frontend-desight-mobile-20260314-230619.png`（iPhone 12, Screen D表示状態）
+- T-028画像内容確認: `view_image` で上記2枚の表示内容を確認（撮影成功・ビューア表示成功）

@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>A4 Print Layout - Frontend Design Mock</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f5f5f1;
+        --paper: #fcfcfa;
+        --line: #d5d5ce;
+        --ink: #1d1d1a;
+        --muted: #6b6b63;
+        --accent: #2f5f56;
+        --accent-soft: #e5eeea;
+        --radius: 18px;
+        --shadow: 0 22px 44px rgba(18, 18, 16, 0.1);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Hiragino Sans", "Noto Sans JP", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 8% 12%, #ecece5 0%, transparent 26%),
+          radial-gradient(circle at 92% 85%, #e8e8e1 0%, transparent 30%),
+          var(--bg);
+      }
+
+      .page {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 30px 20px 44px;
+      }
+
+      .head h1 {
+        margin: 0;
+        font-size: clamp(1.4rem, 2.8vw, 2rem);
+        letter-spacing: 0.02em;
+      }
+
+      .head p {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      .workspace {
+        margin-top: 20px;
+        display: grid;
+        grid-template-columns: 280px minmax(0, 1fr);
+        gap: 20px;
+      }
+
+      .rail,
+      .device {
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+      }
+
+      .rail {
+        padding: 18px 16px;
+      }
+
+      .rail h2 {
+        margin: 0;
+        font-size: 0.96rem;
+      }
+
+      .rail p {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 0.79rem;
+        line-height: 1.5;
+      }
+
+      .step-list {
+        margin: 14px 0 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        gap: 8px;
+      }
+
+      .step-item {
+        display: grid;
+        grid-template-columns: 22px 1fr;
+        gap: 10px;
+        align-items: center;
+        min-height: 40px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #f8f8f5;
+        color: var(--muted);
+        font-size: 0.8rem;
+        padding: 8px 10px;
+      }
+
+      .step-item.on {
+        border-color: var(--accent);
+        color: var(--ink);
+        background: var(--accent-soft);
+      }
+
+      .step-dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        border: 1px solid currentcolor;
+        display: inline-block;
+      }
+
+      .step-item.on .step-dot {
+        background: var(--accent);
+      }
+
+      .device {
+        padding: 16px;
+      }
+
+      .screen {
+        display: none;
+        min-height: 600px;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: #ffffff;
+        padding: 20px;
+      }
+
+      .screen.on {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .screen-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 12px;
+      }
+
+      .screen-head h3 {
+        margin: 0;
+        font-size: 1.05rem;
+      }
+
+      .screen-head small {
+        color: var(--muted);
+        font-size: 0.72rem;
+        letter-spacing: 0.06em;
+      }
+
+      .screen-note {
+        margin: 6px 0 0;
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
+
+      .card {
+        margin-top: 14px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 12px;
+        background: #fdfdfb;
+      }
+
+      .upload-box {
+        min-height: 170px;
+        border: 1px dashed #bbbbaf;
+        border-radius: 10px;
+        display: grid;
+        place-items: center;
+        text-align: center;
+        color: var(--muted);
+        font-size: 0.84rem;
+      }
+
+      .thumbs {
+        margin-top: 10px;
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .thumb {
+        aspect-ratio: 1;
+        border: 1px solid #cecec5;
+        border-radius: 8px;
+        background: linear-gradient(130deg, #e4e4dc, #f3f3ee);
+      }
+
+      .meta-row {
+        margin-top: 10px;
+        display: flex;
+        justify-content: space-between;
+        color: var(--muted);
+        font-size: 0.78rem;
+      }
+
+      .opt-grid {
+        margin-top: 10px;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .opt {
+        min-height: 48px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #f8f8f4;
+        color: var(--ink);
+        font-size: 0.77rem;
+        cursor: pointer;
+      }
+
+      .opt.on {
+        border-color: var(--accent);
+        background: var(--accent-soft);
+      }
+
+      .preview-paper {
+        margin-top: 12px;
+        aspect-ratio: 210 / 297;
+        width: min(100%, 300px);
+        margin-left: auto;
+        margin-right: auto;
+        border: 1px solid #cfcfc7;
+        border-radius: 4px;
+        background:
+          linear-gradient(#f2f2eb 1px, transparent 1px) 0 0 / 100% 25%,
+          linear-gradient(90deg, #f2f2eb 1px, transparent 1px) 0 0 / 50% 100%,
+          #ffffff;
+      }
+
+      .pager {
+        margin-top: 10px;
+        text-align: center;
+        color: var(--muted);
+        font-size: 0.75rem;
+      }
+
+      .done-mark {
+        margin: 18px auto 0;
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        border: 1px solid var(--accent);
+        display: grid;
+        place-items: center;
+        color: var(--accent);
+        font-size: 1.9rem;
+      }
+
+      .done-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        font-size: 0.8rem;
+      }
+
+      .done-row + .done-row {
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px solid #e9e9e2;
+      }
+
+      .cta {
+        margin-top: auto;
+        padding-top: 16px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      button {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: #f7f7f2;
+        color: var(--ink);
+        min-height: 38px;
+        padding: 0 14px;
+        font-size: 0.78rem;
+        cursor: pointer;
+      }
+
+      button:focus-visible {
+        outline: 2px solid color-mix(in srgb, var(--accent) 40%, #ffffff 60%);
+        outline-offset: 2px;
+      }
+
+      .btn-primary {
+        border-color: var(--accent);
+        background: var(--accent);
+        color: #f7faf8;
+      }
+
+      .btn-ghost {
+        background: transparent;
+      }
+
+      @media (max-width: 900px) {
+        .workspace {
+          grid-template-columns: 1fr;
+        }
+
+        .screen {
+          min-height: 540px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header class="head">
+        <h1>A4 Print Layout Mock</h1>
+        <p>Minimal frontend-design draft: Screen A / B / C / D</p>
+      </header>
+
+      <section class="workspace">
+        <aside class="rail" aria-label="進行ステップ">
+          <h2>Flow</h2>
+          <p>このモックは遷移のみのダミーです。実データ処理は含みません。</p>
+          <ol class="step-list">
+            <li class="step-item on" data-step="sc-a"><span class="step-dot"></span><span>Screen A - 画像選択</span></li>
+            <li class="step-item" data-step="sc-b"><span class="step-dot"></span><span>Screen B - レイアウト設定</span></li>
+            <li class="step-item" data-step="sc-c"><span class="step-dot"></span><span>Screen C - プレビュー</span></li>
+            <li class="step-item" data-step="sc-d"><span class="step-dot"></span><span>Screen D - 完了</span></li>
+          </ol>
+        </aside>
+
+        <div class="device">
+          <article id="sc-a" class="screen on">
+            <div class="screen-head">
+              <h3>Screen A / 画像を選択</h3>
+              <small>STEP 01</small>
+            </div>
+            <p class="screen-note">写真を追加する入口だけを見せる最小構成。</p>
+            <section class="card">
+              <div class="upload-box">タップして画像を追加<br />（ダミー）</div>
+              <div class="thumbs">
+                <span class="thumb"></span><span class="thumb"></span><span class="thumb"></span><span class="thumb"></span><span class="thumb"></span>
+              </div>
+              <div class="meta-row"><span>選択済み</span><strong>5枚</strong></div>
+            </section>
+            <div class="cta">
+              <button type="button" class="btn-primary" data-go="sc-b">次へ進む</button>
+            </div>
+          </article>
+
+          <article id="sc-b" class="screen">
+            <div class="screen-head">
+              <h3>Screen B / レイアウト設定</h3>
+              <small>STEP 02</small>
+            </div>
+            <p class="screen-note">分割と配置モードを最小操作で選択。</p>
+            <section class="card">
+              <strong style="font-size:0.78rem;">分割レイアウト</strong>
+              <div class="opt-grid" id="layoutOptions">
+                <button type="button" class="opt" data-name="1分割">1分割</button>
+                <button type="button" class="opt" data-name="2分割">2分割</button>
+                <button type="button" class="opt on" data-name="4分割">4分割</button>
+                <button type="button" class="opt" data-name="6分割">6分割</button>
+                <button type="button" class="opt" data-name="8分割">8分割</button>
+              </div>
+            </section>
+            <section class="card">
+              <strong style="font-size:0.78rem;">配置モード</strong>
+              <div class="opt-grid" id="fitOptions" style="grid-template-columns:repeat(2,minmax(0,1fr));">
+                <button type="button" class="opt on" data-name="全体表示">全体表示</button>
+                <button type="button" class="opt" data-name="トリミング">トリミング</button>
+              </div>
+            </section>
+            <div class="cta">
+              <button type="button" class="btn-primary" data-go="sc-c">プレビューへ</button>
+              <button type="button" class="btn-ghost" data-go="sc-a">戻る</button>
+            </div>
+          </article>
+
+          <article id="sc-c" class="screen">
+            <div class="screen-head">
+              <h3>Screen C / プレビュー</h3>
+              <small>STEP 03</small>
+            </div>
+            <p class="screen-note">A4の見え方を確認するだけのダミー表示。</p>
+            <section class="card">
+              <div class="meta-row">
+                <span id="layoutLabel">レイアウト: 4分割</span>
+                <span id="fitLabel">配置: 全体表示</span>
+              </div>
+              <div class="preview-paper" aria-hidden="true"></div>
+              <div class="pager">ページ 1 / 2</div>
+            </section>
+            <div class="cta">
+              <button type="button" class="btn-primary" data-go="sc-d">PDFを生成（ダミー）</button>
+              <button type="button" class="btn-ghost" data-go="sc-b">戻る</button>
+            </div>
+          </article>
+
+          <article id="sc-d" class="screen">
+            <div class="screen-head">
+              <h3>Screen D / 生成完了</h3>
+              <small>STEP 04</small>
+            </div>
+            <p class="screen-note">保存・共有の導線だけを整理した完了画面。</p>
+            <div class="done-mark">✓</div>
+            <section class="card">
+              <div class="done-row"><span>ファイル名</span><strong>mock-layout.pdf</strong></div>
+              <div class="done-row"><span>ページ数</span><strong>2ページ</strong></div>
+            </section>
+            <div class="cta">
+              <button type="button">保存する</button>
+              <button type="button" class="btn-primary">共有する</button>
+              <button type="button" class="btn-ghost" data-go="sc-c">戻る</button>
+              <button type="button" class="btn-ghost" data-go="sc-a">もう一度作る</button>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const screens = Array.from(document.querySelectorAll(".screen"));
+      const stepItems = Array.from(document.querySelectorAll(".step-item"));
+      const goButtons = Array.from(document.querySelectorAll("[data-go]"));
+      const layoutLabel = document.getElementById("layoutLabel");
+      const fitLabel = document.getElementById("fitLabel");
+      const layoutOptions = document.getElementById("layoutOptions");
+      const fitOptions = document.getElementById("fitOptions");
+
+      function goTo(id) {
+        screens.forEach((screen) => {
+          screen.classList.toggle("on", screen.id === id);
+        });
+        stepItems.forEach((item) => {
+          item.classList.toggle("on", item.dataset.step === id);
+        });
+      }
+
+      goButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          goTo(button.dataset.go);
+        });
+      });
+
+      layoutOptions.addEventListener("click", (event) => {
+        const target = event.target.closest(".opt");
+        if (!target) return;
+        layoutOptions.querySelectorAll(".opt").forEach((opt) => opt.classList.remove("on"));
+        target.classList.add("on");
+        layoutLabel.textContent = `レイアウト: ${target.dataset.name}`;
+      });
+
+      fitOptions.addEventListener("click", (event) => {
+        const target = event.target.closest(".opt");
+        if (!target) return;
+        fitOptions.querySelectorAll(".opt").forEach((opt) => opt.classList.remove("on"));
+        target.classList.add("on");
+        fitLabel.textContent = `配置: ${target.dataset.name}`;
+      });
+
+      stepItems.forEach((item) => {
+        item.addEventListener("click", () => {
+          goTo(item.dataset.step);
+        });
+      });
+    </script>
+  </body>
+</html>
