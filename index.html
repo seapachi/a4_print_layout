@@ -571,60 +571,135 @@
         line-height: 1.35;
       }
 
-      .pdf-preview-disclosure {
-        margin-top: 8px;
-        border: 1px solid var(--b0);
-        border-radius: 11px;
-        background: var(--s1);
-        overflow: hidden;
+      .open-preview-btn {
+        margin-top: 10px;
       }
 
-      .pdf-preview-disclosure summary {
-        list-style: none;
+      .pdf-sheet {
+        position: absolute;
+        inset: 0;
+        z-index: 4;
+        pointer-events: none;
+      }
+
+      .pdf-sheet[aria-hidden="true"] {
+        visibility: hidden;
+      }
+
+      .pdf-sheet-backdrop {
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        background: rgba(28, 23, 16, 0.26);
+        opacity: 0;
+        transition: opacity 220ms ease;
+      }
+
+      .pdf-sheet-panel {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: grid;
+        grid-template-rows: auto auto minmax(0, 1fr) auto auto;
+        gap: 10px;
+        min-height: min(70%, 480px);
+        max-height: min(calc(100% - 18px), 480px);
+        padding: 10px 12px calc(14px + env(safe-area-inset-bottom, 0px));
+        border-top-left-radius: 22px;
+        border-top-right-radius: 22px;
+        border: 1px solid rgba(216, 208, 190, 0.96);
+        border-bottom: none;
+        background:
+          linear-gradient(180deg, rgba(253, 251, 246, 0.98), rgba(253, 251, 246, 1)),
+          var(--s1);
+        box-shadow: 0 -16px 32px rgba(25, 15, 5, 0.18);
+        transform: translateY(calc(100% + 18px));
+        transition: transform 240ms ease;
+      }
+
+      .pdf-sheet.is-open {
+        pointer-events: auto;
+      }
+
+      .pdf-sheet.is-open[aria-hidden="false"] {
+        visibility: visible;
+      }
+
+      .pdf-sheet.is-open .pdf-sheet-backdrop {
+        opacity: 1;
+      }
+
+      .pdf-sheet.is-open .pdf-sheet-panel {
+        transform: translateY(0);
+      }
+
+      .pdf-sheet-handle {
+        width: 38px;
+        height: 5px;
+        margin: 2px auto 0;
+        border: none;
+        border-radius: 999px;
+        background: var(--b1);
+        padding: 0;
         cursor: pointer;
+      }
+
+      .pdf-sheet-head {
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 12px;
-        padding: 10px 12px;
+      }
+
+      .pdf-sheet-title {
+        margin: 0;
+        font-size: 0.86rem;
+        font-weight: 700;
+      }
+
+      .pdf-sheet-close {
+        border: none;
+        background: transparent;
+        color: var(--ac);
         font-size: 0.76rem;
         font-weight: 700;
-        color: var(--t0);
+        padding: 0;
+        cursor: pointer;
       }
 
-      .pdf-preview-disclosure summary::-webkit-details-marker {
-        display: none;
+      .pdf-sheet-note {
+        margin: 0;
+        font-size: 0.7rem;
+        color: var(--t1);
+        line-height: 1.45;
       }
 
-      .pdf-preview-disclosure summary::after {
-        content: "＋";
-        font-size: 0.95rem;
-        line-height: 1;
-        color: var(--ac);
+      .pdf-sheet-view {
+        min-height: 0;
       }
 
-      .pdf-preview-disclosure[open] summary::after {
-        content: "−";
-      }
-
-      .pdf-view {
-        margin-top: 0;
-        border-top: 1px solid var(--b0);
-        background: transparent;
-        padding: 10px;
-      }
-
-      .pdf-view iframe {
+      .pdf-sheet-view iframe {
         width: 100%;
-        height: clamp(320px, 48dvh, 460px);
+        height: 100%;
+        min-height: clamp(250px, 41dvh, 340px);
         border: 1px solid var(--b0);
-        border-radius: 8px;
+        border-radius: 10px;
         background: #fff;
+        display: block;
       }
 
-      .pdf-open-link {
+      .pdf-sheet-link {
         margin-top: 0;
         width: 100%;
+      }
+
+      #sc-d.is-sheet-open .sc-body {
+        overflow: hidden;
+      }
+
+      #sc-d.is-sheet-open .sc-cta {
+        pointer-events: none;
       }
 
       .sc-cta {
@@ -910,28 +985,35 @@
                   <div class="done-row"><span class="done-k">ファイル名</span><span id="doneFileName" class="done-v">-</span></div>
                   <div class="done-row"><span class="done-k">ページ数</span><span id="donePageCount" class="done-v">0 ページ</span></div>
                 </div>
-
-                <details id="pdfPreviewDetails" class="pdf-preview-disclosure">
-                  <summary>PDFを確認する</summary>
-                  <div id="pdfViewerWrap" class="pdf-view" style="display:none">
-                    <iframe id="pdfViewer" title="生成されたPDFプレビュー"></iframe>
-                  </div>
-                </details>
+                <button id="openPreviewSheetButton" class="btn btn-sub open-preview-btn" type="button" hidden disabled>PDFを確認する</button>
               </div>
 
               <div class="sc-cta">
                 <div class="sc-cta-main">
                   <button id="shareButton" class="btn btn-ac" type="button" disabled>共有する</button>
-                  <div class="cta-pair">
-                    <a id="saveLink" class="btn btn-sub" href="#" download style="display:none">保存する</a>
-                    <a id="openPdfLink" class="btn btn-sub pdf-open-link" href="#" target="_blank" rel="noopener" style="display:none">PDFを開く</a>
-                  </div>
+                  <a id="saveLink" class="btn btn-sub" href="#" download style="display:none">保存する</a>
                 </div>
                 <div class="sc-cta-sub">
                   <div class="cta-pair">
                     <button class="btn btn-gh" type="button" data-go="sc-c">戻る</button>
                     <button id="restartButton" class="btn btn-gh" type="button" data-go="sc-a">もう一度作る</button>
                   </div>
+                </div>
+              </div>
+
+              <div id="pdfSheet" class="pdf-sheet" role="dialog" aria-modal="true" aria-labelledby="pdfSheetTitle" aria-hidden="true">
+                <div id="pdfSheetBackdrop" class="pdf-sheet-backdrop"></div>
+                <div id="pdfSheetPanel" class="pdf-sheet-panel">
+                  <button id="pdfSheetHandle" class="pdf-sheet-handle" type="button" aria-label="PDFプレビューを閉じる"></button>
+                  <div class="pdf-sheet-head">
+                    <h2 id="pdfSheetTitle" class="pdf-sheet-title">PDFプレビュー</h2>
+                    <button id="pdfSheetClose" class="pdf-sheet-close" type="button">閉じる</button>
+                  </div>
+                  <div id="pdfSheetViewerWrap" class="pdf-sheet-view">
+                    <iframe id="pdfSheetViewer" title="生成されたPDFプレビュー"></iframe>
+                  </div>
+                  <p class="pdf-sheet-note">埋め込み表示できない環境では、下のボタンからPDFを別タブで開いて確認してください。</p>
+                  <a id="pdfSheetOpenLink" class="btn btn-sub pdf-sheet-link" href="#" target="_blank" rel="noopener" hidden>PDFを別タブで開く</a>
                 </div>
               </div>
             </article>
@@ -981,15 +1063,20 @@
       let loadingRevision = 0;
       let currentStatusText = "";
       let currentStatusType = "info";
+      let isPdfSheetOpen = false;
 
       const fileInput = document.getElementById("fileInput");
       const generateButton = document.getElementById("generateButton");
       const shareButton = document.getElementById("shareButton");
       const saveLink = document.getElementById("saveLink");
-      const pdfViewerWrap = document.getElementById("pdfViewerWrap");
-      const pdfViewer = document.getElementById("pdfViewer");
-      const pdfPreviewDetails = document.getElementById("pdfPreviewDetails");
-      const openPdfLink = document.getElementById("openPdfLink");
+      const openPreviewSheetButton = document.getElementById("openPreviewSheetButton");
+      const pdfSheet = document.getElementById("pdfSheet");
+      const pdfSheetBackdrop = document.getElementById("pdfSheetBackdrop");
+      const pdfSheetHandle = document.getElementById("pdfSheetHandle");
+      const pdfSheetClose = document.getElementById("pdfSheetClose");
+      const pdfSheetViewer = document.getElementById("pdfSheetViewer");
+      const pdfSheetOpenLink = document.getElementById("pdfSheetOpenLink");
+      const screenD = document.getElementById("sc-d");
       const errorBox = document.getElementById("errorBox");
       const slotGrid = document.getElementById("slotGrid");
       const logBox = document.getElementById("logBox");
@@ -1055,6 +1142,28 @@
         }
       });
 
+      openPreviewSheetButton.addEventListener("click", () => {
+        openPdfSheet();
+      });
+
+      pdfSheetClose.addEventListener("click", () => {
+        closePdfSheet();
+      });
+
+      pdfSheetBackdrop.addEventListener("click", () => {
+        closePdfSheet();
+      });
+
+      pdfSheetHandle.addEventListener("click", () => {
+        closePdfSheet();
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && isPdfSheetOpen) {
+          closePdfSheet();
+        }
+      });
+
       restartButton.addEventListener("click", () => {
         fileInput.value = "";
         selectedFiles = [];
@@ -1062,9 +1171,6 @@
         lastLoadErrors = [];
         previewPage = 1;
         clearResult();
-        if (pdfPreviewDetails) {
-          pdfPreviewDetails.open = false;
-        }
         renderErrors([]);
         renderThumbs([]);
         renderPreview([]);
@@ -1179,6 +1285,9 @@
       });
 
       function goTo(id) {
+        if (isPdfSheetOpen && id !== "sc-d") {
+          closePdfSheet();
+        }
         screens.forEach((screen) => {
           screen.classList.toggle("on", screen.id === id);
         });
@@ -1712,9 +1821,8 @@
       }
 
       function clearResult() {
-        if (pdfViewer) {
-          pdfViewer.removeAttribute("src");
-        }
+        closePdfSheet();
+        pdfSheetViewer.removeAttribute("src");
 
         if (currentDownloadUrl) {
           URL.revokeObjectURL(currentDownloadUrl);
@@ -1725,14 +1833,13 @@
         shareButton.disabled = true;
         doneFileName.textContent = "-";
         donePageCount.textContent = "0 ページ";
+        openPreviewSheetButton.hidden = true;
+        openPreviewSheetButton.disabled = true;
         saveLink.style.display = "none";
         saveLink.removeAttribute("href");
-        openPdfLink.style.display = "none";
-        openPdfLink.removeAttribute("href");
-        pdfViewerWrap.style.display = "none";
-        if (pdfPreviewDetails) {
-          pdfPreviewDetails.open = false;
-        }
+        pdfSheetOpenLink.hidden = true;
+        pdfSheetOpenLink.removeAttribute("href");
+        syncPdfSheetState();
       }
 
       function applyGeneratedBlob(blob, filename) {
@@ -1743,15 +1850,36 @@
         saveLink.href = currentDownloadUrl;
         saveLink.download = filename;
         saveLink.style.display = "block";
-        pdfViewer.src = currentDownloadUrl;
-        openPdfLink.href = currentDownloadUrl;
-        openPdfLink.style.display = "block";
-        pdfViewerWrap.style.display = "block";
-        if (pdfPreviewDetails) {
-          pdfPreviewDetails.open = false;
-        }
+        openPreviewSheetButton.hidden = false;
+        openPreviewSheetButton.disabled = false;
+        pdfSheetViewer.src = currentDownloadUrl;
+        pdfSheetOpenLink.href = currentDownloadUrl;
+        pdfSheetOpenLink.hidden = false;
+        syncPdfSheetState();
         shareButton.disabled = false;
         doneFileName.textContent = filename;
+      }
+
+      function openPdfSheet() {
+        if (!currentDownloadUrl) return;
+        if (pdfSheetViewer.getAttribute("src") !== currentDownloadUrl) {
+          pdfSheetViewer.src = currentDownloadUrl;
+        }
+        isPdfSheetOpen = true;
+        syncPdfSheetState();
+      }
+
+      function closePdfSheet() {
+        if (!isPdfSheetOpen) return;
+        isPdfSheetOpen = false;
+        syncPdfSheetState();
+      }
+
+      function syncPdfSheetState() {
+        const hasPdf = Boolean(currentDownloadUrl);
+        pdfSheet.classList.toggle("is-open", isPdfSheetOpen && hasPdf);
+        pdfSheet.setAttribute("aria-hidden", String(!(isPdfSheetOpen && hasPdf)));
+        screenD.classList.toggle("is-sheet-open", isPdfSheetOpen && hasPdf);
       }
 
       function setStatus(text, type) {
