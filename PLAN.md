@@ -43,6 +43,7 @@
 | T-037 | Screen BのCTA高さを他画面と同じ共通サイズへ戻す | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | モバイル時の `#sc-b .btn` 上書きを解除して再検証 |
 | T-038 | 共有時のタイトル送信を廃止してPDF実体のみ共有 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | `navigator.share()` の `title` を外し、共有ペイロードを `files` のみに統一 |
 | T-039 | 直前コミットのrevert実施 | `PLAN.md`, `index.html`, `EXPLANATION.md` | 完了 | `e17f846` をrevertし、共有ペイロードを `title + files` へ戻した |
+| T-040 | Screen Dの中央チェックマークを復元 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 進行中 | 完了アイコンのみを中央配置へ戻し、他導線は現状維持 |
 
 ## 状態定義
 - 未着手
