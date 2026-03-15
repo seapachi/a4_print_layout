@@ -45,6 +45,7 @@
 | T-039 | 直前コミットのrevert実施 | `PLAN.md`, `index.html`, `EXPLANATION.md` | 完了 | `e17f846` をrevertし、共有ペイロードを `title + files` へ戻した |
 | T-040 | Screen Dの中央チェックマークを復元 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | 完了アイコンのみを中央配置へ戻し、他導線は現状維持 |
 | T-041 | Screen DのPDF確認をボトムシート化 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | アプリカード内ボトムシート + 幅フィットiframe + フォールバック導線 |
+| T-042 | Screen DのPDF確認を標準PDFビューア導線へ統一 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | Safari不安定な埋め込みPDFを廃止し、標準ビューアへ委譲 |
 
 ## 状態定義
 - 未着手
@@ -156,3 +157,10 @@
 - T-041画像内容確認: `view_image` で上記画像を確認（撮影成功・ビューア表示成功）
 - T-041シート表示検証: Playwright評価で `ariaHidden="false"` `widthDelta=0` `ctaPointerEvents="none"` `sheetVisible=true` を確認
 - T-041閉じる/リセット検証: Playwright評価で `Escape` と背景タップの両方が `aria-hidden="true"` に戻ること、`もう一度作る` 後に `activeScreen="sc-a"` `previewHidden=true` `sheetHidden="true"` を確認
+- T-042疎通確認: `curl -I http://127.0.0.1:8000/index.html` -> `HTTP/1.0 200 OK`
+- T-042構文確認: 抽出した `index.html` 内スクリプトを一時ファイルへ保存して `node --check` が通過
+- T-042スクリーンショット（Screen D確認導線）: `/tmp/t042-screen-d-open-link-20260316-012425.png`（iPhone 12相当, `PDFを開いて確認` ボタン表示を確認）
+- T-042画像内容確認: `view_image` で上記画像を確認（撮影成功・ビューア表示成功）
+- T-042確認リンク検証: Playwright評価で `hrefStartsWithBlob=true` `popupOpened=true` `saveVisible=true` `activeScreen="sc-d"` を確認
+- T-042リセット検証: Playwright評価で `openPreviewLink` の幅差 `delta=2px`、`もう一度作る` 後に `activeScreen="sc-a"` `previewHidden=true` `previewHref=null` を確認
+- T-042実機確認: この環境ではiPhone Safari実機の直接確認は未実施。標準PDFビューア遷移の最終確認はユーザー実機確認待ち
