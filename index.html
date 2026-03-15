@@ -1485,11 +1485,11 @@
           try {
             if (typeof navigator.canShare === "function") {
               if (navigator.canShare({ files: [file] })) {
-                await shareFn.call(navigator, { title: filename, files: [file] });
+                await shareFn.call(navigator, { files: [file] });
                 return "shared";
               }
             } else {
-              await shareFn.call(navigator, { title: filename, files: [file] });
+              await shareFn.call(navigator, { files: [file] });
               return "shared";
             }
           } catch (error) {
