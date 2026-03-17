@@ -46,6 +46,7 @@
 | T-040 | Screen Dの中央チェックマークを復元 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | 完了アイコンのみを中央配置へ戻し、他導線は現状維持 |
 | T-041 | Screen DのPDF確認をボトムシート化 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | アプリカード内ボトムシート + 幅フィットiframe + フォールバック導線 |
 | T-042 | Screen DのPDF確認を標準PDFビューア導線へ統一 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | Safari不安定な埋め込みPDFを廃止し、標準ビューアへ委譲 |
+| T-043 | Screen Cの低解像度案内文を削除 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | 生成時ログ/警告へ集約し、常時表示は撤去 |
 
 ## 状態定義
 - 未着手
@@ -164,3 +165,7 @@
 - T-042確認リンク検証: Playwright評価で `hrefStartsWithBlob=true` `popupOpened=true` `saveVisible=true` `activeScreen="sc-d"` を確認
 - T-042リセット検証: Playwright評価で `openPreviewLink` の幅差 `delta=2px`、`もう一度作る` 後に `activeScreen="sc-a"` `previewHidden=true` `previewHref=null` を確認
 - T-042実機確認: この環境ではiPhone Safari実機の直接確認は未実施。標準PDFビューア遷移の最終確認はユーザー実機確認待ち
+- T-043文言確認: `rg -n "低解像度警告は生成時にログと警告表示へ集約します" index.html EXPLANATION.md PLAN.md -S` は一致なし
+- T-043疎通確認: `curl` 未導入のため代替として `python3 -c "import http.client; ... HEAD /t043-screen-c-preview.html ..."` を実行し `HTTP/1.0 200 OK` を確認
+- T-043スクリーンショット（Screen C）: `/tmp/t043-screen-c-20260317-1847.png`（390x844, 低解像度案内文が表示されないことを確認）
+- T-043画像内容確認: `view_image` で上記画像を確認（撮影成功・ビューア表示成功）
