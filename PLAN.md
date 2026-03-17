@@ -47,6 +47,7 @@
 | T-041 | Screen DのPDF確認をボトムシート化 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | アプリカード内ボトムシート + 幅フィットiframe + フォールバック導線 |
 | T-042 | Screen DのPDF確認を標準PDFビューア導線へ統一 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | Safari不安定な埋め込みPDFを廃止し、標準ビューアへ委譲 |
 | T-043 | Screen Cの低解像度案内文を削除 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | 生成時ログ/警告へ集約し、常時表示は撤去 |
+| T-044 | RDDへ画像圧縮方針と可変DPI要件を追記 | `reference/RDD.md`, `PLAN.md` | 完了 | Screen Cの自動最適化表示と `targetDpi` 設定方針を要件化 |
 
 ## 状態定義
 - 未着手
@@ -169,3 +170,4 @@
 - T-043疎通確認: `curl` 未導入のため代替として `python3 -c "import http.client; ... HEAD /t043-screen-c-preview.html ..."` を実行し `HTTP/1.0 200 OK` を確認
 - T-043スクリーンショット（Screen C）: `/tmp/t043-screen-c-20260317-1847.png`（390x844, 低解像度案内文が表示されないことを確認）
 - T-043画像内容確認: `view_image` で上記画像を確認（撮影成功・ビューア表示成功）
+- T-044文書更新: `reference/RDD.md` に `Screen C` の自動最適化表示、`targetDpi` 可変要件、必要px算出と事前最適化方針を追記
