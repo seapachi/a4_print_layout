@@ -6,6 +6,7 @@
 ## 必須ドキュメント
 - ソースコード（`index.html`, `styles.css`, `*.js` など）に変更を加えるたびに、必ず `EXPLANATION.md` を更新する。
 - `README.md`、`AGENTS.md`、`PLAN.md` のみを変更する場合、`EXPLANATION.md` の更新は必須ではない。
+- 文書の責務は、`README.md` を入口資料、`USER_GUIDE.md` を利用者向け操作ガイド、`EXPLANATION.md` を開発者向け仕様メモとして扱う。
 
 ## 'EXPLANATION.md' の更新
 - `EXPLANATION.md` は開発者の向けメモであり、プロジェクトの仕様について、平易な言葉で説明する。
@@ -14,7 +15,7 @@
 - `readme.md` は、ユーザー向けのドキュメントで、`EXPLANATION.md` は開発者向けのドキュメントとして区別する。
 
 ## 作業範囲
-- 変更して良い: `index.html`, `EXPLANATION.md`, `README.md`, `AGENTS.md`, `PLAN.md`, `reference/mock/*`
+- 変更して良い: `index.html`, `EXPLANATION.md`, `README.md`, `USER_GUIDE.md`, `AGENTS.md`, `PLAN.md`, `reference/mock/*`
 - 変更しない: `node_modules/`、ビルド/生成物（例: `dist/`, `build/`）
 
 ## コーディング規約
@@ -27,6 +28,13 @@
 ## Playwright操作ルール（追加）
 - Playwrightで `data-go` など重複しうる要素を操作する場合は、可視画面に限定したセレクタを優先する（例: `#sc-a.on [data-go="sc-b"]`）。
 - 非表示要素への誤ヒットを避けるため、画面ID + `.on` を基準にしてからクリック対象を絞り込む。
+
+## 開発環境差吸収ルール
+- 開発コマンドは Ubuntu 互換を正本とし、`Codex cloud` / `Windows + Windsurf + remote Ubuntu` / `Ubuntu + VS Code` のいずれでも、実行場所は Ubuntu 側で統一して記述する。
+- Windows ホスト環境でも、文書や作業報告には Windows パスではなく Linux 形式のパスを用いる。
+- Playwright / プレビュー確認の手順は、GUI 前提の説明だけで終えず、先に CLI ベースの共通確認手順を記載する。
+- Playwright ブラウザ本体は環境差で未導入の可能性があるため、必要時は `npx playwright install chromium` を共通セットアップとして案内する。
+- ローカル確認URLは `http://127.0.0.1:8000/index.html` を基準とし、環境依存メモを追加する場合も共通手順と分離して記述する。
 
 ## コミット方針
 - コミットメッセージは日本語にする。

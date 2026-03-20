@@ -1,54 +1,61 @@
-# A4 Print Layout PoC README
+# A4 Print Layout PoC
 
-## 1. 概要
-`index.html` は、端末内画像をA4レイアウトPDFへ変換する単体HTML PoCです。
+`index.html` は、端末内の画像を A4 印刷向け PDF に並べて出力する単体 HTML の PoC です。
+画像選択、レイアウト指定、プレビュー、PDF生成までをブラウザ内で完結させます。
+この README は入口資料として、概要、読み分け、共通の開発前提だけをまとめます。
 
-- サーバーレス（ローカル処理のみ）
-- JPEG / PNG 複数選択
-- A4 1 / 2 / 4 / 6 / 8 分割
-- `contain` / `cover` 配置モード
-- PDF生成後に「共有する」または「保存する」
+## 概要
+- ローカル処理のみで画像を PDF 化
+- JPEG / PNG の複数選択に対応
+- A4 の `1 / 2 / 4 / 6 / 8` 分割に対応
+- `contain` / `cover` の配置モードを選択可能
+- 生成後は共有または保存へ進める
 
-## 2. ファイル構成
-- `index.html`: PoC本体（Hansi UI + 4画面フロー、内部レイアウト面のみ表示）
-- `EXPLANATION.md`: 開発者向け仕様メモ
-- `PLAN.md`: タスク進捗と実行ログ
-- `validation-checklist.md`: 実機検証チェックシート
-- `reference/RDD.md`: 要件定義書
-- `reference/ooui.md`: OOUI設計ガイド
-- `reference/mock/`: 画面モック
+## はじめに読む文書
+- 利用者向けの使い方: `USER_GUIDE.md`
+- 開発者向けの仕様メモ: `EXPLANATION.md`
+- 要件の正本: `reference/RDD.md`
+- 作業進捗と実行ログ: `PLAN.md`
+- AI 作業ルール: `AGENTS.md`
 
-## 3. 実行方法
-1. ローカルサーバーを起動（例: `python3 -m http.server 8000`）
-2. `http://127.0.0.1:8000/index.html` を開く
-3. Screen Aで画像を選択
-4. Screen Bで分割レイアウトと配置モードを選択
-5. Screen Cでプレビュー後に `PDFを生成`
-6. Screen Dで `共有する` または `保存する`
+## ドキュメント構成
+| 文書 | 役割 |
+|---|---|
+| `README.md` | プロジェクトの入口資料 |
+| `USER_GUIDE.md` | iPhone利用者向けの操作ガイド |
+| `EXPLANATION.md` | 開発者向け仕様メモと設計意図 |
+| `reference/RDD.md` | 要件定義の正本 |
+| `PLAN.md` | タスク進捗と実行ログ |
+| `AGENTS.md` | AI 作業ルール |
 
-## 4. 実装上の契約（PoC）
-- `loadSelectedImages(files): Promise<ImageAsset[]>`
-- `computeSlots(layoutKey, marginMm, gapMm): SlotRectMm[]`
-- `buildPdfA4(images, slots, fitMode): Promise<Blob>`
-- `shareOrDownload(blob, filename): Promise<"shared"|"download">`
+## 最短起動手順
+1. リポジトリのルートでローカルサーバーを起動する  
+   `python3 -m http.server 8000 --bind 127.0.0.1`
+2. 疎通確認を行う  
+   `curl -I http://127.0.0.1:8000/index.html`
+3. ブラウザで `http://127.0.0.1:8000/index.html` を開く
 
-## 5. UI仕様
-- テーマ: Hansi固定
-- 構成: 1カラム（内部レイアウト面を中央カード表示）
-- ヘッダー配置: PCワイド時は `app-surface` 幅（420px）に揃えて中央配置
-- 非表示化: スマホ外枠・上部ABCDタブ・端末ステータスバー
-- 画面導線: Screen Dにも `Screen C` へ戻る上部導線を配置
-- レイアウト設定: ミニ図を縦長表示に調整（分割ロジックは不変）
-- 右パネル: なし
-- ログ表示: 画面下部の折りたたみ (`logBox`)
+## 開発環境の共通前提
+- 開発コマンドは Ubuntu 基準で統一します。
+- `Node >= 18`、`python3`、`npx` が利用できる前提です。
+- Playwright は npm 依存とは別にブラウザ実体が必要なことがあるため、初回は `npx playwright install chromium` を実行します。
+- パス表記は Linux 形式を使い、Windows 固有パスは文書の正本に載せません。
 
-## 6. 既知の制約
-- 低解像度判定はUI警告の詳細表示を簡略化している
-- 大量の高解像度画像ではブラウザメモリ制約に到達する可能性あり
-- 共有APIは端末/ブラウザで挙動差あり（未対応時は保存導線へフォールバック）
+## 開発用の基本コマンド
+```bash
+python3 -m http.server 8000 --bind 127.0.0.1
+curl -I http://127.0.0.1:8000/index.html
+npx playwright install chromium
+```
 
-## 7. 次フェーズ候補
-- 低解像度判定ロジックの導入と警告UI強化
-- 画像並び替えUI
-- 余白/ギャップのユーザー設定
-- React化時のモジュール分割
+## 環境差が出やすいポイント
+| 環境 | 共通方針 |
+|---|---|
+| `Codex cloud` | ローカル GUI 前提ではないため、まず CLI で疎通確認とセットアップを行う |
+| `Windows + Windsurf + remote Ubuntu` | コマンドは Windows 側ではなく remote Ubuntu 側で実行する |
+| `Ubuntu + VS Code 拡張` | 基準環境として扱い、README のコマンドをそのまま使う |
+
+## 既知の制約
+- 大量の高解像度画像では、ブラウザのメモリ制約に到達することがあります。
+- 共有機能はブラウザや端末の対応状況により使えない場合があります。
+- PDF の確認はブラウザ標準ビューアへ委ねるため、表示体験はブラウザ依存です。

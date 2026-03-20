@@ -48,6 +48,7 @@
 | T-042 | Screen DのPDF確認を標準PDFビューア導線へ統一 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | Safari不安定な埋め込みPDFを廃止し、標準ビューアへ委譲 |
 | T-043 | Screen Cの低解像度案内文を削除 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | 生成時ログ/警告へ集約し、常時表示は撤去 |
 | T-044 | RDDへ画像圧縮方針と可変DPI要件を追記 | `reference/RDD.md`, `PLAN.md` | 完了 | Screen Cの自動最適化表示と `targetDpi` 設定方針を要件化 |
+| T-045 | 文書責務の再編と `USER_GUIDE.md` 追加 | `README.md`, `USER_GUIDE.md`, `EXPLANATION.md`, `AGENTS.md`, `PLAN.md` | 完了 | READMEを入口化し、利用者向け/開発者向け文書を分離。Ubuntu基準の開発環境差吸収ルールを追加 |
 
 ## 状態定義
 - 未着手
@@ -171,3 +172,8 @@
 - T-043スクリーンショット（Screen C）: `/tmp/t043-screen-c-20260317-1847.png`（390x844, 低解像度案内文が表示されないことを確認）
 - T-043画像内容確認: `view_image` で上記画像を確認（撮影成功・ビューア表示成功）
 - T-044文書更新: `reference/RDD.md` に `Screen C` の自動最適化表示、`targetDpi` 可変要件、必要px算出と事前最適化方針を追記
+- T-045文書再編: `README.md` を入口資料へ再編し、`USER_GUIDE.md` を新規追加、`EXPLANATION.md` を開発者向け仕様メモとして再構成
+- T-045運用ルール更新: `AGENTS.md` に `USER_GUIDE.md` を作業範囲へ追加し、Ubuntu基準の開発環境差吸収ルールを追記
+- T-045文書整合確認: `rg -n "USER_GUIDE\\.md|EXPLANATION\\.md|reference/RDD\\.md|PLAN\\.md|AGENTS\\.md|Ubuntu|127\\.0\\.0\\.1:8000|npx playwright install chromium" README.md EXPLANATION.md AGENTS.md USER_GUIDE.md` で文書導線と共通コマンドの記述を確認
+- T-045差分確認: `git diff -- README.md USER_GUIDE.md EXPLANATION.md AGENTS.md PLAN.md` で対象文書のみの更新内容を確認
+- T-045変更範囲確認: `git status --short` で `README.md` `USER_GUIDE.md` `EXPLANATION.md` `AGENTS.md` `PLAN.md` のみ変更されていることを確認
