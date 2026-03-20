@@ -1,5 +1,11 @@
 ﻿# PLAN.md
 
+## 改善候補メモ（未承認・実行禁止）
+- この欄は、要件未確定の改善案や検討メモを書くための場所です。
+- ここに書かれた内容は実行対象ではありません。
+- 実行する場合は、ユーザー承認後に `タスク管理` 表へ承認済みタスクとして追加します。
+- 記入テンプレート: `候補名 / 目的 / 未確定事項 / メモ`
+
 ## タスク管理
 
 | ID | タスク | 対象ファイル | 状態 | 備考 |
@@ -49,6 +55,8 @@
 | T-043 | Screen Cの低解像度案内文を削除 | `index.html`, `EXPLANATION.md`, `PLAN.md` | 完了 | 生成時ログ/警告へ集約し、常時表示は撤去 |
 | T-044 | RDDへ画像圧縮方針と可変DPI要件を追記 | `reference/RDD.md`, `PLAN.md` | 完了 | Screen Cの自動最適化表示と `targetDpi` 設定方針を要件化 |
 | T-045 | 文書責務の再編と `USER_GUIDE.md` 追加 | `README.md`, `USER_GUIDE.md`, `EXPLANATION.md`, `AGENTS.md`, `PLAN.md` | 完了 | READMEを入口化し、利用者向け/開発者向け文書を分離。Ubuntu基準の開発環境差吸収ルールを追加 |
+| T-046 | PLAN改善候補メモ枠の追加と実行対象ルール明確化 | `AGENTS.md`, `PLAN.md` | 完了 | 未承認メモと承認済みタスクを分離して誤実行を防ぐ |
+| T-047 | PLAN改善候補メモを冒頭へ移動 | `PLAN.md` | 完了 | 改善候補メモの視認性を上げるため、冒頭配置へ変更 |
 
 ## 状態定義
 - 未着手
@@ -177,3 +185,7 @@
 - T-045文書整合確認: `rg -n "USER_GUIDE\\.md|EXPLANATION\\.md|reference/RDD\\.md|PLAN\\.md|AGENTS\\.md|Ubuntu|127\\.0\\.0\\.1:8000|npx playwright install chromium" README.md EXPLANATION.md AGENTS.md USER_GUIDE.md` で文書導線と共通コマンドの記述を確認
 - T-045差分確認: `git diff -- README.md USER_GUIDE.md EXPLANATION.md AGENTS.md PLAN.md` で対象文書のみの更新内容を確認
 - T-045変更範囲確認: `git status --short` で `README.md` `USER_GUIDE.md` `EXPLANATION.md` `AGENTS.md` `PLAN.md` のみ変更されていることを確認
+- T-046運用ルール更新: `AGENTS.md` に `PLAN.md` の `改善候補メモ` は実行対象外、`タスク管理` 表の承認済みタスクのみ実行対象とするルールを追加
+- T-046文書更新: `PLAN.md` に `改善候補メモ（未承認・実行禁止）` セクションを追加し、未確定案の記入テンプレートを明記
+- T-046差分確認: `git diff -- AGENTS.md PLAN.md` で今回の文書差分のみを確認
+- T-047文書更新: `PLAN.md` の `改善候補メモ（未承認・実行禁止）` を冒頭へ移動し、タスク表より先に見えるよう配置を調整
