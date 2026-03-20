@@ -1,16 +1,14 @@
 {
   "name": "a4_print_layout",
-  "version": "1.0.0",
-  "description": "`index.html` は、A4 8分割固定で画像からPDFを生成する最小PoCです。",
-  "main": "index.js",
-  "directories": {
-    "test": "tests"
-  },
+  "version": "1.1.0-beta.1",
+  "description": "端末内の画像をA4印刷向けPDFに並べて出力するブラウザ完結型のベータ版です。",
   "devDependencies": {
     "@playwright/test": "^1.58.2"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "serve": "python3 -m http.server 8000 --bind 127.0.0.1",
+    "test": "playwright test tests/smoke.spec.js --workers=1",
+    "test:smoke": "playwright test tests/smoke.spec.js --workers=1"
   },
   "repository": {
     "type": "git",
