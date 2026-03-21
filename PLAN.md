@@ -67,6 +67,7 @@
 | T-052 | ブラウザタイトルを `PoC` から `Beta` 表記へ変更 | `index.html`, `EXPLANATION.md`, `PLAN.md`, `tests/smoke.spec.js` | 完了 | ブラウザタブタイトルを `A4 Print Layout Beta` に統一 |
 | T-053 | 画面内のベータ版表記整理をヘッダーへ限定して実施 | `index.html`, `EXPLANATION.md`, `PLAN.md`, `tests/smoke.spec.js` | 完了 | Screen本文は変えず、ヘッダーのみでベータ運用を明示 |
 | T-054 | ヘッダー版情報の簡素化（Betaバッジ削除 + 版番号右寄せ） | `index.html`, `EXPLANATION.md`, `PLAN.md`, `tests/smoke.spec.js` | 完了 | `appReleaseBadge` を削除し、`appVersionText` をタイトル行右端へ移動 |
+| T-055 | スクリーンショット保存先を `reference/preview/` へ固定 | `AGENTS.md`, `PLAN.md`, `reference/preview/*` | 完了 | ルールを固定し、ルート直下の新規 preview 画像を移動 |
 
 ## 状態定義
 - 未着手
@@ -217,7 +218,7 @@
 - T-051〜T-053ブラウザ導入: `npx playwright install chromium` を実行し、Chromium / ffmpeg / headless shell を取得
 - T-051〜T-053テスト確認: `npm test` で `1 passed` を確認
 - T-051〜T-053疎通確認: `curl -I http://127.0.0.1:8000/index.html` -> `HTTP/1.0 200 OK`
-- T-051〜T-053スクリーンショット: `preview-t051-beta-header-20260321-090514.png`（390x844, ヘッダーの `Beta` バッジと版番号表示を確認）
+- T-051〜T-053スクリーンショット: `reference/preview/preview-t051-beta-header-20260321-090514.png`（390x844, ヘッダーの `Beta` バッジと版番号表示を確認）
 - T-051〜T-053画像内容確認: `view_image` で上記画像を確認（撮影成功・ビューア表示成功）
 - T-054ヘッダー簡素化: `index.html` から `appReleaseBadge` と `APP_META.releaseLabel` を削除し、`appVersionText` をタイトル行右端へ移動
 - T-054文書更新: `EXPLANATION.md` のベータ版表示説明を「タイトル右側の版番号表示」に更新
@@ -225,5 +226,8 @@
 - T-054失敗コマンドなし
 - T-054テスト確認: `npm test` で `1 passed` を確認
 - T-054疎通確認: `curl -I http://127.0.0.1:8000/index.html` -> `HTTP/1.0 200 OK`
-- T-054スクリーンショット: `preview-t054-title-version-right-20260321-095014.png`（390x844, タイトル右側の版番号表示を確認）
+- T-054スクリーンショット: `reference/preview/preview-t054-title-version-right-20260321-095014.png`（390x844, タイトル右側の版番号表示を確認）
 - T-054画像内容確認: `view_image` で上記画像を確認（撮影成功・ビューア表示成功）
+- T-055ルール更新: `AGENTS.md` の作業範囲へ `reference/preview/*` を追加し、スクリーンショット保存先を `reference/preview/` 固定へ変更
+- T-055ファイル移動: ルート直下 `preview-t051-beta-header-20260321-090514.png` と `preview-t054-title-version-right-20260321-095014.png` を `reference/preview/` へ移動
+- T-055失敗コマンドなし

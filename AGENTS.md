@@ -15,7 +15,7 @@
 - `readme.md` は、ユーザー向けのドキュメントで、`EXPLANATION.md` は開発者向けのドキュメントとして区別する。
 
 ## 作業範囲
-- 変更して良い: `index.html`, `EXPLANATION.md`, `README.md`, `USER_GUIDE.md`, `AGENTS.md`, `PLAN.md`, `package.json`, `tests/*`, `reference/mock/*`
+- 変更して良い: `index.html`, `EXPLANATION.md`, `README.md`, `USER_GUIDE.md`, `AGENTS.md`, `PLAN.md`, `package.json`, `tests/*`, `reference/mock/*`, `reference/preview/*`
 - 変更しない: `node_modules/`、ビルド/生成物（例: `dist/`, `build/`）
 
 ## コーディング規約
@@ -83,7 +83,7 @@
 
 ## スクリーンショット取得手順（安定運用）
 - スクリーンショット前に、ローカルサーバー起動後 `curl -I http://127.0.0.1:8000/index.html` で疎通確認（HTTP 200）を行う。
-- スクリーンショット保存先は単純な相対パス（例: `question-panel.png`）を優先し、多段パスは避ける。
+- スクリーンショット保存先は `reference/preview/` に固定し、ファイル名は `preview-<task>-<timestamp>.png` の形式を基本とする。
 - 撮影は「ページ表示待機 → 引き算モード開始操作 → 短い待機 → 撮影」の順で行う。
 - 画像ファイル名は毎回ユニークにし、上書きやキャッシュ混同を避ける（例: タイムスタンプ付き）。
 - 判定は2段階で行う:
