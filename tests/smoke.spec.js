@@ -73,6 +73,18 @@ test.afterAll(async () => {
 test("3画像を2分割coverでPDF生成できる", async ({ page }) => {
   await page.goto(BASE_URL);
 
+  await expect(page).toHaveTitle("A4 Print Layout Beta");
+  await expect(page.locator("#appVersionText")).toHaveText("v1.1.0-beta.1");
+  await expect(page.locator("#appReleaseBadge")).toHaveCount(0);
+
+  const titleBox = await page.locator(".app-title").boundingBox();
+  const versionBox = await page.locator("#appVersionText").boundingBox();
+  if (!titleBox || !versionBox) {
+    throw new Error("ヘッダー要素の位置を取得できませんでした。");
+  }
+  expect(versionBox.x).toBeGreaterThan(titleBox.x + titleBox.width - 1);
+  expect(Math.abs(versionBox.y - titleBox.y)).toBeLessThan(18);
+
   await page.locator("#fileInput").setInputFiles([
     { name: "sample-a.png", mimeType: "image/png", buffer: PNG_PIXEL },
     { name: "sample-b.png", mimeType: "image/png", buffer: PNG_PIXEL },

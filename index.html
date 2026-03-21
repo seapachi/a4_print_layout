@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hansi PoC - A4 Print Layout PDF</title>
+    <title>A4 Print Layout Beta</title>
     <style>
       :root {
         --body-bg: #f2ece0;
@@ -60,9 +60,29 @@
 
       .app-title {
         margin: 0;
+        flex: 1 1 auto;
+        min-width: 0;
         font-size: clamp(1.35rem, 3vw, 1.95rem);
         line-height: 1.1;
         letter-spacing: -0.02em;
+      }
+
+      .app-title-row {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 10px;
+        flex-wrap: nowrap;
+      }
+
+      .app-version {
+        flex: 0 1 auto;
+        min-width: 0;
+        white-space: nowrap;
+        font-size: 0.8rem;
+        color: var(--t1);
+        font-weight: 600;
+        text-align: right;
       }
 
       .app-sub {
@@ -723,7 +743,10 @@
   <body>
     <main class="page">
       <header class="pg-header">
-        <h1 class="app-title">A4 Print Layout</h1>
+        <div class="app-title-row">
+          <h1 class="app-title">A4 Print Layout</h1>
+          <span id="appVersionText" class="app-version">v1.1.0-beta.1</span>
+        </div>
         <p class="app-sub">スマホの写真をA4印刷PDFにかんたん配置（1/2/4/6/8分割）</p>
       </header>
 
@@ -890,6 +913,10 @@
       const GAP_MM = 2;
       const ACCEPTED_MIME = new Set(["image/jpeg", "image/png"]);
       const PRIMARY_THEME = "hanshi";
+      const APP_META = Object.freeze({
+        version: "1.1.0-beta.1",
+        documentTitle: "A4 Print Layout Beta",
+      });
 
       const LAYOUT_PRESETS = {
         "1": { cols: 1, rows: 1, label: "1分割 (1x1)", slotsPerPage: 1 },
@@ -922,6 +949,7 @@
       let currentStatusType = "info";
 
       const fileInput = document.getElementById("fileInput");
+      const appVersionText = document.getElementById("appVersionText");
       const generateButton = document.getElementById("generateButton");
       const shareButton = document.getElementById("shareButton");
       const saveLink = document.getElementById("saveLink");
@@ -948,6 +976,8 @@
         name: "Hansi",
         toneDescription: "Warm paper + vermillion",
       };
+
+      applyAppMeta();
 
       goButtons.forEach((button) => {
         button.addEventListener("click", () => {
@@ -1118,6 +1148,11 @@
         if (id === "sc-c") {
           renderPreview(selectedAssets);
         }
+      }
+
+      function applyAppMeta() {
+        document.title = APP_META.documentTitle;
+        appVersionText.textContent = `v${APP_META.version}`;
       }
 
       function setLayout(key) {

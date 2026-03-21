@@ -5,9 +5,9 @@
 - ここに書かれた内容は実行対象ではありません。
 - 実行する場合は、ユーザー承認後に `タスク管理` 表へ承認済みタスクとして追加します。
 - 記入テンプレート: `C-001 / 候補名 / 目的 / 未確定事項 / メモ`
-- `C-001` 候補名: アプリ画面へのベータ版・版番号表示 / 目的: 画面から現在の版を識別できるようにする / 未確定事項: 表示位置、取得元、表示形式、UI影響 / メモ: 文書整備完了後に別タスクとして切り出す
-- `C-002` 候補名: ブラウザタイトルの `PoC` から `Beta` への変更 / 目的: 画面外メタ情報もベータ版表記にそろえる / 未確定事項: タイトル文言、反映タイミング、画面本体変更との分離方法 / メモ: `index.html` を触る別タスクとして扱う
-- `C-003` 候補名: 画面内の `PoC` / `ベータ版` 表記整理 / 目的: 将来必要になった場合に画面文言をベータ版運用へ合わせる / 未確定事項: 対象文言、表示箇所、ユーザー向け表現 / メモ: 今回は文書とメタ情報のみを先行する
+- `C-001` 候補名: アプリ画面へのベータ版・版番号表示 / 目的: 画面から現在の版を識別できるようにする / 未確定事項: 表示位置、取得元、表示形式、UI影響 / メモ: 承認済み。`T-051` へ移管して実施する
+- `C-002` 候補名: ブラウザタイトルの `PoC` から `Beta` への変更 / 目的: 画面外メタ情報もベータ版表記にそろえる / 未確定事項: タイトル文言、反映タイミング、画面本体変更との分離方法 / メモ: 承認済み。`T-052` へ移管して実施する
+- `C-003` 候補名: 画面内の `PoC` / `ベータ版` 表記整理 / 目的: 将来必要になった場合に画面文言をベータ版運用へ合わせる / 未確定事項: 対象文言、表示箇所、ユーザー向け表現 / メモ: 承認済み。今回はヘッダーのみを対象に `T-053` として実施する
 
 ## タスク管理
 
@@ -63,6 +63,10 @@
 | T-048 | `package.json` の役割説明を `EXPLANATION.md` へ追記 | `EXPLANATION.md`, `PLAN.md` | 完了 | 初心者向けに、このリポジトリでの使い方も含めて整理 |
 | T-049 | ベータ版向け文書・メタ情報整備 | `README.md`, `EXPLANATION.md`, `USER_GUIDE.md`, `AGENTS.md`, `PLAN.md`, `package.json`, `tests/*` | 完了 | `index.html` は保留し、文書・メタ情報・テスト導線のみ先行整備 |
 | T-050 | 改善候補メモへ候補番号を付与 | `PLAN.md` | 完了 | 改善候補を `C-001` 形式で参照できるよう整理 |
+| T-051 | アプリ画面ヘッダーへベータ版・版番号表示を追加 | `index.html`, `EXPLANATION.md`, `PLAN.md`, `tests/smoke.spec.js` | 完了 | `Beta` バッジ + `v1.1.0-beta.1` をヘッダーへ表示 |
+| T-052 | ブラウザタイトルを `PoC` から `Beta` 表記へ変更 | `index.html`, `EXPLANATION.md`, `PLAN.md`, `tests/smoke.spec.js` | 完了 | ブラウザタブタイトルを `A4 Print Layout Beta` に統一 |
+| T-053 | 画面内のベータ版表記整理をヘッダーへ限定して実施 | `index.html`, `EXPLANATION.md`, `PLAN.md`, `tests/smoke.spec.js` | 完了 | Screen本文は変えず、ヘッダーのみでベータ運用を明示 |
+| T-054 | ヘッダー版情報の簡素化（Betaバッジ削除 + 版番号右寄せ） | `index.html`, `EXPLANATION.md`, `PLAN.md`, `tests/smoke.spec.js` | 完了 | `appReleaseBadge` を削除し、`appVersionText` をタイトル行右端へ移動 |
 
 ## 状態定義
 - 未着手
@@ -204,3 +208,22 @@
 - T-049テスト確認: `npm test` で `1 passed` を確認
 - T-050文書更新: `PLAN.md` の改善候補メモへ `C-001` 形式の候補番号を付与し、テンプレート表記も合わせて更新
 - T-048文書更新: `EXPLANATION.md` に `package.json` の役割、主要項目、そしてこのリポジトリで Playwright 用の開発ツール管理に使っていることを追記
+- T-051ヘッダー実装: `index.html` に `APP_META`、`Beta` バッジ、`v1.1.0-beta.1` 表示を追加
+- T-052タイトル更新: `index.html` の `<title>` と `document.title` を `A4 Print Layout Beta` に統一
+- T-053画面内表記整理: ヘッダーのみをベータ版表記対象とし、`Screen A` から `Screen D` の本文文言は現状維持
+- T-051〜T-053文書更新: `EXPLANATION.md` にヘッダー版情報表示と `APP_META.version` の位置づけを追記
+- T-051〜T-053テスト更新: `tests/smoke.spec.js` にタイトル、`#appReleaseBadge`、`#appVersionText` の確認を追加
+- T-051〜T-053失敗分析: `npm test` は Playwright の `chromium_headless_shell` 不足で失敗。直接原因は実行ファイル欠落、根本原因はブラウザキャッシュ未取得、再試行方針として `npx playwright install chromium` 実行後に再試行
+- T-051〜T-053ブラウザ導入: `npx playwright install chromium` を実行し、Chromium / ffmpeg / headless shell を取得
+- T-051〜T-053テスト確認: `npm test` で `1 passed` を確認
+- T-051〜T-053疎通確認: `curl -I http://127.0.0.1:8000/index.html` -> `HTTP/1.0 200 OK`
+- T-051〜T-053スクリーンショット: `preview-t051-beta-header-20260321-090514.png`（390x844, ヘッダーの `Beta` バッジと版番号表示を確認）
+- T-051〜T-053画像内容確認: `view_image` で上記画像を確認（撮影成功・ビューア表示成功）
+- T-054ヘッダー簡素化: `index.html` から `appReleaseBadge` と `APP_META.releaseLabel` を削除し、`appVersionText` をタイトル行右端へ移動
+- T-054文書更新: `EXPLANATION.md` のベータ版表示説明を「タイトル右側の版番号表示」に更新
+- T-054テスト更新: `tests/smoke.spec.js` から `#appReleaseBadge` の表示期待を外し、非存在確認とタイトル右側レイアウト確認を追加
+- T-054失敗コマンドなし
+- T-054テスト確認: `npm test` で `1 passed` を確認
+- T-054疎通確認: `curl -I http://127.0.0.1:8000/index.html` -> `HTTP/1.0 200 OK`
+- T-054スクリーンショット: `preview-t054-title-version-right-20260321-095014.png`（390x844, タイトル右側の版番号表示を確認）
+- T-054画像内容確認: `view_image` で上記画像を確認（撮影成功・ビューア表示成功）
