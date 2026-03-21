@@ -15,7 +15,7 @@
 - `readme.md` は、ユーザー向けのドキュメントで、`EXPLANATION.md` は開発者向けのドキュメントとして区別する。
 
 ## 作業範囲
-- 変更して良い: `index.html`, `EXPLANATION.md`, `README.md`, `USER_GUIDE.md`, `AGENTS.md`, `PLAN.md`, `package.json`, `tests/*`, `reference/mock/*`, `reference/preview/*`
+- 変更して良い: `index.html`, `EXPLANATION.md`, `README.md`, `USER_GUIDE.md`, `AGENTS.md`, `PLAN.md`, `package.json`, `package-lock.json`, `tests/*`, `reference/mock/*`, `reference/preview/*`
 - 変更しない: `node_modules/`、ビルド/生成物（例: `dist/`, `build/`）
 
 ## コーディング規約

@@ -69,6 +69,7 @@
 | T-054 | ヘッダー版情報の簡素化（Betaバッジ削除 + 版番号右寄せ） | `index.html`, `EXPLANATION.md`, `PLAN.md`, `tests/smoke.spec.js` | 完了 | `appReleaseBadge` を削除し、`appVersionText` をタイトル行右端へ移動 |
 | T-055 | スクリーンショット保存先を `reference/preview/` へ固定 | `AGENTS.md`, `PLAN.md`, `reference/preview/*` | 完了 | ルールを固定し、ルート直下の新規 preview 画像を移動 |
 | T-056 | 3環境共通の npm / Playwright セットアップ運用を自動化 | `package.json`, `README.md`, `EXPLANATION.md`, `AGENTS.md`, `PLAN.md` | 完了 | `npm run setup` と project-local Playwright browser を共通手順へ統一 |
+| T-057 | `package-lock.json` を作業範囲へ追加して lockfile 差分を確定 | `AGENTS.md`, `PLAN.md`, `package-lock.json` | 完了 | 許可対象へ追加し、既存の root metadata 差分をコミット対象へ整理 |
 
 ## 状態定義
 - 未着手
@@ -240,3 +241,6 @@
 - T-056Playwright導入確認: `npm run setup:playwright` で Chromium / ffmpeg / headless shell が repo 配下の Playwright ローカルブラウザ領域へ取得されることを確認
 - T-056テスト確認: `npm test` で `1 passed` を確認
 - T-056差分確認: `git diff -- package-lock.json` で既存差分のみを確認し、今回の運用変更で新たな lockfile 差分が増えていないことを確認
+- T-057運用範囲更新: `AGENTS.md` の作業範囲へ `package-lock.json` を追加
+- T-057lockfile整理: `package-lock.json` の root metadata（`name` `version` `license`）差分を既存未コミット差分として確定対象へ整理
+- T-057失敗コマンドなし
