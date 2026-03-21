@@ -40,31 +40,42 @@
 | `AGENTS.md` | AI 作業ルール |
 
 ## 最短起動手順
-1. リポジトリのルートでローカルサーバーを起動する  
-   `python3 -m http.server 8000 --bind 127.0.0.1`
-2. 疎通確認を行う  
+1. 共通セットアップを実行する  
+   `npm run setup`
+2. リポジトリのルートでローカルサーバーを起動する  
+   `npm run serve`
+3. 疎通確認を行う  
    `curl -I http://127.0.0.1:8000/index.html`
-3. ブラウザで `http://127.0.0.1:8000/index.html` を開く
+4. 必要なら自動テストを実行する  
+   `npm test`
+5. ブラウザで `http://127.0.0.1:8000/index.html` を開く
 
 ## 開発環境の共通前提
 - 開発コマンドは Ubuntu 基準で統一します。
 - `Node >= 18`、`python3`、`npx` が利用できる前提です。
-- Playwright は npm 依存とは別にブラウザ実体が必要なことがあるため、初回は `npx playwright install chromium` を実行します。
+- 依存再現は `package-lock.json` を正本とし、日常のセットアップは `npm ci` を内包した `npm run setup` でそろえます。
+- Playwright ブラウザは `PLAYWRIGHT_BROWSERS_PATH=0` によりプロジェクト内へ配置し、環境差を減らします。
 - パス表記は Linux 形式を使い、Windows 固有パスは文書の正本に載せません。
 
 ## 開発用の基本コマンド
 ```bash
-python3 -m http.server 8000 --bind 127.0.0.1
+npm run setup
+npm run serve
 curl -I http://127.0.0.1:8000/index.html
-npx playwright install chromium
+npm test
 ```
 
 ## 環境差が出やすいポイント
 | 環境 | 共通方針 |
 |---|---|
-| `Codex cloud` | ローカル GUI 前提ではないため、まず CLI で疎通確認とセットアップを行う |
-| `Windows + Windsurf + remote Ubuntu` | コマンドは Windows 側ではなく remote Ubuntu 側で実行する |
+| `Codex cloud` | ワークスペースが使い捨てなら `npm run setup` を毎回実行する。まず CLI で疎通確認とセットアップを行う |
+| `Windows + Windsurf + remote Ubuntu` | コマンドは Windows 側ではなく WSL / remote Ubuntu 側で実行する |
 | `Ubuntu + VS Code 拡張` | 基準環境として扱い、README のコマンドをそのまま使う |
+
+## 補足セットアップメモ
+- `npm run setup` は `npm ci` と `PLAYWRIGHT_BROWSERS_PATH=0 npx playwright install chromium` をまとめて実行します。
+- 依存定義を変更するときだけ `npm install` を使い、通常の再現や初期化には使いません。
+- `PLAYWRIGHT_BROWSERS_PATH=0` により、Playwright の Chromium はホーム配下 `~/.cache/ms-playwright` ではなくプロジェクト内へ寄ります。
 
 ## 既知の制約
 - 大量の高解像度画像では、ブラウザのメモリ制約に到達することがあります。

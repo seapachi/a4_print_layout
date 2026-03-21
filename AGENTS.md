@@ -33,8 +33,16 @@
 - 開発コマンドは Ubuntu 互換を正本とし、`Codex cloud` / `Windows + Windsurf + remote Ubuntu` / `Ubuntu + VS Code` のいずれでも、実行場所は Ubuntu 側で統一して記述する。
 - Windows ホスト環境でも、文書や作業報告には Windows パスではなく Linux 形式のパスを用いる。
 - Playwright / プレビュー確認の手順は、GUI 前提の説明だけで終えず、先に CLI ベースの共通確認手順を記載する。
-- Playwright ブラウザ本体は環境差で未導入の可能性があるため、必要時は `npx playwright install chromium` を共通セットアップとして案内する。
+- 共通セットアップの正本コマンドは `npm run setup` とする。
+- 依存再現は `npm ci` を使い、依存変更時以外は `npm install` を使わない。
+- Playwright ブラウザ本体は `PLAYWRIGHT_BROWSERS_PATH=0` を使ってプロジェクト内へ固定し、`npm run setup` から導入する。
+- `Codex cloud` は使い捨てワークスペースの可能性があるため、必要なら `npm run setup` を毎回実行する前提で案内する。
 - ローカル確認URLは `http://127.0.0.1:8000/index.html` を基準とし、環境依存メモを追加する場合も共通手順と分離して記述する。
+
+## `package-lock.json` 運用ルール
+- `package-lock.json` は依存再現の正本として扱う。
+- `package.json` を変えていないのに `package-lock.json` が変わった場合は、先に理由を確認する。
+- 依存更新コミットは、通常の UI / 文書変更とは分けて単独タスクとして扱う。
 
 ## コミット方針
 - コミットメッセージは日本語にする。

@@ -68,6 +68,7 @@
 | T-053 | 画面内のベータ版表記整理をヘッダーへ限定して実施 | `index.html`, `EXPLANATION.md`, `PLAN.md`, `tests/smoke.spec.js` | 完了 | Screen本文は変えず、ヘッダーのみでベータ運用を明示 |
 | T-054 | ヘッダー版情報の簡素化（Betaバッジ削除 + 版番号右寄せ） | `index.html`, `EXPLANATION.md`, `PLAN.md`, `tests/smoke.spec.js` | 完了 | `appReleaseBadge` を削除し、`appVersionText` をタイトル行右端へ移動 |
 | T-055 | スクリーンショット保存先を `reference/preview/` へ固定 | `AGENTS.md`, `PLAN.md`, `reference/preview/*` | 完了 | ルールを固定し、ルート直下の新規 preview 画像を移動 |
+| T-056 | 3環境共通の npm / Playwright セットアップ運用を自動化 | `package.json`, `README.md`, `EXPLANATION.md`, `AGENTS.md`, `PLAN.md` | 完了 | `npm run setup` と project-local Playwright browser を共通手順へ統一 |
 
 ## 状態定義
 - 未着手
@@ -231,3 +232,11 @@
 - T-055ルール更新: `AGENTS.md` の作業範囲へ `reference/preview/*` を追加し、スクリーンショット保存先を `reference/preview/` 固定へ変更
 - T-055ファイル移動: ルート直下 `preview-t051-beta-header-20260321-090514.png` と `preview-t054-title-version-right-20260321-095014.png` を `reference/preview/` へ移動
 - T-055失敗コマンドなし
+- T-056スクリプト更新: `package.json` に `setup` `setup:playwright` を追加し、`test` `test:smoke` を `PLAYWRIGHT_BROWSERS_PATH=0` 前提へ更新
+- T-056README更新: `README.md` の共通セットアップ手順を `npm run setup` / `npm run serve` / `curl -I` / `npm test` 中心へ変更
+- T-056仕様メモ更新: `EXPLANATION.md` に `package-lock.json` を依存再現の正本とする運用、`npm ci` 優先、project-local Playwright browser の理由を追記
+- T-056運用ルール更新: `AGENTS.md` に `npm run setup` 正本、`npm ci` 優先、`package-lock.json` 運用ルールを追記
+- T-056失敗コマンドなし
+- T-056Playwright導入確認: `npm run setup:playwright` で Chromium / ffmpeg / headless shell が repo 配下の Playwright ローカルブラウザ領域へ取得されることを確認
+- T-056テスト確認: `npm test` で `1 passed` を確認
+- T-056差分確認: `git diff -- package-lock.json` で既存差分のみを確認し、今回の運用変更で新たな lockfile 差分が増えていないことを確認
