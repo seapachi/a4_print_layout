@@ -10,7 +10,8 @@
     "setup:playwright": "PLAYWRIGHT_BROWSERS_PATH=0 npx playwright install chromium",
     "serve": "python3 -m http.server 8000 --bind 127.0.0.1",
     "test": "PLAYWRIGHT_BROWSERS_PATH=0 playwright test tests/smoke.spec.js --workers=1",
-    "test:smoke": "PLAYWRIGHT_BROWSERS_PATH=0 playwright test tests/smoke.spec.js --workers=1"
+    "test:smoke": "PLAYWRIGHT_BROWSERS_PATH=0 playwright test tests/smoke.spec.js --workers=1",
+    "screenshot:a-d": "PLAYWRIGHT_BROWSERS_PATH=0 node tests/capture-screenshots.js"
   },
   "repository": {
     "type": "git",

@@ -28,6 +28,8 @@
 ## Playwright操作ルール（追加）
 - Playwrightで `data-go` など重複しうる要素を操作する場合は、可視画面に限定したセレクタを優先する（例: `#sc-a.on [data-go="sc-b"]`）。
 - 非表示要素への誤ヒットを避けるため、画面ID + `.on` を基準にしてからクリック対象を絞り込む。
+- Playwright を使う確認作業は、原則として `npm run` で定義済みの入口から実行する。
+- `node` や `npx playwright` を直接使う必要がある場合でも、`PLAYWRIGHT_BROWSERS_PATH=0` を付けてから実行する。
 
 ## 開発環境差吸収ルール
 - 開発コマンドは Ubuntu 互換を正本とし、`Codex cloud` / `Windows + Windsurf + remote Ubuntu` / `Ubuntu + VS Code` のいずれでも、実行場所は Ubuntu 側で統一して記述する。

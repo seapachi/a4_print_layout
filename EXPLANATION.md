@@ -40,6 +40,7 @@
 - ブラウザで動く本体コードとは別に、開発用ツールの情報をまとめるため
 - `npm install` で必要な道具をまとめて入れられるようにするため
 - `npm test` などのコマンド名を統一して、作業手順をわかりやすくするため
+- `npm run screenshot:a-d` のように、環境変数付きの確認コマンドを入口ごと固定して、手打ちミスを減らすため
 
 ## `package-lock.json` の役割
 - `package-lock.json` は、`package.json` の希望内容に対して「実際にどの版を入れたか」を固定する記録です。
@@ -162,12 +163,14 @@ npm run setup
 npm run serve
 curl -I http://127.0.0.1:8000/index.html
 npm test
+npm run screenshot:a-d -- t060
 ```
 
 ### Playwright 運用メモ
 - `package.json` には `@playwright/test` が入っていますが、ブラウザ実体は npm 依存とは別です。
 - このリポジトリでは `PLAYWRIGHT_BROWSERS_PATH=0` を使い、Chromium 実体をホーム配下ではなくプロジェクト内へ寄せます。
 - そのため `npm run setup` を実行すれば、`npm ci` による依存再現と Playwright Chromium 配置をまとめてそろえられます。
+- 単発の画面確認や A〜D の取得も、`npm run screenshot:a-d -- <task-id>` を入口にして同じ環境変数を自動付与します。
 - `~/.cache` 依存を減らすことで、3環境で「同じ repo から同じ構成を再現しやすくする」ことを狙っています。
 - `Codex cloud` のような使い捨て環境でも、毎回 `npm run setup` を入口にすれば復元できます。
 - スクリーンショットや可視確認は GUI 依存になり得るため、先に `curl -I` や構文確認などの CLI 検証を通します。

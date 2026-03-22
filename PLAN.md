@@ -71,6 +71,7 @@
 | T-057 | `package-lock.json` を作業範囲へ追加して lockfile 差分を確定 | `AGENTS.md`, `PLAN.md`, `package-lock.json` | 完了 | 許可対象へ追加し、既存の root metadata 差分をコミット対象へ整理 |
 | T-058 | 改善候補の採番継続ルールを明文化 | `AGENTS.md`, `PLAN.md` | 完了 | 候補番号の再利用禁止と次回採番メモの明記を追加 |
 | T-059 | スモークテスト実行と Screen A〜D スクリーンショット取得 | `PLAN.md`, `reference/preview/*` | 完了 | `npm test` 実行と A/B/C/D 画面の最新確認画像を取得した |
+| T-060 | Playwright起動を npm script 経由へ統一して付け忘れを防止 | `package.json`, `tests/*`, `EXPLANATION.md`, `AGENTS.md`, `PLAN.md` | 完了 | スクリーンショット処理の script 化と運用ルール追加で `PLAYWRIGHT_BROWSERS_PATH=0` の手打ちを避ける |
 
 ## 状態定義
 - 未着手
@@ -258,3 +259,15 @@
 - T-059スクリーンショット（C画面）: `reference/preview/preview-t059-screen-c-20260323-015748.png`
 - T-059スクリーンショット（D画面）: `reference/preview/preview-t059-screen-d-20260323-015748.png`
 - T-059画像内容確認: `view_image` で A/B/C/D の4枚を確認（撮影成功・ビューア表示成功）
+- T-060スクリプト更新: `package.json` に `screenshot:a-d` を追加し、Playwright単発撮影の入口を `npm run` へ統一
+- T-060撮影スクリプト追加: `tests/capture-screenshots.js` を追加し、サーバー自動起動と A/B/C/D 撮影を自動化
+- T-060運用ルール更新: `AGENTS.md` に Playwright 確認作業は原則 `npm run` 経由、直接実行時も `PLAYWRIGHT_BROWSERS_PATH=0` 必須を追記
+- T-060仕様メモ更新: `EXPLANATION.md` に `npm run screenshot:a-d -- <task-id>` を共通入口として追記
+- T-060失敗コマンドなし
+- T-060テスト確認: `npm test` で `1 passed` を確認
+- T-060スクリーンショット確認: `npm run screenshot:a-d -- t060` で A/B/C/D の4枚を生成
+- T-060スクリーンショット（A画面）: `reference/preview/preview-t060-screen-a-20260323-020423.png`
+- T-060スクリーンショット（B画面）: `reference/preview/preview-t060-screen-b-20260323-020423.png`
+- T-060スクリーンショット（C画面）: `reference/preview/preview-t060-screen-c-20260323-020423.png`
+- T-060スクリーンショット（D画面）: `reference/preview/preview-t060-screen-d-20260323-020423.png`
+- T-060画像内容確認: `view_image` で A/B/C/D の4枚を確認（撮影成功・ビューア表示成功）
