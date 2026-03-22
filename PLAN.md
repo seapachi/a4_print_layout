@@ -5,6 +5,7 @@
 - ここに書かれた内容は実行対象ではありません。
 - 実行する場合は、ユーザー承認後に `タスク管理` 表へ承認済みタスクとして追加します。
 - 記入テンプレート: `C-001 / 候補名 / 目的 / 未確定事項 / メモ`
+- 採番メモ: 改善候補の採番は通番で管理し、次回は `C-004` から開始する
 
 ## タスク管理
 
@@ -67,6 +68,7 @@
 | T-055 | スクリーンショット保存先を `reference/preview/` へ固定 | `AGENTS.md`, `PLAN.md`, `reference/preview/*` | 完了 | ルールを固定し、ルート直下の新規 preview 画像を移動 |
 | T-056 | 3環境共通の npm / Playwright セットアップ運用を自動化 | `package.json`, `README.md`, `EXPLANATION.md`, `AGENTS.md`, `PLAN.md` | 完了 | `npm run setup` と project-local Playwright browser を共通手順へ統一 |
 | T-057 | `package-lock.json` を作業範囲へ追加して lockfile 差分を確定 | `AGENTS.md`, `PLAN.md`, `package-lock.json` | 完了 | 許可対象へ追加し、既存の root metadata 差分をコミット対象へ整理 |
+| T-058 | 改善候補の採番継続ルールを明文化 | `AGENTS.md`, `PLAN.md` | 完了 | 候補番号の再利用禁止と次回採番メモの明記を追加 |
 
 ## 状態定義
 - 未着手
@@ -241,3 +243,6 @@
 - T-057運用範囲更新: `AGENTS.md` の作業範囲へ `package-lock.json` を追加
 - T-057lockfile整理: `package-lock.json` の root metadata（`name` `version` `license`）差分を既存未コミット差分として確定対象へ整理
 - T-057失敗コマンドなし
+- T-058運用ルール更新: `AGENTS.md` に改善候補の通番維持、番号再利用禁止、候補ゼロ時でも次回採番を `PLAN.md` へ残すルールを追加
+- T-058文書更新: `PLAN.md` の `改善候補メモ` に `C-004` 開始の採番メモを追加
+- T-058失敗コマンドなし
