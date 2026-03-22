@@ -70,6 +70,7 @@
 | T-056 | 3環境共通の npm / Playwright セットアップ運用を自動化 | `package.json`, `README.md`, `EXPLANATION.md`, `AGENTS.md`, `PLAN.md` | 完了 | `npm run setup` と project-local Playwright browser を共通手順へ統一 |
 | T-057 | `package-lock.json` を作業範囲へ追加して lockfile 差分を確定 | `AGENTS.md`, `PLAN.md`, `package-lock.json` | 完了 | 許可対象へ追加し、既存の root metadata 差分をコミット対象へ整理 |
 | T-058 | 改善候補の採番継続ルールを明文化 | `AGENTS.md`, `PLAN.md` | 完了 | 候補番号の再利用禁止と次回採番メモの明記を追加 |
+| T-059 | スモークテスト実行と Screen A〜D スクリーンショット取得 | `PLAN.md`, `reference/preview/*` | 完了 | `npm test` 実行と A/B/C/D 画面の最新確認画像を取得した |
 
 ## 状態定義
 - 未着手
@@ -247,3 +248,13 @@
 - T-058運用ルール更新: `AGENTS.md` に改善候補の通番維持、番号再利用禁止、候補ゼロ時でも次回採番を `PLAN.md` へ残すルールを追加
 - T-058文書更新: `PLAN.md` の `改善候補メモ` に `C-004` 開始の採番メモを追加
 - T-058失敗コマンドなし
+- T-059失敗分析1: `curl -I http://127.0.0.1:8000/index.html` は失敗。直接原因はローカルサーバー未起動、根本原因は既存サーバー前提で疎通確認を先行したこと、再試行方針として `python3 -m http.server 8000 --bind 127.0.0.1` 起動後に再実行
+- T-059失敗分析2: Playwright単発撮影の `node` 実行は失敗。直接原因は `chromium_headless_shell` を `~/.cache/ms-playwright` 側に探しに行ったこと、根本原因は `PLAYWRIGHT_BROWSERS_PATH=0` を付け忘れたこと、再試行方針として同コマンドを `PLAYWRIGHT_BROWSERS_PATH=0` 付きで再実行
+- T-059サーバー起動: `python3 -m http.server 8000 --bind 127.0.0.1`
+- T-059疎通確認: `curl -I http://127.0.0.1:8000/index.html` -> `HTTP/1.0 200 OK`
+- T-059スモークテスト: `npm test` で `1 passed` を確認
+- T-059スクリーンショット（A画面）: `reference/preview/preview-t059-screen-a-20260323-015748.png`
+- T-059スクリーンショット（B画面）: `reference/preview/preview-t059-screen-b-20260323-015748.png`
+- T-059スクリーンショット（C画面）: `reference/preview/preview-t059-screen-c-20260323-015748.png`
+- T-059スクリーンショット（D画面）: `reference/preview/preview-t059-screen-d-20260323-015748.png`
+- T-059画像内容確認: `view_image` で A/B/C/D の4枚を確認（撮影成功・ビューア表示成功）
