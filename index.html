@@ -736,6 +736,18 @@
           padding-top: 10px;
           padding-bottom: 10px;
         }
+
+        #sc-c .sec-label {
+          margin: 12px 0 6px;
+        }
+
+        #sc-c .fit-row {
+          margin-bottom: 10px;
+        }
+
+        #sc-c .a4-wrap {
+          margin-top: 12px;
+        }
       }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
@@ -821,13 +833,7 @@
                   </button>
                 </div>
 
-                <p class="sec-label">配置モード</p>
-                <div class="fit-row">
-                  <button type="button" class="fit-opt" data-fit="contain">全体表示（余白あり）</button>
-                  <button type="button" class="fit-opt" data-fit="cover">はみ出し許容（トリミング）</button>
-                </div>
-
-                <div class="info-box">不足画像は空枠表示、超過画像は次ページへ自動配置。トリミングは中央基準で切り抜きます。</div>
+                <div class="info-box">不足画像は空枠表示、超過画像は次ページへ自動配置します。</div>
               </div>
 
               <div class="sc-cta">
@@ -848,6 +854,12 @@
                 <div class="preview-meta">
                   <span id="previewLayoutLabel">レイアウト: 4分割 (2x2)</span>
                   <span id="previewFitLabel">配置: 全体表示</span>
+                </div>
+
+                <p class="sec-label">配置モード</p>
+                <div class="fit-row">
+                  <button type="button" class="fit-opt" data-fit="contain">全体表示（余白あり）</button>
+                  <button type="button" class="fit-opt" data-fit="cover">はみ出し許容（トリミング）</button>
                 </div>
 
                 <div class="a4-wrap">

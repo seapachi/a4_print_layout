@@ -111,8 +111,9 @@ async function captureScreenshots(taskId) {
   await page.screenshot({ path: files.b, fullPage: false });
 
   await page.locator('#sc-b.on [data-layout="2"]').click();
-  await page.locator('#sc-b.on [data-fit="cover"]').click();
   await page.locator('#sc-b.on [data-go="sc-c"]').click();
+  await page.waitForTimeout(300);
+  await page.locator('#sc-c.on [data-fit="cover"]').click();
   await page.waitForTimeout(300);
   await page.screenshot({ path: files.c, fullPage: false });
 

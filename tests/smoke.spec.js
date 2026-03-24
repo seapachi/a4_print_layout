@@ -96,10 +96,10 @@ test("3画像を2分割coverでPDF生成できる", async ({ page }) => {
 
   await page.locator('#sc-a.on [data-go="sc-b"]').click();
   await page.locator('#sc-b.on [data-layout="2"]').click();
-  await page.locator('#sc-b.on [data-fit="cover"]').click();
   await page.locator('#sc-b.on [data-go="sc-c"]').click();
 
   await expect(page.locator("#previewLayoutLabel")).toContainText("2分割");
+  await page.locator('#sc-c.on [data-fit="cover"]').click();
   await page.locator("#generateButton").click();
 
   await expect(page.locator("#sc-d.on")).toBeVisible();

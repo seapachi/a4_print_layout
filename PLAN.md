@@ -5,7 +5,6 @@
 - ここに書かれた内容は実行対象ではありません。
 - 実行する場合は、ユーザー承認後に `タスク管理` 表へ承認済みタスクとして追加します。
 - 記入テンプレート: `C-001 / 候補名 / 目的 / 未確定事項 / メモ`
-- `C-004` 候補名: トリミングまたは拡大オプションを `Screen C` へ移動 / 目的: プレビュー確認中に表示方法を調整できるようにし、`Screen B` をレイアウト選択に集中させる / 未確定事項: `Screen C` の配置位置、`Screen B` 側の初期値保持有無、説明文の移動範囲、操作手数への影響 / メモ: 現行の `contain / cover` 選択UIを `Screen C` へ移す案として管理する
 - 採番メモ: 改善候補の採番は通番で管理し、次回は `C-005` から開始する
 
 ## タスク管理
@@ -72,6 +71,7 @@
 | T-058 | 改善候補の採番継続ルールを明文化 | `AGENTS.md`, `PLAN.md` | 完了 | 候補番号の再利用禁止と次回採番メモの明記を追加 |
 | T-059 | スモークテスト実行と Screen A〜D スクリーンショット取得 | `PLAN.md`, `reference/preview/*` | 完了 | `npm test` 実行と A/B/C/D 画面の最新確認画像を取得した |
 | T-060 | Playwright起動を npm script 経由へ統一して付け忘れを防止 | `package.json`, `tests/*`, `EXPLANATION.md`, `AGENTS.md`, `PLAN.md` | 完了 | スクリーンショット処理の script 化と運用ルール追加で `PLAYWRIGHT_BROWSERS_PATH=0` の手打ちを避ける |
+| T-061 | 配置モード選択をScreen CへUI移動（C-004） | `index.html`, `EXPLANATION.md`, `PLAN.md`, `tests/*` | 完了 | プレビュー確認中に配置方法を調整可能に、Screen Bはレイアウト選択に集中 |
 
 ## 状態定義
 - 未着手
@@ -271,3 +271,15 @@
 - T-060スクリーンショット（C画面）: `reference/preview/preview-t060-screen-c-20260323-020423.png`
 - T-060スクリーンショット（D画面）: `reference/preview/preview-t060-screen-d-20260323-020423.png`
 - T-060画像内容確認: `view_image` で A/B/C/D の4枚を確認（撮影成功・ビューア表示成功）
+- T-061改善候補整理: `PLAN.md` から C-004 を削除し、タスク管理表へ T-061 として追加
+- T-061UI削除: Screen B から「配置モード」セクション（824-828行目）と配置モード説明文を削除
+- T-061UI追加: Screen C の `preview-meta` 後に配置モード選択UIを追加（sec-label + fit-row）
+- T-061スタイル追加: `#sc-c .sec-label`, `#sc-c .fit-row`, `#sc-c .a4-wrap` のマージン調整を追加
+- T-061文書更新: `EXPLANATION.md` の Screen B/C 役割説明を更新し、「6) Screen C の配置モード選択」セクションを追加
+- T-061テスト更新: `tests/smoke.spec.js` の配置モード選択を Screen B → Screen C へ移動
+- T-061スクリプト更新: `tests/capture-screenshots.js` の配置モード選択を Screen B → Screen C へ移動
+- T-061テスト確認: `npm test` で `1 passed` を確認
+- T-061スクリーンショット: `npm run screenshot:a-d -- t061` で A/B/C/D の4枚を生成
+- T-061スクリーンショット（B画面）: `reference/preview/preview-t061-screen-b-20260325-084739.png`（配置モードUIなし、レイアウト選択のみ）
+- T-061スクリーンショット（C画面）: `reference/preview/preview-t061-screen-c-20260325-084739.png`（配置モードUI追加、cover選択状態）
+- T-061画像内容確認: `view_image` で B/C 画面を確認（撮影成功・UI移動確認済み）
