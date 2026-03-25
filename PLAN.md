@@ -72,6 +72,7 @@
 | T-059 | スモークテスト実行と Screen A〜D スクリーンショット取得 | `PLAN.md`, `reference/preview/*` | 完了 | `npm test` 実行と A/B/C/D 画面の最新確認画像を取得した |
 | T-060 | Playwright起動を npm script 経由へ統一して付け忘れを防止 | `package.json`, `tests/*`, `EXPLANATION.md`, `AGENTS.md`, `PLAN.md` | 完了 | スクリーンショット処理の script 化と運用ルール追加で `PLAYWRIGHT_BROWSERS_PATH=0` の手打ちを避ける |
 | T-061 | 配置モード選択をScreen CへUI移動（C-004） | `index.html`, `EXPLANATION.md`, `PLAN.md`, `tests/*` | 完了 | プレビュー確認中に配置方法を調整可能に、Screen Bはレイアウト選択に集中 |
+| T-062 | バージョン更新ルールをAGENTSへ明文化 | `AGENTS.md`, `PLAN.md` | 完了 | 版上げ判断基準、採番方針、関連ファイル整合ルールを追記 |
 
 ## 状態定義
 - 未着手
@@ -258,6 +259,8 @@
 - T-059スクリーンショット（B画面）: `reference/preview/preview-t059-screen-b-20260323-015748.png`
 - T-059スクリーンショット（C画面）: `reference/preview/preview-t059-screen-c-20260323-015748.png`
 - T-059スクリーンショット（D画面）: `reference/preview/preview-t059-screen-d-20260323-015748.png`
+- T-062ルール更新: `AGENTS.md` にバージョン更新ルールを追加し、版上げが必要な変更種別と `MAJOR.MINOR.PATCH-beta.N` の判断基準を明文化
+- T-062文書判断: 文書のみ更新のため `package.json` / `package-lock.json` の版は変更しない
 - T-059画像内容確認: `view_image` で A/B/C/D の4枚を確認（撮影成功・ビューア表示成功）
 - T-060スクリプト更新: `package.json` に `screenshot:a-d` を追加し、Playwright単発撮影の入口を `npm run` へ統一
 - T-060撮影スクリプト追加: `tests/capture-screenshots.js` を追加し、サーバー自動起動と A/B/C/D 撮影を自動化
