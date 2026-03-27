@@ -411,6 +411,12 @@
         gap: 6px;
       }
 
+      .dpi-row {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 6px;
+      }
+
       .fit-opt {
         border: 1px solid var(--b0);
         border-radius: 10px;
@@ -429,6 +435,38 @@
         color: var(--t0);
       }
 
+      .dpi-opt {
+        border: 1px solid var(--b0);
+        border-radius: 10px;
+        padding: 8px 7px;
+        background: var(--s1);
+        color: var(--t1);
+        font-size: 0.7rem;
+        line-height: 1.25;
+        text-align: left;
+        cursor: pointer;
+        display: grid;
+        gap: 3px;
+      }
+
+      .dpi-opt.sel {
+        border-color: var(--ac);
+        background: var(--ac-dim);
+        color: var(--t0);
+      }
+
+      .dpi-title {
+        font-size: 0.73rem;
+        font-weight: 700;
+        color: inherit;
+      }
+
+      .dpi-note {
+        font-size: 0.62rem;
+        color: inherit;
+        opacity: 0.84;
+      }
+
       .info-box {
         margin-top: 8px;
         border: 1px solid var(--b0);
@@ -445,6 +483,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        flex-wrap: wrap;
         gap: 8px;
         font-size: 0.73rem;
         color: var(--t1);
@@ -757,7 +796,7 @@
       <header class="pg-header">
         <div class="app-title-row">
           <h1 class="app-title">A4 Print Layout</h1>
-          <span id="appVersionText" class="app-version">v1.1.0-beta.1</span>
+          <span id="appVersionText" class="app-version">v1.1.0-beta.2</span>
         </div>
         <p class="app-sub">スマホの写真をA4印刷PDFにかんたん配置（1/2/4/6/8分割）</p>
       </header>
@@ -854,6 +893,7 @@
                 <div class="preview-meta">
                   <span id="previewLayoutLabel">レイアウト: 4分割 (2x2)</span>
                   <span id="previewFitLabel">配置: 全体表示</span>
+                  <span id="previewDpiLabel">出力: オリジナル</span>
                 </div>
 
                 <p class="sec-label">配置モード</p>
@@ -861,6 +901,25 @@
                   <button type="button" class="fit-opt" data-fit="contain">全体表示（余白あり）</button>
                   <button type="button" class="fit-opt" data-fit="cover">はみ出し許容（トリミング）</button>
                 </div>
+
+                <p class="sec-label">出力最適化</p>
+                <div class="dpi-row">
+                  <button type="button" class="dpi-opt" data-dpi-mode="original" data-premium-tier="base">
+                    <span class="dpi-title">オリジナル</span>
+                    <span class="dpi-note">元画像のまま</span>
+                  </button>
+                  <button type="button" class="dpi-opt" data-dpi-mode="300" data-premium-tier="candidate">
+                    <span class="dpi-title">300dpi</span>
+                    <span class="dpi-note">印刷向け</span>
+                  </button>
+                  <button type="button" class="dpi-opt" data-dpi-mode="120" data-premium-tier="candidate">
+                    <span class="dpi-title">120dpi</span>
+                    <span class="dpi-note">容量軽め</span>
+                  </button>
+                </div>
+
+                <div id="optimizationSummary" class="info-box">出力最適化: オリジナル（元画像のまま）</div>
+                <div id="qualityWarningBar" class="warn-bar" hidden></div>
 
                 <div class="a4-wrap">
                   <div id="slotGrid" class="slot-grid"></div>
@@ -926,7 +985,7 @@
       const ACCEPTED_MIME = new Set(["image/jpeg", "image/png"]);
       const PRIMARY_THEME = "hanshi";
       const APP_META = Object.freeze({
-        version: "1.1.0-beta.1",
+        version: "1.1.0-beta.2",
         documentTitle: "A4 Print Layout Beta",
       });
 
@@ -943,8 +1002,33 @@
         cover: "トリミング",
       };
 
+      const DPI_OPTIONS = Object.freeze({
+        original: {
+          key: "original",
+          label: "オリジナル",
+          description: "元画像のまま出力します。",
+          targetDpi: null,
+          premiumTier: "base",
+        },
+        "300": {
+          key: "300",
+          label: "300dpi",
+          description: "印刷向けに必要サイズへ自動最適化します。",
+          targetDpi: 300,
+          premiumTier: "candidate",
+        },
+        "120": {
+          key: "120",
+          label: "120dpi",
+          description: "容量を軽めにしつつ必要サイズへ自動最適化します。",
+          targetDpi: 120,
+          premiumTier: "candidate",
+        },
+      });
+
       let currentLayoutKey = "4";
       let currentFitMode = "contain";
+      let currentDpiMode = "original";
       let previewPage = 1;
 
       /** @type {File[]} */
@@ -971,6 +1055,9 @@
       const logBox = document.getElementById("logBox");
       const previewLayoutLabel = document.getElementById("previewLayoutLabel");
       const previewFitLabel = document.getElementById("previewFitLabel");
+      const previewDpiLabel = document.getElementById("previewDpiLabel");
+      const optimizationSummary = document.getElementById("optimizationSummary");
+      const qualityWarningBar = document.getElementById("qualityWarningBar");
       const doneFileName = document.getElementById("doneFileName");
       const donePageCount = document.getElementById("donePageCount");
       const selectedCountBadge = document.getElementById("selectedCountBadge");
@@ -982,6 +1069,7 @@
       const screens = Array.from(document.querySelectorAll(".sc"));
       const layoutButtons = Array.from(document.querySelectorAll("[data-layout]"));
       const fitButtons = Array.from(document.querySelectorAll("[data-fit]"));
+      const dpiButtons = Array.from(document.querySelectorAll("[data-dpi-mode]"));
       const goButtons = Array.from(document.querySelectorAll("[data-go]"));
 
       const ThemeMeta = {
@@ -1014,6 +1102,15 @@
           const mode = button.dataset.fit;
           if (mode === "contain" || mode === "cover") {
             setFitMode(mode);
+          }
+        });
+      });
+
+      dpiButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const mode = button.dataset.dpiMode;
+          if (mode === "original" || mode === "300" || mode === "120") {
+            setDpiMode(mode);
           }
         });
       });
@@ -1114,13 +1211,13 @@
         try {
           setBusy(true);
           setStatus("PDF生成中...", "info");
-          const blob = await buildPdfA4(selectedAssets, slots, currentFitMode);
+          const blob = await buildPdfA4(selectedAssets, slots, currentFitMode, currentDpiMode);
           const fileName = createOutputName();
           applyGeneratedBlob(blob, fileName);
           const pages = Math.ceil(selectedAssets.length / slots.length);
           donePageCount.textContent = `${pages} ページ`;
           setStatus(`完了: ${fileName} (${pages}ページ)`, "success");
-          log(`PDF生成: レイアウト=${currentLayoutKey}, 配置=${FIT_LABELS[currentFitMode]}, ページ=${pages}, 画像=${selectedAssets.length}`);
+          log(`PDF生成: レイアウト=${currentLayoutKey}, 配置=${FIT_LABELS[currentFitMode]}, 出力=${getCurrentDpiOption().label}, ページ=${pages}, 画像=${selectedAssets.length}`);
           goTo("sc-d");
         } catch (error) {
           const message = normalizeError(error);
@@ -1188,8 +1285,21 @@
         renderPreview(selectedAssets);
       }
 
+      function setDpiMode(mode) {
+        if (!DPI_OPTIONS[mode]) return;
+        currentDpiMode = mode;
+        dpiButtons.forEach((button) => {
+          button.classList.toggle("sel", button.dataset.dpiMode === mode);
+        });
+        renderPreview(selectedAssets);
+      }
+
       function getCurrentLayout() {
         return LAYOUT_PRESETS[currentLayoutKey] || LAYOUT_PRESETS["4"];
+      }
+
+      function getCurrentDpiOption() {
+        return DPI_OPTIONS[currentDpiMode] || DPI_OPTIONS.original;
       }
 
       function getPreviewTotalPages(assetCount) {
@@ -1229,6 +1339,7 @@
 
       function renderPreview(assets) {
         const layout = getCurrentLayout();
+        const slots = computeSlots(currentLayoutKey, MARGIN_MM, GAP_MM);
         const perPage = layout.slotsPerPage;
         const totalPages = getPreviewTotalPages(assets.length);
         if (previewPage > totalPages) {
@@ -1269,9 +1380,11 @@
 
         previewLayoutLabel.textContent = `レイアウト: ${layout.label}`;
         previewFitLabel.textContent = `配置: ${FIT_LABELS[currentFitMode]}`;
+        previewDpiLabel.textContent = `出力: ${getCurrentDpiOption().label}`;
         pageLabel.innerHTML = `ページ <strong>${previewPage}</strong> / ${totalPages}`;
         prevPageButton.disabled = previewPage <= 1;
         nextPageButton.disabled = previewPage >= totalPages;
+        renderOptimizationSummary(assets, slots);
       }
 
       /**
@@ -1368,7 +1481,7 @@
       }
 
       /** @returns {Promise<Blob>} */
-      async function buildPdfA4(images, slots, fitMode) {
+      async function buildPdfA4(images, slots, fitMode, dpiMode) {
         const PDFLib = window.PDFLib;
         const PDFDocument = PDFLib?.PDFDocument;
         if (!PDFDocument) {
@@ -1383,6 +1496,7 @@
         const pageHeightPt = mmToPt(A4_HEIGHT_MM);
         const perPage = slots.length;
         const totalPages = Math.ceil(images.length / perPage);
+        const dpiOption = DPI_OPTIONS[dpiMode] || DPI_OPTIONS.original;
         const canClip =
           typeof PDFLib.pushGraphicsState === "function" &&
           typeof PDFLib.popGraphicsState === "function" &&
@@ -1395,7 +1509,7 @@
           const pageImages = images.slice(pageIndex * perPage, (pageIndex + 1) * perPage);
 
           for (let i = 0; i < pageImages.length; i += 1) {
-            const asset = pageImages[i];
+            const asset = await prepareAssetForPdf(pageImages[i], slots[i], fitMode, dpiOption);
             const slot = slots[i];
             const embedded =
               asset.mimeType === "image/png"
@@ -1447,6 +1561,142 @@
 
         const pdfBytes = await pdf.save();
         return new Blob([pdfBytes], { type: "application/pdf" });
+      }
+
+      function renderOptimizationSummary(assets, slots) {
+        const option = getCurrentDpiOption();
+        if (currentDpiMode === "original") {
+          optimizationSummary.textContent = "出力最適化: オリジナル（元画像のまま出力します）";
+          qualityWarningBar.hidden = true;
+          qualityWarningBar.textContent = "";
+          return;
+        }
+
+        const summary = collectPreviewQualitySummary(assets, slots, currentFitMode, currentDpiMode, previewPage);
+        const optimizedCount = summary.pageItems.length - summary.warningCount;
+        optimizationSummary.textContent = `出力最適化: ${option.label} 基準で必要サイズへ調整します。現在ページは ${optimizedCount} 枚がそのまま使えそうです。`;
+
+        if (summary.warningCount > 0) {
+          qualityWarningBar.hidden = false;
+          qualityWarningBar.textContent = `このページで ${summary.warningCount} 枚は ${option.label} 相当の必要ピクセルに届きません。元画像のまま使い、拡大は行いません。`;
+        } else {
+          qualityWarningBar.hidden = true;
+          qualityWarningBar.textContent = "";
+        }
+      }
+
+      function collectPreviewQualitySummary(assets, slots, fitMode, dpiMode, pageNumber) {
+        const option = DPI_OPTIONS[dpiMode] || DPI_OPTIONS.original;
+        const perPage = slots.length;
+        const start = (pageNumber - 1) * perPage;
+        const pageAssets = assets.slice(start, start + perPage);
+        const pageItems = pageAssets.map((asset, index) => {
+          const metrics = computeRequiredImagePixels(slots[index], asset, fitMode, option.targetDpi);
+          return {
+            asset,
+            metrics,
+            isWarning: metrics ? isQualityWarning(metrics, asset) : false,
+          };
+        });
+
+        return {
+          pageItems,
+          warningCount: pageItems.filter((item) => item.isWarning).length,
+        };
+      }
+
+      function isQualityWarning(metrics, asset) {
+        return asset.widthPx < metrics.requiredWidthPx || asset.heightPx < metrics.requiredHeightPx;
+      }
+
+      function computeRequiredImagePixels(slot, asset, fitMode, targetDpi) {
+        if (!slot || !asset || !targetDpi) return null;
+
+        const drawSize = computeDrawSizeMm(slot, asset, fitMode);
+        return {
+          requiredWidthPx: Math.max(1, Math.ceil(mmToPx(drawSize.widthMm, targetDpi))),
+          requiredHeightPx: Math.max(1, Math.ceil(mmToPx(drawSize.heightMm, targetDpi))),
+          drawWidthMm: drawSize.widthMm,
+          drawHeightMm: drawSize.heightMm,
+        };
+      }
+
+      function computeDrawSizeMm(slot, asset, fitMode) {
+        const widthScale = slot.widthMm / asset.widthPx;
+        const heightScale = slot.heightMm / asset.heightPx;
+        const scale = fitMode === "cover" ? Math.max(widthScale, heightScale) : Math.min(widthScale, heightScale);
+        return {
+          widthMm: asset.widthPx * scale,
+          heightMm: asset.heightPx * scale,
+        };
+      }
+
+      function mmToPx(mm, dpi) {
+        return (mm / 25.4) * dpi;
+      }
+
+      async function prepareAssetForPdf(asset, slot, fitMode, dpiOption) {
+        if (!dpiOption || !dpiOption.targetDpi) {
+          return asset;
+        }
+
+        const metrics = computeRequiredImagePixels(slot, asset, fitMode, dpiOption.targetDpi);
+        if (!metrics || isQualityWarning(metrics, asset)) {
+          return asset;
+        }
+
+        return await resizeAssetForSlot(asset, metrics);
+      }
+
+      async function resizeAssetForSlot(asset, metrics) {
+        const widthRatio = metrics.requiredWidthPx / asset.widthPx;
+        const heightRatio = metrics.requiredHeightPx / asset.heightPx;
+        const scale = Math.min(1, widthRatio, heightRatio);
+
+        if (scale >= 0.98) {
+          return asset;
+        }
+
+        const targetWidth = Math.max(1, Math.round(asset.widthPx * scale));
+        const targetHeight = Math.max(1, Math.round(asset.heightPx * scale));
+
+        const canvas = document.createElement("canvas");
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
+
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+          throw new Error("Canvas初期化に失敗");
+        }
+
+        const sourceBlob = new Blob([asset.bytes], { type: asset.mimeType });
+        const decoded = await decodeImageRaw(sourceBlob);
+        ctx.drawImage(decoded.source, 0, 0, targetWidth, targetHeight);
+
+        if (typeof decoded.cleanup === "function") {
+          decoded.cleanup();
+        }
+
+        const blob = await new Promise((resolve, reject) => {
+          canvas.toBlob(
+            (result) => {
+              if (!result) {
+                reject(new Error("画像最適化に失敗"));
+                return;
+              }
+              resolve(result);
+            },
+            asset.mimeType,
+            asset.mimeType === "image/jpeg" ? 0.95 : undefined,
+          );
+        });
+
+        return {
+          ...asset,
+          bytes: new Uint8Array(await blob.arrayBuffer()),
+          widthPx: targetWidth,
+          heightPx: targetHeight,
+        };
       }
 
       /** @returns {Promise<"shared"|"download">} */
@@ -1773,11 +2023,12 @@
 
       setLayout(currentLayoutKey);
       setFitMode(currentFitMode);
+      setDpiMode(currentDpiMode);
       renderThumbs([]);
       renderPreview([]);
       setStatus("待機中", "info");
       log(`テーマ=${ThemeMeta.name}`);
-      log(`レイアウト=${currentLayoutKey}, 配置=${FIT_LABELS[currentFitMode]}`);
+      log(`レイアウト=${currentLayoutKey}, 配置=${FIT_LABELS[currentFitMode]}, 出力=${getCurrentDpiOption().label}`);
     </script>
   </body>
 </html>

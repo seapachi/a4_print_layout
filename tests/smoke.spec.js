@@ -74,7 +74,7 @@ test("3画像を2分割coverでPDF生成できる", async ({ page }) => {
   await page.goto(BASE_URL);
 
   await expect(page).toHaveTitle("A4 Print Layout Beta");
-  await expect(page.locator("#appVersionText")).toHaveText("v1.1.0-beta.1");
+  await expect(page.locator("#appVersionText")).toHaveText("v1.1.0-beta.2");
   await expect(page.locator("#appReleaseBadge")).toHaveCount(0);
 
   const titleBox = await page.locator(".app-title").boundingBox();
@@ -99,7 +99,14 @@ test("3画像を2分割coverでPDF生成できる", async ({ page }) => {
   await page.locator('#sc-b.on [data-go="sc-c"]').click();
 
   await expect(page.locator("#previewLayoutLabel")).toContainText("2分割");
+  await expect(page.locator('#sc-c.on [data-dpi-mode="original"]')).toHaveClass(/sel/);
+  await expect(page.locator("#previewDpiLabel")).toContainText("オリジナル");
+  await expect(page.locator("#qualityWarningBar")).toBeHidden();
+
   await page.locator('#sc-c.on [data-fit="cover"]').click();
+  await page.locator('#sc-c.on [data-dpi-mode="120"]').click();
+  await expect(page.locator("#previewDpiLabel")).toContainText("120dpi");
+  await expect(page.locator("#qualityWarningBar")).toBeVisible();
   await page.locator("#generateButton").click();
 
   await expect(page.locator("#sc-d.on")).toBeVisible();

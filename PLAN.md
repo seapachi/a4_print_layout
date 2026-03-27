@@ -5,7 +5,8 @@
 - ここに書かれた内容は実行対象ではありません。
 - 実行する場合は、ユーザー承認後に `タスク管理` 表へ承認済みタスクとして追加します。
 - 記入テンプレート: `C-001 / 候補名 / 目的 / 未確定事項 / メモ`
-- 採番メモ: 改善候補の採番は通番で管理し、次回は `C-005` から開始する
+- 採番メモ: 改善候補の採番は通番で管理し、次回は `C-006` から開始する
+- C-005 / DPI設定の一部有料オプション化 / Screen C の出力最適化設定を将来課金対象へ広げられるようにする / どの選択肢を無料・有料に分けるか未確定 / 今回は内部定義のみ先行し、UIロック表示は保留
 
 ## タスク管理
 
@@ -73,6 +74,7 @@
 | T-060 | Playwright起動を npm script 経由へ統一して付け忘れを防止 | `package.json`, `tests/*`, `EXPLANATION.md`, `AGENTS.md`, `PLAN.md` | 完了 | スクリーンショット処理の script 化と運用ルール追加で `PLAYWRIGHT_BROWSERS_PATH=0` の手打ちを避ける |
 | T-061 | 配置モード選択をScreen CへUI移動（C-004） | `index.html`, `EXPLANATION.md`, `PLAN.md`, `tests/*` | 完了 | プレビュー確認中に配置方法を調整可能に、Screen Bはレイアウト選択に集中 |
 | T-062 | バージョン更新ルールをAGENTSへ明文化 | `AGENTS.md`, `PLAN.md` | 完了 | 版上げ判断基準、採番方針、関連ファイル整合ルールを追記 |
+| T-063 | Screen CへDPI選択と出力最適化を追加（C-005関連） | `index.html`, `EXPLANATION.md`, `PLAN.md`, `tests/smoke.spec.js`, `reference/preview/*`, `package.json`, `package-lock.json` | 完了 | `オリジナル / 300 / 120` の選択、最適化・警告・PDF生成前縮小、版番号更新を追加 |
 
 ## 状態定義
 - 未着手
@@ -286,3 +288,20 @@
 - T-061スクリーンショット（B画面）: `reference/preview/preview-t061-screen-b-20260325-084739.png`（配置モードUIなし、レイアウト選択のみ）
 - T-061スクリーンショット（C画面）: `reference/preview/preview-t061-screen-c-20260325-084739.png`（配置モードUI追加、cover選択状態）
 - T-061画像内容確認: `view_image` で B/C 画面を確認（撮影成功・UI移動確認済み）
+- T-063UI追加: `index.html` の Screen C に `オリジナル / 300dpi / 120dpi` の出力最適化選択、要約表示、警告バーを追加
+- T-063最適化実装: `buildPdfA4()` を DPI モード対応に拡張し、`300dpi` / `120dpi` 選択時のみ必要サイズ超過画像を PDF 生成前に縮小する処理を追加
+- T-063品質判定実装: `requiredPx = mm / 25.4 * targetDpi` を共通化し、`contain` / `cover` の描画サイズ差を加味した警告判定を追加
+- T-063将来拡張仕込み: `DPI_OPTIONS` に `label` `description` `targetDpi` `premiumTier` を持たせ、将来の有料オプション化に備えた内部メタデータを追加
+- T-063文書更新: `EXPLANATION.md` に Screen C の DPI 選択、警告基準、事前縮小方針、`premiumTier` の位置づけを追記
+- T-063版番号更新: `package.json` と `package-lock.json` を `1.1.0-beta.2` へ更新し、`index.html` と `tests/smoke.spec.js` の表示・期待値も同期
+- T-063失敗分析1: `npm run screenshot:a-d -- t063` は失敗。直接原因は `127.0.0.1:8000` へ接続できなかったこと、根本原因は撮影スクリプト内の自動サーバー起動がこの環境では ready まで到達しなかったこと、再試行方針として `npm run serve` と `curl -I` で疎通確認後に再実行
+- T-063失敗分析2: 同コマンドの再試行も失敗。直接原因は撮影スクリプト側の疎通確認失敗、根本原因は別セッション間でローカルサーバー可視性が安定しなかったこと、再試行方針としてサンドボックス外で `npm run screenshot:a-d -- t063` を実行
+- T-063失敗分析3: `npm run serve` は `OSError: [Errno 98] Address already in use` で失敗。直接原因は既存サーバーが 8000 番ポートを使用中だったこと、根本原因は前段の確認用サーバーを継続利用したこと、再試行方針として既存サーバーをそのまま使って `curl -I` と再撮影を継続
+- T-063テスト確認: `npm test` を 2 回実行し、いずれも `1 passed` を確認
+- T-063疎通確認: `curl -I http://127.0.0.1:8000/index.html` -> `HTTP/1.0 200 OK`
+- T-063スクリーンショット: `npm run screenshot:a-d -- t063` をサンドボックス外で再実行し、A/B/C/D の4枚を生成
+- T-063スクリーンショット（A画面）: `reference/preview/preview-t063-screen-a-20260327-090355.png`
+- T-063スクリーンショット（B画面）: `reference/preview/preview-t063-screen-b-20260327-090355.png`
+- T-063スクリーンショット（C画面）: `reference/preview/preview-t063-screen-c-20260327-090355.png`（DPI選択 UI が既存カード内に自然に収まることを確認）
+- T-063スクリーンショット（D画面）: `reference/preview/preview-t063-screen-d-20260327-090355.png`
+- T-063画像内容確認: `view_image` で C 画面を確認（撮影成功・ビューア表示成功）
